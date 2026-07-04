@@ -271,9 +271,9 @@ button {
 }
 
 .card-carousel {
-  --card-width: min(354px, calc(100vw - 76px));
+  --card-width: clamp(136px, 44vw, 178px);
   position: relative;
-  height: 212px;
+  height: 320px;
   margin-top: 28px;
   touch-action: pan-y;
   user-select: none;
@@ -281,7 +281,7 @@ button {
 
 .card-track {
   width: max-content;
-  height: 184px;
+  height: 286px;
   display: flex;
   align-items: center;
   transition: transform 240ms ease;
@@ -292,13 +292,26 @@ button {
   flex: 0 0 var(--card-width);
   position: relative;
   width: var(--card-width);
-  height: 184px;
+  aspect-ratio: 378 / 600;
+  height: auto;
   margin: 0 12px;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 18px;
   background: var(--card-bg, #5f6673);
   color: #fff;
   box-shadow: 0 18px 34px rgba(18, 26, 43, 0.18);
+}
+
+.payment-card.has-card-image {
+  background: transparent;
+  box-shadow: 0 18px 34px rgba(18, 26, 43, 0.2);
+}
+
+.card-asset {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .card-sheen {
@@ -390,14 +403,14 @@ button {
 
 .card-badge {
   position: absolute;
-  right: 18px;
-  top: 18px;
+  right: 10px;
+  top: 10px;
   z-index: 2;
-  padding: 8px 10px;
+  padding: 7px 9px;
   border-radius: 999px;
   background: var(--blue);
   color: #fff;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 950;
   box-shadow: 0 8px 18px rgba(40, 120, 255, 0.3);
 }
@@ -497,7 +510,7 @@ button {
 }
 
 .swipe-hint {
-  margin: 32px 0 0;
+  margin: 4px 0 0;
   color: #7b808a;
   text-align: center;
   font-size: 12px;
@@ -516,69 +529,96 @@ button {
 }
 
 .screen-pay {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 48px 24px 44px;
   background: #000;
   color: #fff;
 }
 
-.pay-brand {
+.screen-pay::before {
+  content: "";
   position: absolute;
-  right: 54px;
-  top: 55px;
+  left: 50%;
+  top: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translate(-50%, -48%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0 32%, rgba(255, 255, 255, 0.035) 32% 54%, transparent 54%);
+  opacity: 0.7;
+}
+
+.screen-pay > * {
+  position: relative;
+  z-index: 1;
+}
+
+.pay-top {
+  display: grid;
+  gap: 18px;
+}
+
+.pay-brand {
+  justify-self: end;
   color: #a0a0a0;
-  font-size: 19px;
+  font-size: 24px;
   font-weight: 900;
 }
 
-.pay-rings {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  width: 500px;
-  height: 500px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0 35%, rgba(255, 255, 255, 0.04) 35% 55%, transparent 55%);
-}
-
-.pay-tabs {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 224px;
+.pay-overlay {
+  justify-self: center;
+  width: min(100%, 292px);
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
   text-align: center;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 13px;
+}
+
+.pay-overlay span {
+  display: none;
+}
+
+.pay-overlay strong {
+  display: block;
+  overflow: hidden;
+  font-size: 17px;
   font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.pay-tabs span {
-  display: inline-block;
-  width: 1px;
-  height: 18px;
-  margin: 0 18px;
-  background: #777;
-  vertical-align: middle;
-}
-
-.pay-card-rotated {
-  --card-bg: var(--active-card-bg, linear-gradient(135deg, #1657c8 0%, #4c8dff 100%));
-  position: absolute;
-  left: 50%;
-  top: 372px;
-  width: 270px;
-  height: 405px;
-  margin: 0;
-  transform: translateX(-50%) rotate(90deg);
-  transform-origin: center;
+.pay-overlay p {
+  margin: 3px 0 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pay-flow-panel {
-  position: absolute;
-  left: 26px;
-  right: 26px;
-  top: 254px;
-  z-index: 2;
+  align-self: center;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
   color: #111;
+}
+
+.pay-tabs {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.screen-pay[data-pay-step="payment"] .pay-flow-panel {
+  align-self: start;
 }
 
 .pay-step-meta {
@@ -586,7 +626,6 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
   color: #fff;
 }
 
@@ -607,7 +646,7 @@ button {
   min-width: 0;
   overflow: hidden;
   color: #fff;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -621,7 +660,7 @@ button {
 
 .pay-stack-list span {
   min-width: 0;
-  height: 32px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -631,7 +670,7 @@ button {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.09);
   color: rgba(255, 255, 255, 0.74);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -667,10 +706,9 @@ button {
 }
 
 .pay-code-card {
-  min-height: 94px;
-  margin-top: 10px;
-  padding: 12px 15px 11px;
-  border-radius: 20px;
+  min-height: 188px;
+  padding: 22px 24px 18px;
+  border-radius: 26px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
 }
@@ -682,25 +720,25 @@ button {
 .pay-code-card span {
   display: block;
   color: #5c6472;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 950;
 }
 
 .pay-code-card strong {
   display: block;
-  margin-top: 3px;
+  margin-top: 7px;
   overflow: hidden;
   color: #111;
-  font-size: 15px;
+  font-size: 25px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .barcode {
-  height: 34px;
-  margin: 10px 0 7px;
-  border-radius: 6px;
+  height: 58px;
+  margin: 20px 0 10px;
+  border-radius: 8px;
   background:
     repeating-linear-gradient(
       90deg,
@@ -716,99 +754,83 @@ button {
 .pay-code-card em {
   display: block;
   color: #30343b;
-  font-size: 12px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
   text-align: center;
 }
 
-.pay-flow-panel.is-payment-step .pay-code-card {
-  background: rgba(18, 18, 18, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #fff;
+.pay-nfc-panel {
+  display: none;
+  align-self: center;
+  justify-items: center;
+  gap: 18px;
+  min-height: 0;
 }
 
-.pay-flow-panel.is-payment-step .pay-code-card span,
-.pay-flow-panel.is-payment-step .pay-code-card em {
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0;
+.screen-pay[data-pay-step="payment"] .pay-nfc-panel {
+  display: grid;
 }
 
-.pay-flow-panel.is-payment-step .pay-code-card strong {
-  color: #fff;
+.pay-rings {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 420px;
+  height: 420px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 31%, rgba(255, 255, 255, 0.04) 31% 54%, transparent 54%);
+  pointer-events: none;
 }
 
-.pay-flow-panel.is-payment-step .barcode {
-  height: 34px;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.34), transparent 68%);
+.pay-card-rotated {
+  --card-bg: var(--active-card-bg, linear-gradient(135deg, #1657c8 0%, #4c8dff 100%));
+  width: min(196px, calc(100vw - 194px));
+  aspect-ratio: 378 / 600;
+  height: auto;
+  margin: 10px 0 0;
+  border-radius: 18px;
+  transform: none;
+  transform-origin: center;
+  background: transparent;
+}
+
+.pay-card-rotated .card-asset:not([hidden]) ~ .card-sheen,
+.pay-card-rotated .card-asset:not([hidden]) ~ .card-content {
+  display: none;
 }
 
 .pay-card-rotated .brand {
   left: 22px;
-  top: 24px;
+  top: 22px;
 }
 
 .pay-card-rotated .chip {
-  left: 99px;
-  top: 158px;
+  left: 22px;
+  top: 78px;
+  width: 46px;
+  height: 38px;
 }
 
 .pay-card-rotated .card-name {
-  right: 25px;
-  bottom: 80px;
+  right: 94px;
+  bottom: 22px;
 }
 
 .pay-card-rotated .mastercard {
-  right: 24px;
-  bottom: 24px;
-}
-
-.pay-overlay {
-  position: absolute;
-  left: 68px;
-  right: 68px;
-  top: 148px;
-  padding: 9px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(12px);
-  text-align: center;
-}
-
-.pay-overlay span {
-  display: none;
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.pay-overlay strong {
-  font-size: 13px;
-}
-
-.pay-overlay p {
-  margin: 2px 0 0;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  right: 20px;
+  bottom: 17px;
+  width: 58px;
+  height: 31px;
 }
 
 .pay-count {
-  position: absolute;
-  left: 50%;
-  top: 660px;
   width: 48px;
   height: 48px;
   display: grid;
   place-items: center;
-  transform: translateX(-50%);
   border: 1px solid #9b9b9b;
   border-radius: 50%;
   font-size: 25px;
@@ -816,34 +838,16 @@ button {
 }
 
 .pay-guide {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 722px;
   margin: 0;
   text-align: center;
   font-size: 18px;
   font-weight: 800;
 }
 
-.guide-button {
-  position: absolute;
-  left: 50%;
-  top: 772px;
-  transform: translateX(-50%);
-  border: 0;
-  border-bottom: 2px solid #fff;
-  background: transparent;
-  color: #fff;
-  font-size: 21px;
-  font-weight: 950;
-}
-
 .complete-button {
-  position: absolute;
-  left: 94px;
-  right: 94px;
-  bottom: 62px;
+  width: min(100%, 280px);
+  min-height: 56px;
+  justify-self: center;
   background: #fff;
   color: #111;
   font-size: 17px;

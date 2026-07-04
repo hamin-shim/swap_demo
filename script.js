@@ -1,21 +1,24 @@
 const cards = [
   {
-    issuer: "SHINHAN",
-    name: "Deep Benefit",
-    displayName: "신한 Deep Benefit",
-    bg: "linear-gradient(135deg, #1657c8 0%, #4c8dff 100%)"
+    issuer: "KB",
+    name: "NEED Pay",
+    displayName: "KB국민 NEED Pay",
+    bg: "linear-gradient(135deg, #f9d923 0%, #fff36d 100%)",
+    image: "./2964card_1.png"
   },
   {
     issuer: "SAMSUNG",
-    name: "Wallet Money",
-    displayName: "Samsung Wallet Money",
-    bg: "linear-gradient(135deg, #20242b 0%, #747b86 100%)"
+    name: "SELECT",
+    displayName: "삼성카드 SELECT",
+    bg: "linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%)",
+    image: "./2885card_1.png"
   },
   {
-    issuer: "HYUNDAI",
-    name: "M Card",
-    displayName: "현대 M Card",
-    bg: "linear-gradient(135deg, #0f766e 0%, #33c7b6 100%)"
+    issuer: "WOORI",
+    name: "카드의정석",
+    displayName: "우리 카드의정석",
+    bg: "linear-gradient(135deg, #1251f5 0%, #1988ff 100%)",
+    image: "./2848card_2.png"
   },
   {
     issuer: "LOTTE",
@@ -34,7 +37,7 @@ const scenarios = {
     detail: "하민님의 할인 선호와 보유 쿠폰을 함께 보고 추천했어요. 추천 기준은 언제든 AI 추천 설정에서 바꿀 수 있어요.",
     combinations: [
       {
-        reason: "신한카드 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상",
+        reason: "KB국민카드 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상",
         benefit: "예상 혜택 5,000원",
         coupon: "올리브영 3천원 쿠폰",
         membership: "CJ ONE 적립",
@@ -71,7 +74,7 @@ const scenarios = {
     detail: "이번 달 실적이 조금 남아 있어요. 다음 달 혜택을 이어갈 수 있도록 실적 관리와 쿠폰을 함께 고려했어요.",
     combinations: [
       {
-        reason: "신한카드는 소액 결제 기준 기본 적립만 예상돼요",
+        reason: "KB국민카드는 소액 결제 기준 기본 적립만 예상돼요",
         benefit: "기본 적립",
         coupon: "적용 쿠폰 없음",
         membership: "CU 멤버십 적립",
@@ -108,7 +111,7 @@ const scenarios = {
     detail: "정확한 매장이 아직 확실하지 않아 업종 기준으로 추천했어요. 매장이 확인되면 조합이 달라질 수 있어요.",
     combinations: [
       {
-        reason: "뷰티 업종 기준 신한카드 캐시백 가능성이 있어요",
+        reason: "뷰티 업종 기준 KB국민카드 캐시백 가능성이 있어요",
         benefit: "예상 혜택 3,000원",
         coupon: "업종 쿠폰 후보",
         membership: "브랜드 확인 필요",
@@ -162,6 +165,7 @@ const fields = {
   payReason: $("#payReason"),
   payBrand: $("#payBrand"),
   payCardVisualName: $("#payCardVisualName"),
+  payCardImage: $("#payCardImage"),
   payTabs: $("#payTabs"),
   payFlowPanel: $("#payFlowPanel"),
   payStackList: $("#payStackList"),
@@ -206,10 +210,10 @@ function buildPaySteps() {
     steps.push({
       type: "coupon",
       label: "매장쿠폰",
-      title: "쿠폰과 멤버십을 먼저 준비했어요",
+      title: "먼저 쿠폰 바코드를 보여주세요",
       value: combo.coupon,
       code: "8801 0427 3000",
-      guide: "먼저 쿠폰 바코드를 보여주세요.",
+      guide: "아직 결제 전이에요.",
       button: "쿠폰 사용 완료"
     });
   }
@@ -218,10 +222,10 @@ function buildPaySteps() {
     steps.push({
       type: "membership",
       label: "멤버십",
-      title: "쿠폰과 멤버십을 먼저 준비했어요",
+      title: "이어서 멤버십을 적립해주세요",
       value: combo.membership,
       code: "3108 2407 1142",
-      guide: "이어서 멤버십을 적립해주세요.",
+      guide: "이후 카드 결제로 넘어가요.",
       button: "멤버십 적립 완료"
     });
   }
@@ -274,15 +278,17 @@ function renderCards() {
   const recommendedIndex = scenarios[currentScenario].recommendedIndex;
 
   track.innerHTML = cards.map((card, index) => `
-    <article class="payment-card" style="--card-bg: ${card.bg}" data-index="${index}">
-      <div class="card-sheen"></div>
-      <div class="card-content">
-        <span class="brand">${card.issuer}</span>
-        <div class="chip"></div>
-        <div class="card-name">${card.name}</div>
-        <div class="sfc">PAY</div>
-        <div class="mastercard"><span></span><span></span></div>
-      </div>
+    <article class="payment-card ${card.image ? "has-card-image" : ""}" style="--card-bg: ${card.bg}" data-index="${index}">
+      ${card.image ? `<img class="card-asset" src="${card.image}" alt="${card.displayName} 카드">` : `
+        <div class="card-sheen"></div>
+        <div class="card-content">
+          <span class="brand">${card.issuer}</span>
+          <div class="chip"></div>
+          <div class="card-name">${card.name}</div>
+          <div class="sfc">PAY</div>
+          <div class="mastercard"><span></span><span></span></div>
+        </div>
+      `}
       ${index === currentCardIndex ? `<span class="card-badge">${index === recommendedIndex ? "추천" : "선택"}</span>` : ""}
     </article>
   `).join("");
@@ -326,6 +332,9 @@ function render() {
   fields.payReason.textContent = combo.reason;
   fields.payBrand.textContent = card.issuer;
   fields.payCardVisualName.textContent = card.name;
+  fields.payCardImage.src = card.image || "";
+  fields.payCardImage.alt = `${card.displayName} 카드`;
+  fields.payCardImage.hidden = !card.image;
   fields.resultSummary.textContent = `${combo.benefit}을 적용했어요`;
   fields.resultCard.textContent = `${card.displayName} + ${combo.membership}`;
   fields.resultType.textContent = scenario.type;

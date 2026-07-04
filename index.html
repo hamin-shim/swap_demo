@@ -52,19 +52,17 @@
       </div>
 
       <div class="screen screen-pay" data-screen="pay">
-        <div class="pay-brand">Samsung Pay</div>
-        <div class="pay-rings"></div>
-        <div class="pay-tabs" id="payTabs">매장쿠폰 <span></span> 멤버십</div>
-        <article class="payment-card pay-card-rotated">
-          <div class="card-sheen"></div>
-          <div class="card-content">
-            <span class="brand" id="payBrand">SHINHAN</span>
-            <div class="chip"></div>
-            <div class="card-name" id="payCardVisualName">Deep Benefit</div>
-            <div class="mastercard"><span></span><span></span></div>
-          </div>
-        </article>
+        <header class="pay-top">
+          <div class="pay-brand">Samsung Pay</div>
+          <section class="pay-overlay">
+            <span>추천 결제 조합 적용</span>
+            <strong id="payCard">신한 Deep Benefit</strong>
+            <p id="payReason">3만원 이상 결제 시 5천원 캐시백 예상</p>
+          </section>
+        </header>
+
         <section class="pay-flow-panel" id="payFlowPanel" aria-live="polite">
+          <div class="pay-tabs" id="payTabs">추천 조합 준비됨</div>
           <div class="pay-step-meta">
             <span id="payStepLabel">1/3</span>
             <strong id="payStepTitle">쿠폰을 먼저 보여주세요</strong>
@@ -77,14 +75,23 @@
             <em id="payStepCode">8801 0427 3000</em>
           </div>
         </section>
-        <section class="pay-overlay">
-          <span>추천 결제 조합 적용</span>
-          <strong id="payCard">신한 Deep Benefit</strong>
-          <p id="payReason">3만원 이상 결제 시 5천원 캐시백 예상</p>
+
+        <section class="pay-nfc-panel" aria-label="NFC 결제 대기">
+          <div class="pay-rings"></div>
+          <article class="payment-card pay-card-rotated">
+            <img class="card-asset" id="payCardImage" src="./2964card_1.png" alt="KB국민 NEED Pay 카드">
+            <div class="card-sheen"></div>
+            <div class="card-content">
+              <span class="brand" id="payBrand">SHINHAN</span>
+              <div class="chip"></div>
+              <div class="card-name" id="payCardVisualName">Deep Benefit</div>
+              <div class="mastercard"><span></span><span></span></div>
+            </div>
+          </article>
+          <div class="pay-count">49</div>
+          <p class="pay-guide" id="payGuide">폰의 뒷면을 카드 리더기에 대세요.</p>
         </section>
-        <div class="pay-count">49</div>
-        <p class="pay-guide" id="payGuide">폰의 뒷면을 카드 리더기에 대세요.</p>
-        <button type="button" class="guide-button">가이드 보기</button>
+
         <button type="button" class="complete-button" id="completeButton">다음</button>
         <div class="home-indicator dark"></div>
       </div>
