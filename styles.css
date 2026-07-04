@@ -786,26 +786,27 @@ button {
 }
 
 .pay-nfc-panel {
-  grid-row: 2;
   display: none;
-  align-self: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 360px;
+  height: 390px;
   justify-items: center;
-  gap: 18px;
-  min-height: 0;
+  pointer-events: none;
 }
 
 .screen-pay[data-pay-step="payment"] .pay-nfc-panel {
   display: grid;
-  margin-top: 72px;
 }
 
 .pay-rings {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 150px;
   width: 420px;
   height: 420px;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 31%, rgba(255, 255, 255, 0.04) 31% 54%, transparent 54%);
   pointer-events: none;
@@ -813,14 +814,18 @@ button {
 
 .pay-card-rotated {
   --card-bg: var(--active-card-bg, linear-gradient(135deg, #1657c8 0%, #4c8dff 100%));
+  position: absolute;
+  left: 50%;
+  top: 4px;
   width: min(196px, calc(100vw - 194px));
   aspect-ratio: 378 / 600;
   height: auto;
-  margin: 10px 0 0;
+  margin: 0;
   border-radius: 18px;
-  transform: none;
+  transform: translateX(-50%);
   transform-origin: center;
   background: transparent;
+  pointer-events: none;
 }
 
 .pay-card-rotated .card-asset:not([hidden]) ~ .card-sheen,
@@ -853,6 +858,10 @@ button {
 }
 
 .pay-count {
+  position: absolute;
+  left: 50%;
+  top: 324px;
+  transform: translateX(-50%);
   width: 48px;
   height: 48px;
   display: grid;
@@ -864,6 +873,10 @@ button {
 }
 
 .pay-guide {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 382px;
   margin: 0;
   text-align: center;
   font-size: 18px;
