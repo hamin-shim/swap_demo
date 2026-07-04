@@ -34,14 +34,14 @@ const scenarios = {
     confidence: "매장 인식 82%",
     recommendedIndex: 0,
     type: "예상 할인",
-    detail: "하민님의 할인 선호와 보유 쿠폰을 함께 보고 추천했어요. 추천 기준은 언제든 AI 추천 설정에서 바꿀 수 있어요.",
+    detail: "하민님의 할인 선호, 등록 쿠폰, 카드사 청구할인 한도를 함께 보고 추천했어요. 이번 결제는 카드 혜택과 쿠폰을 합산한 예상값이에요.",
     combinations: [
       {
-        reason: "KB국민카드 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상",
+        reason: "KB국민카드 청구할인 한도 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상",
         benefit: "예상 혜택 5,000원",
         coupon: "올리브영 3천원 쿠폰",
         membership: "CJ ONE 적립",
-        insight: "하민님의 할인 선호에 맞춰 추천했어요"
+        insight: "청구할인 한도와 쿠폰을 함께 계산했어요"
       },
       {
         reason: "월렛머니 + 매장 쿠폰 조합으로 4천원 적립 예상",
@@ -103,40 +103,77 @@ const scenarios = {
       }
     ]
   },
-  mall: {
-    merchant: "뷰티/드럭스토어 후보",
-    confidence: "업종 기준",
+  starbucks_lifestyle: {
+    merchant: "Starbucks",
+    confidence: "매장 인식 88%",
     recommendedIndex: 1,
-    type: "위치 Fallback",
-    detail: "정확한 매장이 아직 확실하지 않아 업종 기준으로 추천했어요. 매장이 확인되면 조합이 달라질 수 있어요.",
+    type: "생활 반복 소비",
+    detail: "하민님의 카페, 구독, 통신 같은 반복 소비 패턴을 기준으로 봤어요. 큰 할인보다 매달 자주 쓰는 혜택을 안정적으로 챙기는 추천입니다.",
     combinations: [
       {
-        reason: "뷰티 업종 기준 KB국민카드 캐시백 가능성이 있어요",
-        benefit: "예상 혜택 3,000원",
-        coupon: "업종 쿠폰 후보",
-        membership: "브랜드 확인 필요",
-        insight: "매장 확인 전이라 업종 기준으로 추천했어요"
-      },
-      {
-        reason: "월렛머니 + 업종 리워드 조합으로 4천원 적립 예상",
-        benefit: "예상 혜택 4,000원",
-        coupon: "월렛머니 업종 리워드",
-        membership: "브랜드 확인 필요",
-        insight: "정확한 매장 대신 업종 혜택으로 추천했어요"
-      },
-      {
-        reason: "현대카드는 실적 관리에는 도움되지만 매장 확인이 필요해요",
-        benefit: "실적 관리",
-        coupon: "업종 쿠폰 후보",
-        membership: "브랜드 확인 필요",
-        insight: "실적 관리에 맞춰 추천했어요"
-      },
-      {
-        reason: "롯데카드는 업종 기본 적립만 예상돼요",
-        benefit: "예상 혜택 800원",
+        reason: "KB국민카드는 카페 할인보다 쿠폰 결합 혜택이 약해요",
+        benefit: "예상 혜택 700원",
         coupon: "적용 쿠폰 없음",
-        membership: "브랜드 확인 필요",
-        insight: "평소 사용 패턴에 맞춰 추천했어요"
+        membership: "스타벅스 리워드 적립",
+        insight: "이번 카페 결제에서는 다른 카드가 더 유리해요"
+      },
+      {
+        reason: "삼성카드 SELECT 카페 청구할인 1회와 스타벅스 리워드 적립 가능",
+        benefit: "카페 혜택 1회 남음",
+        coupon: "무료 사이즈업 쿠폰",
+        membership: "스타벅스 리워드 적립",
+        insight: "반복 소비 혜택과 멤버십을 함께 챙겼어요"
+      },
+      {
+        reason: "우리카드는 실적에는 도움되지만 카페 혜택은 제한적이에요",
+        benefit: "실적 반영 예상",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "실적 우선이면 대체 선택할 수 있어요"
+      },
+      {
+        reason: "롯데 Daily Card는 조건 없이 기본 적립돼요",
+        benefit: "기본 적립",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "복잡한 조건 없이 빠르게 결제할 수 있어요"
+      }
+    ]
+  },
+  general_simple: {
+    merchant: "General Store",
+    confidence: "매장 인식 70%",
+    recommendedIndex: 3,
+    type: "무실적 기본 결제",
+    detail: "이번 결제는 쿠폰이나 멤버십 조건보다 빠른 기본 결제가 더 적합해요. 보유 카드 중 조건 없는 적립 카드를 준비했어요.",
+    combinations: [
+      {
+        reason: "KB국민카드는 이 매장에서 특별 혜택이 크지 않아요",
+        benefit: "기본 결제",
+        coupon: "적용 쿠폰 없음",
+        membership: "사용 안 함",
+        insight: "이번 결제는 복잡한 조합이 필요 없어요"
+      },
+      {
+        reason: "삼성카드는 카페/구독 영역이 아니라 기본 적립만 예상돼요",
+        benefit: "기본 적립",
+        coupon: "적용 쿠폰 없음",
+        membership: "사용 안 함",
+        insight: "카테고리 특화 혜택은 적용되지 않아요"
+      },
+      {
+        reason: "우리카드는 실적 관리 목적이면 선택할 수 있어요",
+        benefit: "실적 반영 예상",
+        coupon: "적용 쿠폰 없음",
+        membership: "사용 안 함",
+        insight: "실적 우선 사용자에게만 의미가 있어요"
+      },
+      {
+        reason: "롯데 Daily Card 조건 없이 기본 적립",
+        benefit: "조건 없이 기본 적립",
+        coupon: "적용 쿠폰 없음",
+        membership: "사용 안 함",
+        insight: "낮은 금액 결제라 단순 결제가 더 좋아요"
       }
     ]
   }
@@ -214,7 +251,7 @@ function currentData() {
 }
 
 function hasUsableAsset(value) {
-  return value && !/(없음|필요|후보)/.test(value);
+  return value && !/(없음|필요|후보|사용 안 함)/.test(value);
 }
 
 function updateNfcTimer() {
@@ -451,6 +488,23 @@ function setResultForMode(mode) {
   }
 
   const benefitAmount = combo.benefit.match(/[0-9,]+원/)?.[0] || combo.benefit;
+  if (scenario.type.includes("무실적")) {
+    fields.resultSummary.textContent = `${card.displayName}로 빠르게 결제했어요`;
+    fields.resultBenefitAmount.textContent = combo.benefit;
+    fields.resultLearning.textContent = "복잡한 조건 없이 기본 결제 추천으로 반영했어요";
+    fields.resultStatusList.innerHTML = renderResultRows([
+      { label: "카드 결제", value: card.displayName, state: "완료" },
+      { label: "카드 혜택", value: combo.benefit, state: "예상" }
+    ]);
+    fields.resultProgressLabel.textContent = "추천 기준";
+    fields.resultProgressValue.textContent = "기본";
+    fields.resultProgressBar.style.width = "100%";
+    fields.resultNextHint.textContent = "이번 결제는 쿠폰이나 실적 조건보다 빠른 기본 결제가 적합해요";
+    fields.resultCard.textContent = card.displayName;
+    fields.resultType.textContent = scenario.type;
+    return;
+  }
+
   const progress = scenario.type.includes("실적") ? 72 : 84;
   const nextAmount = scenario.type.includes("실적") ? "28,000원" : "16,000원";
 
