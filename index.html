@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Samsung Wallet</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <div class="phone" aria-label="Samsung Wallet demo">
+      <button type="button" class="scrim" id="scrim" aria-label="닫기"></button>
+      <div class="screen screen-wallet is-active" data-screen="wallet">
+        <div class="status-bar">
+          <div class="status-left">
+            <span>KT</span>
+            <strong>2:22</strong>
+            <span class="mini-dot"></span>
+          </div>
+          <div class="status-right">
+            <span class="status-chip">HD</span>
+            <span class="status-chip">5G</span>
+            <span class="signal-bars"><i></i><i></i><i></i></span>
+            <span class="battery">83</span>
+          </div>
+        </div>
+
+        <header class="wallet-header">
+          <h1>Samsung Wallet</h1>
+          <div class="header-actions">
+            <button type="button" class="icon-button" aria-label="추가"><span class="plus-icon"></span></button>
+            <button type="button" class="icon-button" id="settingsButton" aria-label="더보기"><span class="kebab-icon"></span></button>
+          </div>
+        </header>
+
+        <section class="ai-pill" aria-live="polite">
+          <div>
+            <span id="merchantName">Olive Young</span>
+            <strong id="proposalText">신한카드 조합으로 5,000원 혜택을 받으세요</strong>
+          </div>
+          <button type="button" id="whyButton">혜택 보기</button>
+        </section>
+
+        <section class="card-carousel" aria-label="등록 카드">
+          <div class="card-track" id="cardTrack"></div>
+          <div class="card-dots" id="cardDots" aria-hidden="true"></div>
+        </section>
+
+        <p class="swipe-hint">카드를 넘기면 결제 조합도 함께 바뀝니다</p>
+
+        <div class="home-indicator"></div>
+      </div>
+
+      <div class="screen screen-pay" data-screen="pay">
+        <div class="pay-brand">Samsung Pay</div>
+        <div class="pay-rings"></div>
+        <div class="pay-tabs">매장쿠폰 <span></span> 멤버십</div>
+        <article class="payment-card pay-card-rotated">
+          <div class="card-sheen"></div>
+          <div class="card-content">
+            <span class="brand" id="payBrand">SHINHAN</span>
+            <div class="chip"></div>
+            <div class="card-name" id="payCardVisualName">Deep Benefit</div>
+            <div class="mastercard"><span></span><span></span></div>
+          </div>
+        </article>
+        <section class="pay-overlay">
+          <span>추천 결제 조합 적용</span>
+          <strong id="payCard">신한 Deep Benefit</strong>
+          <p id="payReason">3만원 이상 결제 시 5천원 캐시백 예상</p>
+        </section>
+        <div class="pay-count">49</div>
+        <p class="pay-guide">폰의 뒷면을 카드 리더기에 대세요.</p>
+        <button type="button" class="guide-button">가이드 보기</button>
+        <button type="button" class="complete-button" id="completeButton">결제 완료</button>
+        <div class="home-indicator dark"></div>
+      </div>
+
+      <div class="screen screen-result" data-screen="result">
+        <div class="status-row">
+          <span>Samsung Wallet</span>
+          <span>완료</span>
+        </div>
+        <section class="result-panel">
+          <div class="success-mark">✓</div>
+          <h1>결제가 완료됐어요</h1>
+          <p id="resultSummary">예상 5,000원 혜택을 적용했어요</p>
+          <dl>
+            <div>
+              <dt>결제수단</dt>
+              <dd id="resultCard">신한 Deep Benefit</dd>
+            </div>
+            <div>
+              <dt>추천 기준</dt>
+              <dd id="resultType">예상 할인</dd>
+            </div>
+            <div>
+              <dt>추천 조합</dt>
+              <dd id="resultCombo">카드 + 쿠폰 + 멤버십</dd>
+            </div>
+          </dl>
+          <button type="button" id="resetButton">Wallet으로 돌아가기</button>
+        </section>
+        <div class="home-indicator"></div>
+      </div>
+
+      <section class="bottom-sheet" id="detailSheet" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">
+          <h2>이 조합으로 준비했어요</h2>
+          <button type="button" id="closeSheet">닫기</button>
+        </div>
+        <p id="reasonText">신한카드 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상</p>
+        <div class="combo-stack" aria-label="추천 결제 조합">
+          <div class="combo-item">
+            <span>카드</span>
+            <strong id="comboCard">신한 Deep Benefit</strong>
+          </div>
+          <div class="combo-item">
+            <span>쿠폰</span>
+            <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
+          </div>
+          <div class="combo-item">
+            <span>멤버십</span>
+            <strong id="comboMembership">CJ ONE 적립</strong>
+          </div>
+          <div class="combo-item">
+            <span>예상</span>
+            <strong id="benefitText">예상 혜택 5,000원</strong>
+          </div>
+        </div>
+        <div class="detail-grid">
+          <div>
+            <span>추천 기준</span>
+            <strong id="selectedCard">하민님의 결제 스타일에 따라 추천했어요</strong>
+          </div>
+        </div>
+        <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
+        <p class="sheet-note">추천 기준을 바꾸고 싶다면 오른쪽 위 더보기에서 AI 추천 설정을 조정할 수 있어요.</p>
+        <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
+      </section>
+
+      <section class="reason-popover" id="reasonPopover" aria-hidden="true">
+        <div>
+          <h3>추천 이유</h3>
+          <p id="detailText">보유 카드와 등록 쿠폰 기준으로 가장 큰 예상 혜택이 확인됐어요.</p>
+          <button type="button" id="openSettingsFromReason">추천 기준 바꾸기</button>
+        </div>
+      </section>
+
+      <section class="bottom-sheet settings-sheet" id="settingsSheet" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">
+          <h2>AI 추천 설정</h2>
+          <button type="button" id="closeSettings">닫기</button>
+        </div>
+        <p>추천 상황과 기준을 바꿀 수 있어요. 선택한 기준은 다음 결제 추천에도 반영됩니다.</p>
+        <div class="setting-group">
+          <span>추천 상황</span>
+          <div class="scenario-list" aria-label="시나리오 선택">
+            <button type="button" class="scenario is-selected" data-scenario="oliveyoung">할인</button>
+            <button type="button" class="scenario" data-scenario="cu">실적</button>
+            <button type="button" class="scenario" data-scenario="mall">Fallback</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span>추천 표시</span>
+          <strong>Wallet 실행 시 즉시</strong>
+        </div>
+        <div class="setting-row">
+          <span>추천 대상</span>
+          <strong>등록 자산만</strong>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
