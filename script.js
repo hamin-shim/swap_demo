@@ -141,6 +141,7 @@ const scenarios = {
 
 let currentScenario = "oliveyoung";
 let currentCardIndex = scenarios[currentScenario].recommendedIndex;
+let currentPayStep = 0;
 let dragStartX = 0;
 let dragCurrentX = 0;
 let isDragging = false;
@@ -161,6 +162,14 @@ const fields = {
   payReason: $("#payReason"),
   payBrand: $("#payBrand"),
   payCardVisualName: $("#payCardVisualName"),
+  payTabs: $("#payTabs"),
+  payFlowPanel: $("#payFlowPanel"),
+  payStepLabel: $("#payStepLabel"),
+  payStepTitle: $("#payStepTitle"),
+  payStepType: $("#payStepType"),
+  payStepValue: $("#payStepValue"),
+  payStepCode: $("#payStepCode"),
+  completeButton: $("#completeButton"),
   resultSummary: $("#resultSummary"),
   resultCard: $("#resultCard"),
   resultType: $("#resultType"),
@@ -180,6 +189,67 @@ function currentData() {
   const card = cards[currentCardIndex];
   const combo = scenario.combinations[currentCardIndex];
   return { scenario, card, combo };
+}
+
+function hasUsableAsset(value) {
+  return value && !/(없음|필요|후보)/.test(value);
+}
+
+function buildPaySteps() {
+  const { card, combo } = currentData();
+  const steps = [];
+
+  if (hasUsableAsset(combo.coupon)) {
+    steps.push({
+      type: "coupon",
+      label: "매장쿠폰",
+      title: "쿠폰을 먼저 보여주세요",
+      value: combo.coupon,
+      code: "8801 0427 3000",
+      button: "쿠폰 사용 완료"
+    });
+  }
+
+  if (hasUsableAsset(combo.membership)) {
+    steps.push({
+      type: "membership",
+      label: "멤버십",
+      title: "멤버십을 적립해주세요",
+      value: combo.membership,
+      code: "3108 2407 1142",
+      button: "멤버십 적립 완료"
+    });
+  }
+
+  steps.push({
+    type: "payment",
+    label: "결제",
+    title: "이제 카드로 결제하세요",
+    value: card.displayName,
+    code: "NFC 결제 대기 중",
+    button: "결제 완료"
+  });
+
+  return steps;
+}
+
+function renderPayStep() {
+  const steps = buildPaySteps();
+  currentPayStep = Math.min(currentPayStep, steps.length - 1);
+  const step = steps[currentPayStep];
+  const isPayment = step.type === "payment";
+
+  fields.payTabs.textContent = steps
+    .map((item, index) => `${index + 1}. ${item.label}`)
+    .join("  ");
+  fields.payStepLabel.textContent = `${currentPayStep + 1}/${steps.length}`;
+  fields.payStepTitle.textContent = step.title;
+  fields.payStepType.textContent = step.label;
+  fields.payStepValue.textContent = step.value;
+  fields.payStepCode.textContent = step.code;
+  fields.completeButton.textContent = step.button;
+  fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
+  $(".screen-pay").dataset.payStep = step.type;
 }
 
 function renderCards() {
@@ -248,6 +318,7 @@ function render() {
 
   document.documentElement.style.setProperty("--active-card-bg", card.bg);
   renderCards();
+  renderPayStep();
 }
 
 function setScreen(name) {
@@ -256,6 +327,23 @@ function setScreen(name) {
   });
   closeSheet();
   closeSettings();
+}
+
+function startPaymentFlow() {
+  currentPayStep = 0;
+  renderPayStep();
+  setScreen("pay");
+}
+
+function advancePaymentFlow() {
+  const steps = buildPaySteps();
+  if (currentPayStep < steps.length - 1) {
+    currentPayStep += 1;
+    renderPayStep();
+    return;
+  }
+
+  setScreen("result");
 }
 
 function closeSheet() {
@@ -365,8 +453,8 @@ $("#scrim").addEventListener("click", closeOverlays);
 $("#settingsButton").addEventListener("click", openSettings);
 $("#closeSettings").addEventListener("click", closeSettings);
 $("#openSettingsFromReason").addEventListener("click", openSettings);
-$("#comboPayButton").addEventListener("click", () => setScreen("pay"));
-$("#completeButton").addEventListener("click", () => setScreen("result"));
+$("#comboPayButton").addEventListener("click", startPaymentFlow);
+$("#completeButton").addEventListener("click", advancePaymentFlow);
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
 window.addEventListener("resize", () => updateCardPosition());
 
