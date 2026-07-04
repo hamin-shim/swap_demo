@@ -552,9 +552,9 @@ button {
 
 .screen-pay {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-  gap: 14px;
-  padding: 48px 24px 44px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 46px 24px 38px;
   background: #000;
   color: #fff;
 }
@@ -578,21 +578,22 @@ button {
 }
 
 .pay-top {
+  grid-row: 1;
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .pay-brand {
   justify-self: end;
   color: #a0a0a0;
-  font-size: 18px;
-  font-weight: 750;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .pay-overlay {
   justify-self: center;
-  width: min(100%, 292px);
-  padding: 12px 18px;
+  width: min(100%, 278px);
+  padding: 10px 16px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.09);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -607,7 +608,7 @@ button {
 .pay-overlay strong {
   display: block;
   overflow: hidden;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -617,7 +618,7 @@ button {
   margin: 3px 0 0;
   overflow: hidden;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 850;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -625,9 +626,10 @@ button {
 }
 
 .pay-flow-panel {
+  grid-row: 2;
   align-self: center;
   display: grid;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   color: #111;
 }
@@ -653,8 +655,8 @@ button {
 
 .pay-step-meta span {
   display: inline-grid;
-  min-width: 40px;
-  height: 25px;
+  min-width: 36px;
+  height: 24px;
   place-items: center;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.18);
@@ -668,7 +670,7 @@ button {
   min-width: 0;
   overflow: hidden;
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -682,7 +684,7 @@ button {
 
 .pay-step-button {
   min-width: 0;
-  height: 36px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -692,7 +694,7 @@ button {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.09);
   color: rgba(255, 255, 255, 0.74);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -728,9 +730,9 @@ button {
 }
 
 .pay-code-card {
-  min-height: 188px;
-  padding: 22px 24px 18px;
-  border-radius: 26px;
+  min-height: 164px;
+  padding: 18px 20px 16px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
 }
@@ -751,15 +753,15 @@ button {
   margin-top: 7px;
   overflow: hidden;
   color: #111;
-  font-size: 25px;
+  font-size: 21px;
   font-weight: 950;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .barcode {
-  height: 58px;
-  margin: 20px 0 10px;
+  height: 50px;
+  margin: 16px 0 9px;
   border-radius: 8px;
   background:
     repeating-linear-gradient(
@@ -776,7 +778,7 @@ button {
 .pay-code-card em {
   display: block;
   color: #30343b;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -784,6 +786,7 @@ button {
 }
 
 .pay-nfc-panel {
+  grid-row: 2;
   display: none;
   align-self: center;
   justify-items: center;
@@ -793,6 +796,7 @@ button {
 
 .screen-pay[data-pay-step="payment"] .pay-nfc-panel {
   display: grid;
+  margin-top: 72px;
 }
 
 .pay-rings {
@@ -866,10 +870,20 @@ button {
   font-weight: 800;
 }
 
+.pay-actions {
+  grid-row: 3;
+  display: grid;
+  place-items: center;
+  align-self: end;
+  min-height: 54px;
+}
+
 .complete-button {
   width: min(100%, 212px);
   min-height: 46px;
+  max-height: 46px;
   justify-self: center;
+  align-self: center;
   background: #fff;
   color: #111;
   font-size: 15px;
@@ -878,6 +892,7 @@ button {
 .screen-pay[data-pay-step="payment"] .complete-button {
   width: min(100%, 252px);
   min-height: 54px;
+  max-height: 54px;
   font-size: 17px;
 }
 
