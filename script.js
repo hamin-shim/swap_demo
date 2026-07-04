@@ -181,9 +181,15 @@ const fields = {
   payGuide: $("#payGuide"),
   completeButton: $("#completeButton"),
   resultSummary: $("#resultSummary"),
+  resultBenefitAmount: $("#resultBenefitAmount"),
+  resultLearning: $("#resultLearning"),
+  resultStatusList: $("#resultStatusList"),
+  resultProgressLabel: $("#resultProgressLabel"),
+  resultProgressValue: $("#resultProgressValue"),
+  resultProgressBar: $("#resultProgressBar"),
+  resultNextHint: $("#resultNextHint"),
   resultCard: $("#resultCard"),
   resultType: $("#resultType"),
-  resultCombo: $("#resultCombo"),
   detailText: $("#detailText")
 };
 
@@ -360,10 +366,6 @@ function render() {
   fields.payCardImage.src = card.image || "";
   fields.payCardImage.alt = `${card.displayName} 카드`;
   fields.payCardImage.hidden = !card.image;
-  fields.resultSummary.textContent = `${combo.benefit}을 적용했어요`;
-  fields.resultCard.textContent = `${card.displayName} + ${combo.membership}`;
-  fields.resultType.textContent = scenario.type;
-  fields.resultCombo.textContent = `${card.name} + ${combo.coupon} + ${combo.membership}`;
   fields.detailText.textContent = scenario.detail;
 
   document.documentElement.style.setProperty("--active-card-bg", card.bg);
@@ -372,27 +374,68 @@ function render() {
 }
 
 function setScreen(name) {
+  $(".phone").scrollTop = 0;
   $$(".screen").forEach((screen) => {
     screen.classList.toggle("is-active", screen.dataset.screen === name);
+    screen.scrollTop = 0;
   });
   closeSheet();
   closeSettings();
+  window.requestAnimationFrame(() => {
+    $(".phone").scrollTop = 0;
+  });
 }
 
 function setResultForMode(mode) {
   const { scenario, card, combo } = currentData();
   if (mode === "card") {
     fields.resultSummary.textContent = `${card.displayName}로 결제했어요`;
+    fields.resultBenefitAmount.textContent = "기본 결제";
+    fields.resultLearning.textContent = "추천 조합 없이 선택한 카드로 결제했어요";
+    fields.resultStatusList.innerHTML = renderResultRows([
+      { label: "카드 결제", value: card.displayName, state: "완료" },
+      { label: "쿠폰", value: "사용 안 함", state: "건너뜀" },
+      { label: "멤버십", value: "사용 안 함", state: "건너뜀" }
+    ]);
+    fields.resultProgressLabel.textContent = "이번 달 카드 실적";
+    fields.resultProgressValue.textContent = "68%";
+    fields.resultProgressBar.style.width = "68%";
+    fields.resultNextHint.textContent = "추천 기준을 켜면 다음 혜택 구간을 함께 확인할 수 있어요";
     fields.resultCard.textContent = card.displayName;
     fields.resultType.textContent = "카드 단독 결제";
-    fields.resultCombo.textContent = card.displayName;
     return;
   }
 
+  const benefitAmount = combo.benefit.match(/[0-9,]+원/)?.[0] || combo.benefit;
+  const progress = scenario.type.includes("실적") ? 72 : 84;
+  const nextAmount = scenario.type.includes("실적") ? "28,000원" : "16,000원";
+
   fields.resultSummary.textContent = `${combo.benefit}을 적용했어요`;
+  fields.resultBenefitAmount.textContent = benefitAmount;
+  fields.resultLearning.textContent = "이번 결과를 다음 추천에 반영했어요";
+  fields.resultStatusList.innerHTML = renderResultRows([
+    { label: "쿠폰", value: combo.coupon, state: hasUsableAsset(combo.coupon) ? "적용 완료" : "없음" },
+    { label: "멤버십", value: combo.membership, state: hasUsableAsset(combo.membership) ? "확인 중" : "없음" },
+    { label: "카드 혜택", value: combo.benefit, state: "예상" }
+  ].filter((item) => item.state !== "없음"));
+  fields.resultProgressLabel.textContent = "이번 달 카드 실적";
+  fields.resultProgressValue.textContent = `${progress}%`;
+  fields.resultProgressBar.style.width = `${progress}%`;
+  fields.resultNextHint.textContent = `다음 혜택 구간까지 ${nextAmount} 남았어요`;
   fields.resultCard.textContent = `${card.displayName} + ${combo.membership}`;
   fields.resultType.textContent = scenario.type;
-  fields.resultCombo.textContent = `${card.name} + ${combo.coupon} + ${combo.membership}`;
+}
+
+function renderResultRows(items) {
+  return items.map((item) => `
+    <div class="result-status-row">
+      <div>
+        <span>${item.label}</span>
+        <strong>${item.value}</strong>
+      </div>
+      <em>${item.state}</em>
+    </div>
+  `).join("");
 }
 
 function startPaymentFlow(mode = "combo") {
@@ -408,6 +451,7 @@ function advancePaymentFlow() {
   if (currentPayStep < steps.length - 1) {
     currentPayStep += 1;
     renderPayStep();
+    $(".phone").scrollTop = 0;
     return;
   }
 
@@ -535,6 +579,7 @@ $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
+$("#plannerButton").addEventListener("click", () => setScreen("wallet"));
 window.addEventListener("resize", () => updateCardPosition());
 
 attachSwipe();

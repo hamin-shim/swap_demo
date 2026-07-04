@@ -108,7 +108,21 @@
           <div class="success-mark">✓</div>
           <h1>결제가 완료됐어요</h1>
           <p id="resultSummary">예상 5,000원 혜택을 적용했어요</p>
-          <dl>
+          <section class="result-benefit-card">
+            <span>이번 결제 예상 혜택</span>
+            <strong id="resultBenefitAmount">5,000원</strong>
+            <p id="resultLearning">이번 결과를 다음 추천에 반영했어요</p>
+          </section>
+          <div class="result-status-list" id="resultStatusList" aria-label="혜택 적용 상태"></div>
+          <section class="result-progress">
+            <div>
+              <span id="resultProgressLabel">이번 달 카드 실적</span>
+              <strong id="resultProgressValue">72%</strong>
+            </div>
+            <div class="progress-bar"><i id="resultProgressBar"></i></div>
+            <p id="resultNextHint">다음 혜택 구간까지 28,000원 남았어요</p>
+          </section>
+          <dl class="result-meta">
             <div>
               <dt>결제수단</dt>
               <dd id="resultCard">신한 Deep Benefit</dd>
@@ -117,12 +131,11 @@
               <dt>추천 기준</dt>
               <dd id="resultType">예상 할인</dd>
             </div>
-            <div>
-              <dt>추천 조합</dt>
-              <dd id="resultCombo">카드 + 쿠폰 + 멤버십</dd>
-            </div>
           </dl>
-          <button type="button" id="resetButton">Wallet으로 돌아가기</button>
+          <div class="result-actions">
+            <button type="button" id="resetButton">Wallet으로 돌아가기</button>
+            <button type="button" class="secondary" id="plannerButton">페이 플래너에서 보기</button>
+          </div>
         </section>
         <div class="home-indicator"></div>
       </div>

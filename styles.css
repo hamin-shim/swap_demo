@@ -41,7 +41,7 @@ button {
   width: 100vw;
   max-width: 430px;
   aspect-ratio: 1080 / 2340;
-  overflow: hidden;
+  overflow: clip;
   border-radius: 0;
   background: var(--screen);
   border: 0;
@@ -551,10 +551,8 @@ button {
 }
 
 .screen-pay {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 16px;
-  padding: 46px 24px 38px;
+  display: block;
+  padding: 46px 0 38px;
   background: #000;
   color: #fff;
 }
@@ -578,9 +576,13 @@ button {
 }
 
 .pay-top {
-  grid-row: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46px;
   display: grid;
   gap: 14px;
+  padding: 0 24px;
 }
 
 .pay-brand {
@@ -626,11 +628,15 @@ button {
 }
 
 .pay-flow-panel {
-  grid-row: 2;
-  align-self: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-44%);
   display: grid;
   gap: 10px;
   min-width: 0;
+  padding: 0 24px;
   color: #111;
 }
 
@@ -642,7 +648,8 @@ button {
 }
 
 .screen-pay[data-pay-step="payment"] .pay-flow-panel {
-  align-self: start;
+  top: 150px;
+  transform: none;
 }
 
 .pay-step-meta {
@@ -790,9 +797,9 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  top: 360px;
-  height: 390px;
-  justify-items: center;
+  top: 258px;
+  bottom: 124px;
+  place-items: center;
   pointer-events: none;
 }
 
@@ -803,10 +810,10 @@ button {
 .pay-rings {
   position: absolute;
   left: 50%;
-  top: 150px;
+  top: 50%;
   width: 420px;
   height: 420px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 31%, rgba(255, 255, 255, 0.04) 31% 54%, transparent 54%);
   pointer-events: none;
@@ -814,15 +821,13 @@ button {
 
 .pay-card-rotated {
   --card-bg: var(--active-card-bg, linear-gradient(135deg, #1657c8 0%, #4c8dff 100%));
-  position: absolute;
-  left: 50%;
-  top: 4px;
-  width: min(196px, calc(100vw - 194px));
+  position: relative;
+  z-index: 1;
+  width: clamp(154px, 45vw, 196px);
   aspect-ratio: 378 / 600;
   height: auto;
   margin: 0;
   border-radius: 18px;
-  transform: translateX(-50%);
   transform-origin: center;
   background: transparent;
   pointer-events: none;
@@ -860,7 +865,8 @@ button {
 .pay-count {
   position: absolute;
   left: 50%;
-  top: 324px;
+  bottom: 46px;
+  z-index: 2;
   transform: translateX(-50%);
   width: 48px;
   height: 48px;
@@ -876,7 +882,8 @@ button {
   position: absolute;
   left: 24px;
   right: 24px;
-  top: 382px;
+  bottom: 2px;
+  z-index: 2;
   margin: 0;
   text-align: center;
   font-size: 18px;
@@ -884,11 +891,14 @@ button {
 }
 
 .pay-actions {
-  grid-row: 3;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 38px;
   display: grid;
   place-items: center;
-  align-self: end;
   min-height: 54px;
+  padding: 0 24px;
 }
 
 .complete-button {
@@ -915,7 +925,8 @@ button {
 
 .screen-result {
   background: #f4f5f7;
-  padding: 34px 24px;
+  padding: 28px 18px 34px;
+  overflow-y: auto;
 }
 
 .status-row {
@@ -927,70 +938,214 @@ button {
 }
 
 .result-panel {
-  margin-top: 146px;
+  margin-top: 10px;
   text-align: center;
 }
 
 .success-mark {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 18px;
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 8px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: #111;
   color: #fff;
-  font-size: 34px;
+  font-size: 26px;
   font-weight: 950;
 }
 
 .result-panel h1 {
-  margin: 0 0 10px;
-  font-size: 24px;
+  margin: 0 0 6px;
+  font-size: 19px;
   letter-spacing: 0;
 }
 
 .result-panel p {
   max-width: 280px;
-  margin: 0 auto 26px;
+  margin: 0 auto 9px;
   color: #4b5563;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 750;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
-.result-panel dl {
-  margin: 0 0 24px;
+.result-benefit-card,
+.result-progress,
+.result-meta {
   overflow: hidden;
   border-radius: 24px;
   background: #fff;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
 }
 
-.result-panel dl div {
+.result-benefit-card {
+  padding: 12px;
+  margin-bottom: 7px;
+}
+
+.result-benefit-card > span {
+  display: block;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.result-benefit-card > strong {
+  display: block;
+  margin-top: 4px;
+  color: #111;
+  font-size: 26px;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.result-benefit-card p {
+  margin: 6px auto 0;
+  color: #2878ff;
+  font-size: 12px;
+}
+
+.result-status-list {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 7px;
+}
+
+.result-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+.result-status-row span {
+  display: block;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.result-status-row strong {
+  display: block;
+  max-width: 210px;
+  margin-top: 2px;
+  overflow: hidden;
+  color: #111;
+  font-size: 14px;
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-status-row em {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #2878ff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.result-progress {
+  padding: 10px;
+  margin-bottom: 7px;
+  text-align: left;
+}
+
+.result-progress > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.result-progress span {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.result-progress strong {
+  color: #111;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.progress-bar {
+  height: 8px;
+  margin: 9px 0 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7ebf2;
+}
+
+.progress-bar i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #2878ff;
+}
+
+.result-progress p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.result-meta {
+  margin: 0 0 7px;
+}
+
+.result-meta div {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 15px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid #edf0f4;
 }
 
-.result-panel dl div:last-child {
+.result-meta div:last-child {
   border-bottom: 0;
 }
 
-.result-panel dt {
+.result-meta dt {
   color: #6b7280;
   font-size: 13px;
   font-weight: 850;
 }
 
-.result-panel dd {
+.result-meta dd {
   margin: 0;
   color: #111;
   font-size: 13px;
   font-weight: 950;
   text-align: right;
+}
+
+.result-actions {
+  display: grid;
+  gap: 5px;
+}
+
+.result-actions button {
+  min-height: 42px;
+  max-height: 42px;
+  font-size: 14px;
+}
+
+.result-actions button.secondary {
+  background: #fff;
+  color: #111;
+  box-shadow: none;
 }
 
 .bottom-sheet {
