@@ -197,7 +197,10 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 const fields = {
   merchantName: $("#merchantName"),
   proposalText: $("#proposalText"),
+  detailSheetTitle: $("#detailSheetTitle"),
   reasonText: $("#reasonText"),
+  benefitHighlight: $("#benefitHighlight"),
+  benefitLabel: $("#benefitLabel"),
   comboCard: $("#comboCard"),
   comboCoupon: $("#comboCoupon"),
   comboMembership: $("#comboMembership"),
@@ -241,6 +244,38 @@ function formatBenefitCallout(benefit) {
   if (amount) return `${amount} 혜택을 받으세요`;
   if (benefit.includes("실적")) return "실적 조건에 가까워져요";
   return benefit;
+}
+
+function formatSheetTitle(type) {
+  if (type.includes("무실적")) return "기본 결제로 준비했어요";
+  if (type.includes("실적")) return "실적 기준으로 준비했어요";
+  if (type.includes("생활")) return "반복 소비 기준으로 준비했어요";
+  return "할인 기준으로 준비했어요";
+}
+
+function formatBenefitAmount(benefit) {
+  return benefit.match(/[0-9,]+원/)?.[0] || benefit.replace(/^예상 혜택\s*/, "");
+}
+
+function formatBenefitLabel(type) {
+  if (type.includes("무실적")) return "기본 결제 혜택";
+  if (type.includes("실적")) return "실적 관리 효과";
+  if (type.includes("생활")) return "반복 혜택 상태";
+  return "예상 할인 혜택";
+}
+
+function formatBenefitHighlight(type, benefitAmount) {
+  if (type.includes("실적") || type.includes("무실적")) return benefitAmount;
+  return benefitAmount.includes("혜택") ? benefitAmount : `${benefitAmount} 혜택`;
+}
+
+function formatReasonLead(reason) {
+  const lead = reason
+    .replace(/\s*[0-9,]+원\s*(캐시백|적립|혜택)?\s*예상$/, "")
+    .replace(/\s*[0-9]+천원\s*(캐시백|적립|혜택)?\s*예상$/, "")
+    .replace(/\s*조건 없이 기본 적립$/, "")
+    .trim();
+  return lead || reason;
 }
 
 function currentData() {
@@ -430,15 +465,19 @@ function setCard(index) {
 
 function render() {
   const { scenario, card, combo } = currentData();
+  const benefitAmount = formatBenefitAmount(combo.benefit);
 
   fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
   fields.proposalText.textContent = `${card.displayName} 조합으로 ${formatBenefitCallout(combo.benefit)}`;
-  fields.reasonText.textContent = combo.reason;
+  fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
+  fields.reasonText.textContent = formatReasonLead(combo.reason);
+  fields.benefitHighlight.textContent = formatBenefitHighlight(scenario.type, benefitAmount);
+  fields.benefitLabel.textContent = formatBenefitLabel(scenario.type);
   fields.comboCard.textContent = card.displayName;
   fields.comboCoupon.textContent = combo.coupon;
   fields.comboMembership.textContent = combo.membership;
   fields.selectedCard.textContent = combo.insight;
-  fields.benefitText.textContent = combo.benefit;
+  fields.benefitText.textContent = benefitAmount;
   fields.payCard.textContent = card.displayName;
   fields.payReason.textContent = combo.reason;
   fields.payBrand.textContent = card.issuer;
@@ -451,6 +490,13 @@ function render() {
   document.documentElement.style.setProperty("--active-card-bg", card.bg);
   renderCards();
   renderPayStep();
+  syncScenarioControls();
+}
+
+function syncScenarioControls() {
+  $$("[data-scenario]").forEach((item) => {
+    item.classList.toggle("is-selected", item.dataset.scenario === currentScenario);
+  });
 }
 
 function setScreen(name) {
@@ -622,13 +668,12 @@ function closeOverlays() {
   updateScrim();
 }
 
-$$(".scenario").forEach((button) => {
+$$("[data-scenario]").forEach((button) => {
   button.addEventListener("click", () => {
     currentScenario = button.dataset.scenario;
     currentCardIndex = scenarios[currentScenario].recommendedIndex;
-    $$(".scenario").forEach((item) => item.classList.toggle("is-selected", item === button));
     render();
-    closeSettings();
+    if (button.classList.contains("scenario")) closeSettings();
   });
 });
 

@@ -149,27 +149,40 @@
       <section class="bottom-sheet" id="detailSheet" aria-hidden="true">
         <div class="sheet-handle"></div>
         <div class="sheet-title">
-          <h2>이 조합으로 준비했어요</h2>
+          <h2 id="detailSheetTitle">할인 기준으로 준비했어요</h2>
           <button type="button" id="closeSheet">닫기</button>
         </div>
-        <p id="reasonText">신한카드 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상</p>
+        <p class="benefit-summary">
+          <span id="reasonText">신한카드 + 3천원 쿠폰 + CJ ONE 조합으로</span>
+          <strong id="benefitHighlight">5,000원 혜택</strong>
+          <em>예상</em>
+        </p>
         <div class="combo-stack" aria-label="추천 결제 조합">
           <div class="combo-item">
-            <span>카드</span>
-            <strong id="comboCard">신한 Deep Benefit</strong>
+            <i class="combo-icon" aria-hidden="true"></i>
+            <div>
+              <span>카드</span>
+              <strong id="comboCard">신한 Deep Benefit</strong>
+            </div>
           </div>
           <div class="combo-item">
-            <span>쿠폰</span>
-            <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
+            <i class="combo-icon" aria-hidden="true"></i>
+            <div>
+              <span>쿠폰</span>
+              <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
+            </div>
           </div>
           <div class="combo-item">
-            <span>멤버십</span>
-            <strong id="comboMembership">CJ ONE 적립</strong>
+            <i class="combo-icon" aria-hidden="true"></i>
+            <div>
+              <span>멤버십</span>
+              <strong id="comboMembership">CJ ONE 적립</strong>
+            </div>
           </div>
-          <div class="combo-item">
-            <span>예상</span>
-            <strong id="benefitText">예상 혜택 5,000원</strong>
-          </div>
+        </div>
+        <div class="benefit-total">
+          <span id="benefitLabel">예상 할인 혜택</span>
+          <strong id="benefitText">5,000원</strong>
         </div>
         <div class="detail-grid">
           <div>
@@ -177,8 +190,13 @@
             <strong id="selectedCard">하민님의 결제 스타일에 따라 추천했어요</strong>
           </div>
         </div>
+        <div class="detail-criteria-list" aria-label="추천 기준 선택">
+          <button type="button" class="criteria-pill is-selected" data-scenario="oliveyoung">할인</button>
+          <button type="button" class="criteria-pill" data-scenario="cu">실적</button>
+          <button type="button" class="criteria-pill" data-scenario="starbucks_lifestyle">반복</button>
+          <button type="button" class="criteria-pill" data-scenario="general_simple">기본</button>
+        </div>
         <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
-        <p class="sheet-note">추천 기준을 바꾸고 싶다면 오른쪽 위 더보기에서 AI 추천 설정을 조정할 수 있어요.</p>
         <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
       </section>
 
