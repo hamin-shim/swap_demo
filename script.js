@@ -164,11 +164,14 @@ const fields = {
   payCardVisualName: $("#payCardVisualName"),
   payTabs: $("#payTabs"),
   payFlowPanel: $("#payFlowPanel"),
+  payStackList: $("#payStackList"),
+  payCodeCard: $("#payCodeCard"),
   payStepLabel: $("#payStepLabel"),
   payStepTitle: $("#payStepTitle"),
   payStepType: $("#payStepType"),
   payStepValue: $("#payStepValue"),
   payStepCode: $("#payStepCode"),
+  payGuide: $("#payGuide"),
   completeButton: $("#completeButton"),
   resultSummary: $("#resultSummary"),
   resultCard: $("#resultCard"),
@@ -203,9 +206,10 @@ function buildPaySteps() {
     steps.push({
       type: "coupon",
       label: "매장쿠폰",
-      title: "쿠폰을 먼저 보여주세요",
+      title: "쿠폰과 멤버십을 먼저 준비했어요",
       value: combo.coupon,
       code: "8801 0427 3000",
+      guide: "먼저 쿠폰 바코드를 보여주세요.",
       button: "쿠폰 사용 완료"
     });
   }
@@ -214,9 +218,10 @@ function buildPaySteps() {
     steps.push({
       type: "membership",
       label: "멤버십",
-      title: "멤버십을 적립해주세요",
+      title: "쿠폰과 멤버십을 먼저 준비했어요",
       value: combo.membership,
       code: "3108 2407 1142",
+      guide: "이어서 멤버십을 적립해주세요.",
       button: "멤버십 적립 완료"
     });
   }
@@ -227,6 +232,7 @@ function buildPaySteps() {
     title: "이제 카드로 결제하세요",
     value: card.displayName,
     code: "NFC 결제 대기 중",
+    guide: "폰의 뒷면을 카드 리더기에 대세요.",
     button: "결제 완료"
   });
 
@@ -239,16 +245,26 @@ function renderPayStep() {
   const step = steps[currentPayStep];
   const isPayment = step.type === "payment";
 
-  fields.payTabs.textContent = steps
-    .map((item, index) => `${index + 1}. ${item.label}`)
-    .join("  ");
+  fields.payTabs.textContent = "추천 조합 준비됨";
+  fields.payFlowPanel.style.setProperty("--pay-step-count", steps.length);
+  fields.payStackList.innerHTML = steps.map((item, index) => {
+    const state = index < currentPayStep ? "is-done" : index === currentPayStep ? "is-active" : "";
+    return `
+      <span class="${state}">
+        <em>${index + 1}</em>
+        ${item.label}
+      </span>
+    `;
+  }).join("");
   fields.payStepLabel.textContent = `${currentPayStep + 1}/${steps.length}`;
   fields.payStepTitle.textContent = step.title;
   fields.payStepType.textContent = step.label;
   fields.payStepValue.textContent = step.value;
   fields.payStepCode.textContent = step.code;
+  fields.payGuide.textContent = step.guide;
   fields.completeButton.textContent = step.button;
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
+  fields.payCodeCard.hidden = isPayment;
   $(".screen-pay").dataset.payStep = step.type;
 }
 

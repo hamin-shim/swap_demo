@@ -69,7 +69,8 @@
             <span id="payStepLabel">1/3</span>
             <strong id="payStepTitle">쿠폰을 먼저 보여주세요</strong>
           </div>
-          <div class="pay-code-card">
+          <div class="pay-stack-list" id="payStackList"></div>
+          <div class="pay-code-card" id="payCodeCard">
             <span id="payStepType">매장쿠폰</span>
             <strong id="payStepValue">올리브영 3천원 쿠폰</strong>
             <div class="barcode" aria-hidden="true"></div>
@@ -82,7 +83,7 @@
           <p id="payReason">3만원 이상 결제 시 5천원 캐시백 예상</p>
         </section>
         <div class="pay-count">49</div>
-        <p class="pay-guide">폰의 뒷면을 카드 리더기에 대세요.</p>
+        <p class="pay-guide" id="payGuide">폰의 뒷면을 카드 리더기에 대세요.</p>
         <button type="button" class="guide-button">가이드 보기</button>
         <button type="button" class="complete-button" id="completeButton">다음</button>
         <div class="home-indicator dark"></div>
