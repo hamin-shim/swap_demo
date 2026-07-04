@@ -151,7 +151,7 @@
       <section class="bottom-sheet" id="detailSheet" aria-hidden="true">
         <div class="sheet-handle"></div>
         <div class="sheet-title">
-          <h2 id="detailSheetTitle">할인 기준으로 준비했어요</h2>
+          <h2 id="detailSheetTitle">혜택이 큰 순서로 골랐어요</h2>
           <button type="button" id="closeSheet">닫기</button>
         </div>
         <p class="benefit-summary">
@@ -193,10 +193,10 @@
           </div>
         </div>
         <div class="detail-criteria-list" aria-label="추천 기준 선택">
-          <button type="button" class="criteria-pill is-selected" data-scenario="oliveyoung">할인</button>
-          <button type="button" class="criteria-pill" data-scenario="cu">실적</button>
-          <button type="button" class="criteria-pill" data-scenario="starbucks_lifestyle">반복</button>
-          <button type="button" class="criteria-pill" data-scenario="general_simple">기본</button>
+          <button type="button" class="criteria-pill is-selected" data-scenario="max_benefit">혜택 큰 순</button>
+          <button type="button" class="criteria-pill" data-scenario="remaining_cap">남은 한도</button>
+          <button type="button" class="criteria-pill" data-scenario="performance_fill">실적 채우기</button>
+          <button type="button" class="criteria-pill" data-scenario="no_condition">조건 없음</button>
         </div>
         <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
         <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
@@ -216,14 +216,14 @@
           <h2>AI 추천 설정</h2>
           <button type="button" id="closeSettings">닫기</button>
         </div>
-        <p>추천 상황과 기준을 바꿀 수 있어요. 선택한 기준은 다음 결제 추천에도 반영됩니다.</p>
+        <p>지금 결제에서 무엇을 우선할지 고를 수 있어요. 선택한 기준은 다음 추천에도 반영됩니다.</p>
         <div class="setting-group">
-          <span>추천 상황</span>
-          <div class="scenario-list" aria-label="시나리오 선택">
-            <button type="button" class="scenario is-selected" data-scenario="oliveyoung">할인</button>
-            <button type="button" class="scenario" data-scenario="cu">실적</button>
-            <button type="button" class="scenario" data-scenario="starbucks_lifestyle">반복</button>
-            <button type="button" class="scenario" data-scenario="general_simple">기본</button>
+          <span>추천 기준</span>
+          <div class="scenario-list" aria-label="추천 기준 선택">
+            <button type="button" class="scenario is-selected" data-scenario="max_benefit">혜택 큰 순</button>
+            <button type="button" class="scenario" data-scenario="remaining_cap">남은 한도</button>
+            <button type="button" class="scenario" data-scenario="performance_fill">실적 채우기</button>
+            <button type="button" class="scenario" data-scenario="no_condition">조건 없음</button>
           </div>
         </div>
         <div class="setting-row">

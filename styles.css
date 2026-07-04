@@ -521,6 +521,10 @@ button {
   background: #f7f8fb;
 }
 
+.combo-item[hidden] {
+  display: none;
+}
+
 .combo-item span {
   display: block;
   margin-bottom: 3px;
@@ -1491,7 +1495,7 @@ button {
 
 .detail-criteria-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 16px;
 }
@@ -1596,12 +1600,13 @@ button {
 }
 
 .scenario-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
 .scenario {
+  width: 100%;
   min-height: 38px;
   padding: 0 14px;
   border: 1px solid rgba(0, 0, 0, 0.08);

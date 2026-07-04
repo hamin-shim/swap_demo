@@ -29,157 +29,157 @@ const cards = [
 ];
 
 const scenarios = {
-  oliveyoung: {
-    merchant: "Olive Young",
-    confidence: "매장 인식 82%",
-    recommendedIndex: 0,
-    type: "예상 할인",
-    detail: "하민님의 할인 선호, 등록 쿠폰, 카드사 청구할인 한도를 함께 보고 추천했어요. 이번 결제는 카드 혜택과 쿠폰을 합산한 예상값이에요.",
-    combinations: [
-      {
-        reason: "KB국민카드 청구할인 한도 + 3천원 쿠폰 + CJ ONE 조합으로 5천원 혜택 예상",
-        benefit: "예상 혜택 5,000원",
-        coupon: "올리브영 3천원 쿠폰",
-        membership: "CJ ONE 적립",
-        insight: "청구할인 한도와 쿠폰을 함께 계산했어요"
-      },
-      {
-        reason: "월렛머니 + 매장 쿠폰 조합으로 4천원 적립 예상",
-        benefit: "예상 혜택 4,000원",
-        coupon: "월렛머니 2천원 리워드",
-        membership: "CJ ONE 적립",
-        insight: "하민님의 적립 선호에 맞춰 추천했어요"
-      },
-      {
-        reason: "현대카드는 실적 2.8만원 부족. 이 결제로 혜택 유지에 도움",
-        benefit: "실적 72% 달성 예상",
-        coupon: "보유 쿠폰 없음",
-        membership: "CJ ONE 적립",
-        insight: "이번 달 실적 관리에 맞춰 추천했어요"
-      },
-      {
-        reason: "롯데카드 + 멤버십 적립 조합으로 기본 적립 예상",
-        benefit: "예상 혜택 1,000원",
-        coupon: "적용 쿠폰 없음",
-        membership: "CJ ONE 적립",
-        insight: "평소 사용 패턴에 맞춰 추천했어요"
-      }
-    ]
-  },
-  cu: {
-    merchant: "CU",
-    confidence: "매장 인식 76%",
-    recommendedIndex: 2,
-    type: "실적 관리",
-    detail: "이번 달 실적이 조금 남아 있어요. 다음 달 혜택을 이어갈 수 있도록 실적 관리와 쿠폰을 함께 고려했어요.",
-    combinations: [
-      {
-        reason: "KB국민카드는 소액 결제 기준 기본 적립만 예상돼요",
-        benefit: "기본 적립",
-        coupon: "적용 쿠폰 없음",
-        membership: "CU 멤버십 적립",
-        insight: "현재 조합에서는 추가 혜택이 적어요"
-      },
-      {
-        reason: "월렛머니 + 편의점 리워드 조합으로 1,200원 적립 예상",
-        benefit: "예상 혜택 1,200원",
-        coupon: "월렛머니 편의점 리워드",
-        membership: "CU 멤버십 적립",
-        insight: "하민님의 적립 선호에 맞춰 추천했어요"
-      },
-      {
-        reason: "현대카드 실적 2.8만원 부족. 이 결제로 다음 달 혜택 조건에 가까워져요",
-        benefit: "실적 72% 달성 예상",
-        coupon: "CU 1천원 쿠폰",
-        membership: "CU 멤버십 적립",
-        insight: "실적 관리와 쿠폰을 함께 고려했어요"
-      },
-      {
-        reason: "롯데카드 + CU 멤버십 조합으로 5% 적립 가능",
-        benefit: "예상 혜택 600원",
-        coupon: "적용 쿠폰 없음",
-        membership: "CU 멤버십 적립",
-        insight: "멤버십 적립을 놓치지 않게 추천했어요"
-      }
-    ]
-  },
-  starbucks_lifestyle: {
+  max_benefit: {
     merchant: "Starbucks",
     confidence: "매장 인식 88%",
     recommendedIndex: 1,
-    type: "생활 반복 소비",
-    detail: "하민님의 카페, 구독, 통신 같은 반복 소비 패턴을 기준으로 봤어요. 큰 할인보다 매달 자주 쓰는 혜택을 안정적으로 챙기는 추천입니다.",
+    type: "혜택 큰 순",
+    detail: "지금 매장에서 가장 크게 받을 수 있는 카드 혜택과 멤버십을 먼저 봤어요. 쿠폰이 없어도 카드사 혜택과 리워드 적립을 함께 계산합니다.",
     combinations: [
       {
-        reason: "KB국민카드는 카페 할인보다 쿠폰 결합 혜택이 약해요",
+        reason: "KB국민카드는 카페 할인보다 삼성카드 혜택이 더 커요",
         benefit: "예상 혜택 700원",
         coupon: "적용 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
-        insight: "이번 카페 결제에서는 다른 카드가 더 유리해요"
+        insight: "이번 결제에서는 다른 카드가 더 유리해요"
       },
       {
-        reason: "삼성카드 SELECT 카페 청구할인 1회와 스타벅스 리워드 적립 가능",
-        benefit: "카페 혜택 1회 남음",
-        coupon: "무료 사이즈업 쿠폰",
+        reason: "삼성카드 SELECT 카페 청구할인 + 스타벅스 리워드 적립 가능",
+        benefit: "예상 혜택 2,500원",
+        coupon: "적용 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
-        insight: "반복 소비 혜택과 멤버십을 함께 챙겼어요"
+        insight: "오늘 이 매장에서 예상 혜택이 가장 커요"
       },
       {
         reason: "우리카드는 실적에는 도움되지만 카페 혜택은 제한적이에요",
         benefit: "실적 반영 예상",
-        coupon: "적용 쿠폰 없음",
+        coupon: "보유 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
         insight: "실적 우선이면 대체 선택할 수 있어요"
       },
       {
         reason: "롯데 Daily Card는 조건 없이 기본 적립돼요",
-        benefit: "기본 적립",
+        benefit: "조건 없이 0.5% 적립",
         coupon: "적용 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
         insight: "복잡한 조건 없이 빠르게 결제할 수 있어요"
       }
     ]
   },
-  general_simple: {
-    merchant: "General Store",
-    confidence: "매장 인식 70%",
-    recommendedIndex: 3,
-    type: "무실적 기본 결제",
-    detail: "이번 결제는 쿠폰이나 멤버십 조건보다 빠른 기본 결제가 더 적합해요. 보유 카드 중 조건 없는 적립 카드를 준비했어요.",
+  remaining_cap: {
+    merchant: "Starbucks",
+    confidence: "매장 인식 88%",
+    recommendedIndex: 1,
+    type: "한도 남은 혜택",
+    detail: "할인율만 보지 않고 이번 달에 아직 쓸 수 있는 할인 한도와 남은 횟수를 먼저 봤어요.",
     combinations: [
       {
-        reason: "KB국민카드는 이 매장에서 특별 혜택이 크지 않아요",
-        benefit: "기본 결제",
+        reason: "KB국민카드는 카페 할인 한도를 이미 거의 사용했어요",
+        benefit: "남은 한도 300원",
         coupon: "적용 쿠폰 없음",
-        membership: "사용 안 함",
-        insight: "이번 결제는 복잡한 조합이 필요 없어요"
+        membership: "스타벅스 리워드 적립",
+        insight: "남은 한도가 작아 우선순위가 낮아요"
       },
       {
-        reason: "삼성카드는 카페/구독 영역이 아니라 기본 적립만 예상돼요",
-        benefit: "기본 적립",
+        reason: "삼성카드 SELECT 카페 청구할인 1회가 아직 남아 있어요",
+        benefit: "카페 혜택 1회 남음",
         coupon: "적용 쿠폰 없음",
-        membership: "사용 안 함",
-        insight: "카테고리 특화 혜택은 적용되지 않아요"
+        membership: "스타벅스 리워드 적립",
+        insight: "아직 남은 혜택을 먼저 쓰는 게 좋아요"
+      },
+      {
+        reason: "우리카드는 이번 달 편의점 한도는 남았지만 카페 대상이 아니에요",
+        benefit: "대상 업종 아님",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "혜택 대상 업종이 맞지 않아요"
+      },
+      {
+        reason: "롯데 Daily Card는 한도 조건 없이 기본 적립돼요",
+        benefit: "조건 없이 0.5% 적립",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "한도 혜택이 없을 때 안정적인 선택이에요"
+      }
+    ]
+  },
+  performance_fill: {
+    merchant: "Starbucks",
+    confidence: "매장 인식 88%",
+    recommendedIndex: 2,
+    type: "실적 채우기",
+    detail: "당장 할인액이 가장 크지 않아도 다음 달 혜택을 유지하는 데 도움이 되는 결제인지 먼저 봤어요.",
+    combinations: [
+      {
+        reason: "KB국민카드는 이번 결제가 실적에 반영되지만 목표까지 아직 멀어요",
+        benefit: "실적 58% 달성 예상",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "실적 관리 효과가 크지 않아요"
+      },
+      {
+        reason: "삼성카드 SELECT는 혜택은 크지만 이번 결제 실적 효과는 보통이에요",
+        benefit: "예상 혜택 2,500원",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "혜택 큰 순 기준에서는 좋은 선택이에요"
+      },
+      {
+        reason: "우리 카드의정석 실적 2.8만원 부족. 이 결제로 다음 달 혜택 조건에 가까워져요",
+        benefit: "실적 72% 달성 예상",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "다음 달 혜택 유지를 우선하면 이 카드가 좋아요"
+      },
+      {
+        reason: "롯데 Daily Card는 실적 조건이 없어 관리할 필요가 적어요",
+        benefit: "조건 없이 0.5% 적립",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "실적을 채우려는 목적에는 맞지 않아요"
+      }
+    ]
+  },
+  no_condition: {
+    merchant: "Starbucks",
+    confidence: "매장 인식 88%",
+    recommendedIndex: 3,
+    type: "조건 없는 혜택",
+    detail: "전월실적, 업종, 월 한도 조건을 따지지 않고 어디서나 받을 수 있는 기본 적립을 우선했어요.",
+    combinations: [
+      {
+        reason: "KB국민카드는 카페 혜택 조건을 확인해야 해요",
+        benefit: "조건 확인 필요",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "조건 없는 선택지는 아니에요"
+      },
+      {
+        reason: "삼성카드 SELECT는 카페 혜택이 크지만 월 한도 조건이 있어요",
+        benefit: "카페 혜택 1회 남음",
+        coupon: "적용 쿠폰 없음",
+        membership: "스타벅스 리워드 적립",
+        insight: "조건 없는 혜택 기준에서는 뒤로 밀려요"
       },
       {
         reason: "우리카드는 실적 관리 목적이면 선택할 수 있어요",
         benefit: "실적 반영 예상",
         coupon: "적용 쿠폰 없음",
-        membership: "사용 안 함",
+        membership: "스타벅스 리워드 적립",
         insight: "실적 우선 사용자에게만 의미가 있어요"
       },
       {
-        reason: "롯데 Daily Card 조건 없이 기본 적립",
-        benefit: "조건 없이 기본 적립",
+        reason: "롯데 Daily Card 전월실적 없이 어디서나 0.5% 적립",
+        benefit: "조건 없이 0.5% 적립",
         coupon: "적용 쿠폰 없음",
-        membership: "사용 안 함",
-        insight: "낮은 금액 결제라 단순 결제가 더 좋아요"
+        membership: "스타벅스 리워드 적립",
+        insight: "혜택 차이가 작을 땐 조건 없는 카드가 편해요"
       }
     ]
   }
 };
 
-let currentScenario = "oliveyoung";
+let currentScenario = "max_benefit";
 let currentCardIndex = scenarios[currentScenario].recommendedIndex;
 let currentPayStep = 0;
 let currentPayMode = "combo";
@@ -247,10 +247,10 @@ function formatBenefitCallout(benefit) {
 }
 
 function formatSheetTitle(type) {
-  if (type.includes("무실적")) return "기본 결제로 준비했어요";
-  if (type.includes("실적")) return "실적 기준으로 준비했어요";
-  if (type.includes("생활")) return "반복 소비 기준으로 준비했어요";
-  return "할인 기준으로 준비했어요";
+  if (type.includes("한도")) return "남은 한도를 먼저 봤어요";
+  if (type.includes("실적")) return "실적을 채우기 좋게 골랐어요";
+  if (type.includes("조건 없는")) return "조건 없는 혜택으로 골랐어요";
+  return "혜택이 큰 순서로 골랐어요";
 }
 
 function formatBenefitAmount(benefit) {
@@ -258,14 +258,14 @@ function formatBenefitAmount(benefit) {
 }
 
 function formatBenefitLabel(type) {
-  if (type.includes("무실적")) return "기본 결제 혜택";
+  if (type.includes("조건 없는")) return "조건 없는 혜택";
+  if (type.includes("한도")) return "남은 혜택";
   if (type.includes("실적")) return "실적 관리 효과";
-  if (type.includes("생활")) return "반복 혜택 상태";
-  return "예상 할인 혜택";
+  return "예상 혜택";
 }
 
 function formatBenefitHighlight(type, benefitAmount) {
-  if (type.includes("실적") || type.includes("무실적")) return benefitAmount;
+  if (type.includes("실적") || type.includes("조건 없는") || type.includes("한도")) return benefitAmount;
   return benefitAmount.includes("혜택") ? benefitAmount : `${benefitAmount} 혜택`;
 }
 
@@ -476,6 +476,8 @@ function render() {
   fields.comboCard.textContent = card.displayName;
   fields.comboCoupon.textContent = combo.coupon;
   fields.comboMembership.textContent = combo.membership;
+  fields.comboCoupon.closest(".combo-item").hidden = !hasUsableAsset(combo.coupon);
+  fields.comboMembership.closest(".combo-item").hidden = !hasUsableAsset(combo.membership);
   fields.selectedCard.textContent = combo.insight;
   fields.benefitText.textContent = benefitAmount;
   fields.payCard.textContent = card.displayName;
@@ -534,18 +536,18 @@ function setResultForMode(mode) {
   }
 
   const benefitAmount = combo.benefit.match(/[0-9,]+원/)?.[0] || combo.benefit;
-  if (scenario.type.includes("무실적")) {
+  if (scenario.type.includes("조건 없는")) {
     fields.resultSummary.textContent = `${card.displayName}로 빠르게 결제했어요`;
     fields.resultBenefitAmount.textContent = combo.benefit;
-    fields.resultLearning.textContent = "복잡한 조건 없이 기본 결제 추천으로 반영했어요";
+    fields.resultLearning.textContent = "조건 없는 혜택 선호를 다음 추천에 반영했어요";
     fields.resultStatusList.innerHTML = renderResultRows([
       { label: "카드 결제", value: card.displayName, state: "완료" },
       { label: "카드 혜택", value: combo.benefit, state: "예상" }
     ]);
     fields.resultProgressLabel.textContent = "추천 기준";
-    fields.resultProgressValue.textContent = "기본";
+    fields.resultProgressValue.textContent = "조건 없음";
     fields.resultProgressBar.style.width = "100%";
-    fields.resultNextHint.textContent = "이번 결제는 쿠폰이나 실적 조건보다 빠른 기본 결제가 적합해요";
+    fields.resultNextHint.textContent = "이번 결제는 업종/실적 조건 없이 받을 수 있는 혜택을 우선했어요";
     fields.resultCard.textContent = card.displayName;
     fields.resultType.textContent = scenario.type;
     return;
