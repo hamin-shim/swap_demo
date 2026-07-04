@@ -274,9 +274,14 @@ button {
   --card-width: clamp(136px, 44vw, 178px);
   position: relative;
   height: 320px;
-  margin-top: 28px;
+  margin-top: 24px;
   touch-action: pan-y;
   user-select: none;
+  cursor: grab;
+}
+
+.card-carousel:active {
+  cursor: grabbing;
 }
 
 .card-track {
@@ -312,6 +317,9 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .card-sheen {
@@ -509,8 +517,22 @@ button {
   color: #fff;
 }
 
+.wallet-pay-button {
+  width: min(100%, 248px);
+  min-height: 46px;
+  display: block;
+  margin: 2px auto 0;
+  border: 0;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 950;
+  box-shadow: 0 10px 22px rgba(17, 17, 17, 0.16);
+}
+
 .swipe-hint {
-  margin: 4px 0 0;
+  margin: 10px 0 0;
   color: #7b808a;
   text-align: center;
   font-size: 12px;
@@ -563,8 +585,8 @@ button {
 .pay-brand {
   justify-self: end;
   color: #a0a0a0;
-  font-size: 24px;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: 750;
 }
 
 .pay-overlay {
@@ -658,7 +680,7 @@ button {
   gap: 6px;
 }
 
-.pay-stack-list span {
+.pay-step-button {
   min-width: 0;
   height: 36px;
   display: flex;
@@ -676,7 +698,7 @@ button {
   white-space: nowrap;
 }
 
-.pay-stack-list em {
+.pay-step-button em {
   width: 17px;
   height: 17px;
   display: inline-grid;
@@ -689,19 +711,19 @@ button {
   font-style: normal;
 }
 
-.pay-stack-list span.is-active {
+.pay-step-button.is-active {
   border-color: rgba(255, 255, 255, 0.88);
   background: #fff;
   color: #111;
 }
 
-.pay-stack-list span.is-done {
+.pay-step-button.is-done {
   border-color: rgba(70, 137, 255, 0.5);
   background: rgba(70, 137, 255, 0.28);
   color: #fff;
 }
 
-.pay-stack-list span.is-done em {
+.pay-step-button.is-done em {
   background: rgba(255, 255, 255, 0.22);
 }
 
@@ -845,11 +867,17 @@ button {
 }
 
 .complete-button {
-  width: min(100%, 280px);
-  min-height: 56px;
+  width: min(100%, 212px);
+  min-height: 46px;
   justify-self: center;
   background: #fff;
   color: #111;
+  font-size: 15px;
+}
+
+.screen-pay[data-pay-step="payment"] .complete-button {
+  width: min(100%, 252px);
+  min-height: 54px;
   font-size: 17px;
 }
 

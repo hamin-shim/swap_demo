@@ -145,9 +145,11 @@ const scenarios = {
 let currentScenario = "oliveyoung";
 let currentCardIndex = scenarios[currentScenario].recommendedIndex;
 let currentPayStep = 0;
+let currentPayMode = "combo";
 let dragStartX = 0;
 let dragCurrentX = 0;
 let isDragging = false;
+let didDrag = false;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -161,6 +163,7 @@ const fields = {
   comboMembership: $("#comboMembership"),
   selectedCard: $("#selectedCard"),
   benefitText: $("#benefitText"),
+  walletPayButton: $("#walletPayButton"),
   payCard: $("#payCard"),
   payReason: $("#payReason"),
   payBrand: $("#payBrand"),
@@ -202,9 +205,21 @@ function hasUsableAsset(value) {
   return value && !/(없음|필요|후보)/.test(value);
 }
 
-function buildPaySteps() {
+function buildPaySteps(mode = currentPayMode) {
   const { card, combo } = currentData();
   const steps = [];
+
+  if (mode === "card") {
+    return [{
+      type: "payment",
+      label: "결제",
+      title: "이 카드로 결제하세요",
+      value: card.displayName,
+      code: "NFC 결제 대기 중",
+      guide: "폰의 뒷면을 카드 리더기에 대세요.",
+      button: "결제 완료"
+    }];
+  }
 
   if (hasUsableAsset(combo.coupon)) {
     steps.push({
@@ -249,17 +264,23 @@ function renderPayStep() {
   const step = steps[currentPayStep];
   const isPayment = step.type === "payment";
 
-  fields.payTabs.textContent = "추천 조합 준비됨";
+  fields.payTabs.textContent = currentPayMode === "card" ? "카드 결제" : "추천 조합 준비됨";
   fields.payFlowPanel.style.setProperty("--pay-step-count", steps.length);
   fields.payStackList.innerHTML = steps.map((item, index) => {
     const state = index < currentPayStep ? "is-done" : index === currentPayStep ? "is-active" : "";
     return `
-      <span class="${state}">
+      <button type="button" class="pay-step-button ${state}" data-step-index="${index}">
         <em>${index + 1}</em>
         ${item.label}
-      </span>
+      </button>
     `;
   }).join("");
+  $$("#payStackList .pay-step-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentPayStep = Number(button.dataset.stepIndex);
+      renderPayStep();
+    });
+  });
   fields.payStepLabel.textContent = `${currentPayStep + 1}/${steps.length}`;
   fields.payStepTitle.textContent = step.title;
   fields.payStepType.textContent = step.label;
@@ -270,6 +291,7 @@ function renderPayStep() {
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
   fields.payCodeCard.hidden = isPayment;
   $(".screen-pay").dataset.payStep = step.type;
+  $(".screen-pay").dataset.payMode = currentPayMode;
 }
 
 function renderCards() {
@@ -279,7 +301,7 @@ function renderCards() {
 
   track.innerHTML = cards.map((card, index) => `
     <article class="payment-card ${card.image ? "has-card-image" : ""}" style="--card-bg: ${card.bg}" data-index="${index}">
-      ${card.image ? `<img class="card-asset" src="${card.image}" alt="${card.displayName} 카드">` : `
+      ${card.image ? `<img class="card-asset" src="${card.image}" alt="${card.displayName} 카드" draggable="false">` : `
         <div class="card-sheen"></div>
         <div class="card-content">
           <span class="brand">${card.issuer}</span>
@@ -296,7 +318,10 @@ function renderCards() {
   dots.innerHTML = cards.map((_, index) => `<span class="${index === currentCardIndex ? "is-active" : ""}"></span>`).join("");
 
   $$("#cardTrack .payment-card").forEach((cardEl) => {
-    cardEl.addEventListener("click", () => setCard(Number(cardEl.dataset.index)));
+    cardEl.addEventListener("click", () => {
+      if (didDrag) return;
+      setCard(Number(cardEl.dataset.index));
+    });
   });
 
   updateCardPosition();
@@ -354,8 +379,26 @@ function setScreen(name) {
   closeSettings();
 }
 
-function startPaymentFlow() {
+function setResultForMode(mode) {
+  const { scenario, card, combo } = currentData();
+  if (mode === "card") {
+    fields.resultSummary.textContent = `${card.displayName}로 결제했어요`;
+    fields.resultCard.textContent = card.displayName;
+    fields.resultType.textContent = "카드 단독 결제";
+    fields.resultCombo.textContent = card.displayName;
+    return;
+  }
+
+  fields.resultSummary.textContent = `${combo.benefit}을 적용했어요`;
+  fields.resultCard.textContent = `${card.displayName} + ${combo.membership}`;
+  fields.resultType.textContent = scenario.type;
+  fields.resultCombo.textContent = `${card.name} + ${combo.coupon} + ${combo.membership}`;
+}
+
+function startPaymentFlow(mode = "combo") {
+  currentPayMode = mode;
   currentPayStep = 0;
+  setResultForMode(mode);
   renderPayStep();
   setScreen("pay");
 }
@@ -443,6 +486,7 @@ function attachSwipe() {
 
   carousel.addEventListener("pointerdown", (event) => {
     isDragging = true;
+    didDrag = false;
     dragStartX = event.clientX;
     dragCurrentX = 0;
     carousel.setPointerCapture(event.pointerId);
@@ -451,6 +495,7 @@ function attachSwipe() {
   carousel.addEventListener("pointermove", (event) => {
     if (!isDragging) return;
     dragCurrentX = event.clientX - dragStartX;
+    if (Math.abs(dragCurrentX) > 6) didDrag = true;
     updateCardPosition(dragCurrentX);
   });
 
@@ -460,11 +505,19 @@ function attachSwipe() {
     if (dragCurrentX < -42) setCard(currentCardIndex + 1);
     else if (dragCurrentX > 42) setCard(currentCardIndex - 1);
     else updateCardPosition();
+    window.setTimeout(() => {
+      didDrag = false;
+    }, 120);
   });
 
   carousel.addEventListener("pointercancel", () => {
     isDragging = false;
+    didDrag = false;
     updateCardPosition();
+  });
+
+  carousel.addEventListener("dragstart", (event) => {
+    event.preventDefault();
   });
 }
 
@@ -478,7 +531,8 @@ $("#scrim").addEventListener("click", closeOverlays);
 $("#settingsButton").addEventListener("click", openSettings);
 $("#closeSettings").addEventListener("click", closeSettings);
 $("#openSettingsFromReason").addEventListener("click", openSettings);
-$("#comboPayButton").addEventListener("click", startPaymentFlow);
+$("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
+$("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
 window.addEventListener("resize", () => updateCardPosition());
