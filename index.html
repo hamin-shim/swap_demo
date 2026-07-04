@@ -78,7 +78,11 @@
         </section>
 
         <section class="pay-nfc-panel" aria-label="NFC 결제 대기">
-          <div class="pay-rings"></div>
+          <div class="pay-rings" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
           <article class="payment-card pay-card-rotated">
             <img class="card-asset" id="payCardImage" src="./2964card_1.png" alt="KB국민 NEED Pay 카드">
             <div class="card-sheen"></div>
@@ -89,7 +93,11 @@
               <div class="mastercard"><span></span><span></span></div>
             </div>
           </article>
-          <div class="pay-count">49</div>
+          <div class="pay-timer" id="payTimerBox" aria-live="polite">
+            <span id="nfcStatus">NFC 활성화</span>
+            <strong id="payTimer">50</strong>
+            <em>초</em>
+          </div>
           <p class="pay-guide" id="payGuide">폰의 뒷면을 카드 리더기에 대세요.</p>
         </section>
 

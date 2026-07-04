@@ -150,6 +150,9 @@ let dragStartX = 0;
 let dragCurrentX = 0;
 let isDragging = false;
 let didDrag = false;
+let nfcTimerId = null;
+let nfcRemaining = 50;
+let nfcWasPaymentStep = false;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -179,6 +182,9 @@ const fields = {
   payStepValue: $("#payStepValue"),
   payStepCode: $("#payStepCode"),
   payGuide: $("#payGuide"),
+  payTimerBox: $("#payTimerBox"),
+  payTimer: $("#payTimer"),
+  nfcStatus: $("#nfcStatus"),
   completeButton: $("#completeButton"),
   resultSummary: $("#resultSummary"),
   resultBenefitAmount: $("#resultBenefitAmount"),
@@ -209,6 +215,36 @@ function currentData() {
 
 function hasUsableAsset(value) {
   return value && !/(없음|필요|후보)/.test(value);
+}
+
+function updateNfcTimer() {
+  fields.payTimer.textContent = String(nfcRemaining);
+  fields.payTimerBox.classList.toggle("is-expired", nfcRemaining <= 0);
+  fields.nfcStatus.textContent = nfcRemaining > 0 ? "NFC 활성화" : "NFC 만료";
+}
+
+function stopNfcTimer() {
+  if (nfcTimerId) {
+    window.clearInterval(nfcTimerId);
+    nfcTimerId = null;
+  }
+  nfcWasPaymentStep = false;
+}
+
+function startNfcTimer() {
+  stopNfcTimer();
+  nfcRemaining = 50;
+  updateNfcTimer();
+  nfcTimerId = window.setInterval(() => {
+    nfcRemaining = Math.max(0, nfcRemaining - 1);
+    updateNfcTimer();
+    if (nfcRemaining === 0) {
+      window.clearInterval(nfcTimerId);
+      nfcTimerId = null;
+      fields.payGuide.textContent = "NFC가 만료됐어요. 다시 활성화해 주세요.";
+      fields.completeButton.textContent = "다시 활성화";
+    }
+  }, 1000);
 }
 
 function buildPaySteps(mode = currentPayMode) {
@@ -298,6 +334,13 @@ function renderPayStep() {
   fields.payCodeCard.hidden = isPayment;
   $(".screen-pay").dataset.payStep = step.type;
   $(".screen-pay").dataset.payMode = currentPayMode;
+
+  if (isPayment && !nfcWasPaymentStep) {
+    startNfcTimer();
+    nfcWasPaymentStep = true;
+  } else if (!isPayment && nfcWasPaymentStep) {
+    stopNfcTimer();
+  }
 }
 
 function renderCards() {
@@ -375,6 +418,7 @@ function render() {
 
 function setScreen(name) {
   $(".phone").scrollTop = 0;
+  if (name !== "pay") stopNfcTimer();
   $$(".screen").forEach((screen) => {
     screen.classList.toggle("is-active", screen.dataset.screen === name);
     screen.scrollTop = 0;
@@ -448,6 +492,15 @@ function startPaymentFlow(mode = "combo") {
 
 function advancePaymentFlow() {
   const steps = buildPaySteps();
+  const step = steps[currentPayStep];
+  if (step.type === "payment" && nfcRemaining === 0) {
+    fields.payGuide.textContent = step.guide;
+    fields.completeButton.textContent = step.button;
+    startNfcTimer();
+    nfcWasPaymentStep = true;
+    return;
+  }
+
   if (currentPayStep < steps.length - 1) {
     currentPayStep += 1;
     renderPayStep();
