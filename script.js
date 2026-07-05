@@ -326,6 +326,7 @@ let didDrag = false;
 let nfcTimerId = null;
 let nfcRemaining = 50;
 let nfcWasPaymentStep = false;
+let detailDragStartY = 0;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -812,6 +813,7 @@ function advancePaymentFlow() {
 
 function closeSheet() {
   $("#detailSheet").classList.remove("is-open");
+  $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").setAttribute("aria-hidden", "true");
   updateScrim();
 }
@@ -820,9 +822,14 @@ function openSheet() {
   closeSettings();
   closeLocationSheet();
   closeReason();
+  $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").classList.add("is-open");
   $("#detailSheet").setAttribute("aria-hidden", "false");
   updateScrim();
+}
+
+function expandDetailSheet() {
+  $("#detailSheet").classList.add("is-expanded");
 }
 
 function closeSettings() {
@@ -878,6 +885,7 @@ function updateScrim() {
 
 function closeOverlays() {
   $("#detailSheet").classList.remove("is-open");
+  $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").setAttribute("aria-hidden", "true");
   $("#settingsSheet").classList.remove("is-open");
   $("#settingsSheet").setAttribute("aria-hidden", "true");
@@ -940,6 +948,16 @@ function attachSwipe() {
 $("#whyButton").addEventListener("click", openSheet);
 $("#changePlaceButton").addEventListener("click", openLocationSheet);
 $("#closeSheet").addEventListener("click", closeSheet);
+$("#expandDetailButton").addEventListener("click", expandDetailSheet);
+$("#detailSheet .sheet-handle").addEventListener("click", expandDetailSheet);
+$("#detailSheet .sheet-handle").addEventListener("pointerdown", (event) => {
+  detailDragStartY = event.clientY;
+  event.currentTarget.setPointerCapture(event.pointerId);
+});
+$("#detailSheet .sheet-handle").addEventListener("pointerup", (event) => {
+  if (detailDragStartY - event.clientY > 24) expandDetailSheet();
+  detailDragStartY = 0;
+});
 $("#reasonButton").addEventListener("click", openReason);
 $("#reasonPopover").addEventListener("click", (event) => {
   if (event.target === $("#reasonPopover")) closeReason();

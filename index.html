@@ -158,56 +158,57 @@
           <h2 id="detailSheetTitle">혜택이 큰 순서로 골랐어요</h2>
           <button type="button" id="closeSheet">닫기</button>
         </div>
-        <div class="ai-checklist" aria-label="Galaxy AI가 확인한 항목">
-          <span>Galaxy AI가 확인했어요</span>
-          <strong id="aiCheckText">현재 매장, 등록 카드, 멤버십 기준</strong>
-        </div>
-        <p class="benefit-summary">
-          <span id="reasonText">신한카드 + 3천원 쿠폰 + CJ ONE 조합으로</span>
-          <strong id="benefitHighlight">5,000원 혜택</strong>
-          <em>예상</em>
-        </p>
-        <div class="combo-stack" aria-label="추천 결제 조합">
-          <div class="combo-item">
-            <i class="combo-icon" aria-hidden="true"></i>
-            <div>
-              <span>카드</span>
-              <strong id="comboCard">신한 Deep Benefit</strong>
+        <div class="detail-quick">
+          <div class="combo-stack" aria-label="추천 결제 조합">
+            <div class="combo-item">
+              <i class="combo-icon" aria-hidden="true"></i>
+              <div>
+                <span>카드</span>
+                <strong id="comboCard">신한 Deep Benefit</strong>
+              </div>
+            </div>
+            <div class="combo-item">
+              <i class="combo-icon" aria-hidden="true"></i>
+              <div>
+                <span>쿠폰</span>
+                <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
+              </div>
+            </div>
+            <div class="combo-item">
+              <i class="combo-icon" aria-hidden="true"></i>
+              <div>
+                <span>멤버십</span>
+                <strong id="comboMembership">CJ ONE 적립</strong>
+              </div>
             </div>
           </div>
-          <div class="combo-item">
-            <i class="combo-icon" aria-hidden="true"></i>
+          <div class="benefit-total">
+            <span id="benefitLabel">예상 할인 혜택</span>
+            <strong id="benefitText">5,000원</strong>
+          </div>
+          <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
+        </div>
+        <div class="detail-expanded">
+          <p class="benefit-summary">
+            <span id="reasonText">신한카드 + 3천원 쿠폰 + CJ ONE 조합으로</span>
+            <strong id="benefitHighlight">5,000원 혜택</strong>
+            <em>예상</em>
+          </p>
+          <div class="detail-grid">
             <div>
-              <span>쿠폰</span>
-              <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
+              <span>추천 기준</span>
+              <strong id="selectedCard">하민님의 결제 스타일에 따라 추천했어요</strong>
             </div>
           </div>
-          <div class="combo-item">
-            <i class="combo-icon" aria-hidden="true"></i>
-            <div>
-              <span>멤버십</span>
-              <strong id="comboMembership">CJ ONE 적립</strong>
-            </div>
+          <div class="detail-criteria-list" aria-label="추천 기준 선택">
+            <button type="button" class="criteria-pill is-selected" data-scenario="max_benefit">혜택 큰 순</button>
+            <button type="button" class="criteria-pill" data-scenario="remaining_cap">남은 한도</button>
+            <button type="button" class="criteria-pill" data-scenario="performance_fill">실적 채우기</button>
+            <button type="button" class="criteria-pill" data-scenario="no_condition">조건 없음</button>
           </div>
+          <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
         </div>
-        <div class="benefit-total">
-          <span id="benefitLabel">예상 할인 혜택</span>
-          <strong id="benefitText">5,000원</strong>
-        </div>
-        <div class="detail-grid">
-          <div>
-            <span>추천 기준</span>
-            <strong id="selectedCard">하민님의 결제 스타일에 따라 추천했어요</strong>
-          </div>
-        </div>
-        <div class="detail-criteria-list" aria-label="추천 기준 선택">
-          <button type="button" class="criteria-pill is-selected" data-scenario="max_benefit">혜택 큰 순</button>
-          <button type="button" class="criteria-pill" data-scenario="remaining_cap">남은 한도</button>
-          <button type="button" class="criteria-pill" data-scenario="performance_fill">실적 채우기</button>
-          <button type="button" class="criteria-pill" data-scenario="no_condition">조건 없음</button>
-        </div>
-        <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
-        <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
+        <button type="button" class="expand-detail-button" id="expandDetailButton">다른 기준 보기</button>
       </section>
 
       <section class="bottom-sheet location-sheet" id="locationSheet" aria-hidden="true">
@@ -223,6 +224,10 @@
       <section class="reason-popover" id="reasonPopover" aria-hidden="true">
         <div>
           <h3>추천 이유</h3>
+          <div class="ai-checklist" aria-label="Galaxy AI가 확인한 항목">
+            <span>Galaxy AI가 확인했어요</span>
+            <strong id="aiCheckText">현재 매장, 등록 카드, 멤버십 기준</strong>
+          </div>
           <p id="detailText">보유 카드와 등록 쿠폰 기준으로 가장 큰 예상 혜택이 확인됐어요.</p>
           <button type="button" id="openSettingsFromReason">추천 기준 바꾸기</button>
         </div>
