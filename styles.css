@@ -273,13 +273,14 @@ button {
 }
 
 .ai-pill {
+  position: relative;
   width: 100%;
   margin: 34px auto 0;
-  min-height: 122px;
+  min-height: 118px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
-  padding: 15px 16px;
+  gap: 14px;
+  padding: 18px 16px 16px;
   border: 1px solid #dfe7f3;
   border-radius: 22px;
   background: #fff;
@@ -288,37 +289,24 @@ button {
 
 .ai-copy {
   min-width: 0;
+  padding-right: 86px;
 }
 
-.ai-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 23px;
-  margin-bottom: 8px;
-  padding: 0 9px;
-  border-radius: 999px;
-  background: #edf4ff;
-  color: var(--blue);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 950;
+.galaxy-ai-logo {
+  position: absolute;
+  top: 17px;
+  right: 16px;
+  width: 72px;
+  max-height: 24px;
+  object-fit: contain;
+  object-position: right center;
 }
 
 .ai-pill span {
   display: block;
-  margin-bottom: 6px;
   color: #697386;
-  font-size: 12px;
-  font-weight: 850;
-}
-
-.ai-pill strong {
-  display: block;
-  max-width: 270px;
-  overflow: hidden;
-  color: #0b0b0b;
-  font-size: 17px;
-  line-height: 1.28;
+  font-size: 19px;
+  line-height: 1.25;
   font-weight: 950;
   word-break: keep-all;
 }
@@ -331,12 +319,12 @@ button {
 
 .ai-actions button {
   min-width: 0;
-  height: 36px;
+  min-height: 42px;
   border: 0;
   border-radius: 13px;
   background: #111;
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 950;
   white-space: nowrap;
 }

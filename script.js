@@ -332,7 +332,6 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const fields = {
   merchantName: $("#merchantName"),
-  proposalText: $("#proposalText"),
   whyButton: $("#whyButton"),
   changePlaceButton: $("#changePlaceButton"),
   detailSheetTitle: $("#detailSheetTitle"),
@@ -627,7 +626,6 @@ function render() {
   const location = currentLocationOption();
 
   fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
-  fields.proposalText.textContent = `${card.displayName} 조합으로 ${formatBenefitCallout(combo.benefit)}`;
   fields.whyButton.textContent = formatPrimaryAction(benefitAmount);
   fields.changePlaceButton.textContent = location.id === "starbucks" ? "아니요, 다른 곳이에요" : "다른 매장이에요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
