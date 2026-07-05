@@ -28,7 +28,43 @@ const cards = [
   }
 ];
 
-const scenarios = {
+const locationOptions = [
+  {
+    id: "starbucks",
+    name: "Starbucks",
+    distance: "현재 위치",
+    confidence: "88%",
+    hint: "카페 혜택 + 스타벅스 리워드",
+    criterion: "max_benefit"
+  },
+  {
+    id: "cu",
+    name: "CU",
+    distance: "약 18m",
+    confidence: "74%",
+    hint: "편의점 혜택 + CU 멤버십",
+    criterion: "remaining_cap"
+  },
+  {
+    id: "oliveyoung",
+    name: "Olive Young",
+    distance: "약 32m",
+    confidence: "68%",
+    hint: "드럭스토어 혜택 + CJ ONE",
+    criterion: "max_benefit"
+  },
+  {
+    id: "department",
+    name: "신세계백화점",
+    distance: "약 55m",
+    confidence: "61%",
+    hint: "백화점 결제일 할인 후보",
+    criterion: "max_benefit"
+  }
+];
+
+const locationScenarioSets = {
+  starbucks: {
   max_benefit: {
     merchant: "Starbucks",
     confidence: "매장 인식 88%",
@@ -177,7 +213,107 @@ const scenarios = {
       }
     ]
   }
+  },
+  cu: {
+    max_benefit: {
+      merchant: "CU",
+      confidence: "매장 인식 74%",
+      recommendedIndex: 2,
+      type: "혜택 큰 순",
+      detail: "편의점 결제에서 적용 가능한 카드 혜택과 CU 멤버십을 함께 봤어요.",
+      combinations: [
+        { reason: "KB국민카드는 편의점 혜택이 작아요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "이번 결제에서는 편의점 특화 카드가 더 좋아요" },
+        { reason: "삼성카드는 카페 혜택이 강하지만 CU 대상은 아니에요", benefit: "대상 업종 아님", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "현재 매장과 혜택 업종이 맞지 않아요" },
+        { reason: "우리 카드의정석 편의점 할인 + CU 멤버십 적립 가능", benefit: "예상 혜택 1,200원", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "편의점 결제에서 예상 혜택이 가장 커요" },
+        { reason: "롯데 Daily Card 조건 없이 기본 적립", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "조건 없는 선택지로는 안정적이에요" }
+      ]
+    },
+    remaining_cap: {
+      merchant: "CU",
+      confidence: "매장 인식 74%",
+      recommendedIndex: 2,
+      type: "한도 남은 혜택",
+      detail: "이번 달 편의점 할인 한도와 남은 횟수를 기준으로 다시 골랐어요.",
+      combinations: [
+        { reason: "KB국민카드는 편의점 한도를 이미 사용했어요", benefit: "남은 한도 없음", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "남은 혜택이 없어 뒤로 밀려요" },
+        { reason: "삼성카드는 CU 대상 한도가 없어요", benefit: "대상 업종 아님", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "카페 혜택 카드라 이번 매장에는 맞지 않아요" },
+        { reason: "우리 카드의정석 편의점 할인 한도 2회가 남아 있어요", benefit: "편의점 혜택 2회 남음", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "아직 남은 편의점 혜택을 먼저 쓰는 게 좋아요" },
+        { reason: "롯데 Daily Card는 한도 조건 없이 기본 적립돼요", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "한도 혜택이 없을 때 대안이에요" }
+      ]
+    },
+    performance_fill: {
+      merchant: "CU",
+      confidence: "매장 인식 74%",
+      recommendedIndex: 2,
+      type: "실적 채우기",
+      detail: "편의점 소액 결제도 실적에 산입되는지 기준으로 봤어요.",
+      combinations: [
+        { reason: "KB국민카드는 이번 결제가 실적에 반영돼요", benefit: "실적 58% 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 효과는 있지만 혜택은 작아요" },
+        { reason: "삼성카드는 이번 결제 실적 효과가 보통이에요", benefit: "실적 반영 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 우선 기준에서는 강하지 않아요" },
+        { reason: "우리 카드의정석 실적 2.8만원 부족. 이 결제로 다음 달 조건에 가까워져요", benefit: "실적 72% 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 채우기 기준에서 가장 좋아요" },
+        { reason: "롯데 Daily Card는 실적 조건이 없어 관리할 필요가 적어요", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적을 채우려는 목적에는 맞지 않아요" }
+      ]
+    },
+    no_condition: {
+      merchant: "CU",
+      confidence: "매장 인식 74%",
+      recommendedIndex: 3,
+      type: "조건 없는 혜택",
+      detail: "전월실적이나 편의점 한도를 따지지 않는 상시 적립을 우선했어요.",
+      combinations: [
+        { reason: "KB국민카드는 조건 확인이 필요해요", benefit: "조건 확인 필요", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "조건 없는 선택지는 아니에요" },
+        { reason: "삼성카드는 업종 조건이 맞지 않아요", benefit: "대상 업종 아님", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "이번 매장에서는 추천하지 않아요" },
+        { reason: "우리카드는 편의점 혜택이 있지만 실적 조건이 있어요", benefit: "실적 조건 필요", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "조건 없는 혜택 기준에서는 뒤로 밀려요" },
+        { reason: "롯데 Daily Card 전월실적 없이 어디서나 0.5% 적립", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "조건 없는 결제 기준에서 가장 편해요" }
+      ]
+    }
+  },
+  oliveyoung: {
+    max_benefit: {
+      merchant: "Olive Young",
+      confidence: "매장 인식 68%",
+      recommendedIndex: 0,
+      type: "혜택 큰 순",
+      detail: "드럭스토어 결제에서 카드 혜택, 보유 쿠폰, CJ ONE 적립을 함께 봤어요.",
+      combinations: [
+        { reason: "KB국민카드 드럭스토어 청구할인 + CJ ONE 적립 가능", benefit: "예상 혜택 2,000원", coupon: "적용 쿠폰 없음", membership: "CJ ONE 적립", insight: "현재 매장에서 예상 혜택이 가장 커요" },
+        { reason: "삼성카드 SELECT는 카페 혜택 중심이라 올리브영 혜택은 약해요", benefit: "예상 혜택 500원", coupon: "적용 쿠폰 없음", membership: "CJ ONE 적립", insight: "카페 결제라면 더 좋아요" },
+        { reason: "우리카드는 실적에는 도움되지만 드럭스토어 할인은 제한적이에요", benefit: "실적 반영 예상", coupon: "적용 쿠폰 없음", membership: "CJ ONE 적립", insight: "실적 우선이면 선택할 수 있어요" },
+        { reason: "롯데 Daily Card 조건 없이 기본 적립", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CJ ONE 적립", insight: "조건 없는 결제 기준에서 안정적이에요" }
+      ]
+    },
+    remaining_cap: null,
+    performance_fill: null,
+    no_condition: null
+  },
+  department: {
+    max_benefit: {
+      merchant: "신세계백화점",
+      confidence: "매장 인식 61%",
+      recommendedIndex: 0,
+      type: "혜택 큰 순",
+      detail: "백화점 결제일 할인과 남은 월 한도를 우선 확인했어요.",
+      combinations: [
+        { reason: "KB국민카드 백화점 결제일 할인 한도가 남아 있어요", benefit: "예상 혜택 8,000원", coupon: "적용 쿠폰 없음", membership: "신세계포인트 적립", insight: "백화점 결제에서는 할인 한도가 가장 중요해요" },
+        { reason: "삼성카드는 카페 혜택 중심이라 백화점 혜택이 약해요", benefit: "대상 업종 아님", coupon: "적용 쿠폰 없음", membership: "신세계포인트 적립", insight: "현재 매장과 혜택 업종이 맞지 않아요" },
+        { reason: "우리카드는 실적 관리에는 도움이 돼요", benefit: "실적 반영 예상", coupon: "적용 쿠폰 없음", membership: "신세계포인트 적립", insight: "실적 기준이면 대체 선택 가능해요" },
+        { reason: "롯데 Daily Card 조건 없이 기본 적립", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "신세계포인트 적립", insight: "조건 없는 선택지로는 안정적이에요" }
+      ]
+    },
+    remaining_cap: null,
+    performance_fill: null,
+    no_condition: null
+  }
 };
+
+["oliveyoung", "department"].forEach((locationId) => {
+  ["remaining_cap", "performance_fill", "no_condition"].forEach((criterion) => {
+    locationScenarioSets[locationId][criterion] = locationScenarioSets[locationId].max_benefit;
+  });
+});
+
+let currentLocation = "starbucks";
+let scenarios = locationScenarioSets[currentLocation];
 
 let currentScenario = "max_benefit";
 let currentCardIndex = scenarios[currentScenario].recommendedIndex;
@@ -197,6 +333,8 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 const fields = {
   merchantName: $("#merchantName"),
   proposalText: $("#proposalText"),
+  whyButton: $("#whyButton"),
+  changePlaceButton: $("#changePlaceButton"),
   detailSheetTitle: $("#detailSheetTitle"),
   reasonText: $("#reasonText"),
   benefitHighlight: $("#benefitHighlight"),
@@ -236,6 +374,9 @@ const fields = {
   resultNextHint: $("#resultNextHint"),
   resultCard: $("#resultCard"),
   resultType: $("#resultType"),
+  plannerButton: $("#plannerButton"),
+  cardAppNote: $("#cardAppNote"),
+  aiCheckText: $("#aiCheckText"),
   detailText: $("#detailText")
 };
 
@@ -278,11 +419,28 @@ function formatReasonLead(reason) {
   return lead || reason;
 }
 
+function formatPrimaryAction(benefitAmount) {
+  if (benefitAmount.match(/[0-9,]+원/)) return `${benefitAmount} 혜택 받기`;
+  return "추천 혜택 받기";
+}
+
 function currentData() {
   const scenario = scenarios[currentScenario];
   const card = cards[currentCardIndex];
   const combo = scenario.combinations[currentCardIndex];
   return { scenario, card, combo };
+}
+
+function currentLocationOption() {
+  return locationOptions.find((option) => option.id === currentLocation) || locationOptions[0];
+}
+
+function cardAppName(card) {
+  if (card.issuer === "SAMSUNG") return "삼성카드 앱";
+  if (card.issuer === "KB") return "KB Pay";
+  if (card.issuer === "WOORI") return "우리WON카드 앱";
+  if (card.issuer === "LOTTE") return "디지로카 앱";
+  return "카드사 앱";
 }
 
 function hasUsableAsset(value) {
@@ -466,9 +624,12 @@ function setCard(index) {
 function render() {
   const { scenario, card, combo } = currentData();
   const benefitAmount = formatBenefitAmount(combo.benefit);
+  const location = currentLocationOption();
 
   fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
   fields.proposalText.textContent = `${card.displayName} 조합으로 ${formatBenefitCallout(combo.benefit)}`;
+  fields.whyButton.textContent = formatPrimaryAction(benefitAmount);
+  fields.changePlaceButton.textContent = location.id === "starbucks" ? "아니요, 다른 곳이에요" : "다른 매장이에요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
   fields.reasonText.textContent = formatReasonLead(combo.reason);
   fields.benefitHighlight.textContent = formatBenefitHighlight(scenario.type, benefitAmount);
@@ -488,11 +649,45 @@ function render() {
   fields.payCardImage.alt = `${card.displayName} 카드`;
   fields.payCardImage.hidden = !card.image;
   fields.detailText.textContent = scenario.detail;
+  fields.aiCheckText.textContent = `${scenario.merchant}, 등록 카드, 멤버십 기준`;
 
   document.documentElement.style.setProperty("--active-card-bg", card.bg);
   renderCards();
+  renderLocationList();
   renderPayStep();
   syncScenarioControls();
+}
+
+function renderLocationList() {
+  const list = $("#locationList");
+  list.innerHTML = locationOptions.map((option) => {
+    const isCurrent = option.id === currentLocation;
+    return `
+      <button type="button" class="location-option ${isCurrent ? "is-selected" : ""}" data-location="${option.id}">
+        <div>
+          <strong>${option.name}</strong>
+          <span>${option.distance} · 인식 ${option.confidence}</span>
+        </div>
+        <em>${isCurrent ? "현재 선택" : option.hint}</em>
+      </button>
+    `;
+  }).join("");
+  $$("#locationList .location-option").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectLocation(button.dataset.location);
+    });
+  });
+}
+
+function selectLocation(locationId) {
+  const option = locationOptions.find((item) => item.id === locationId);
+  if (!option) return;
+  currentLocation = locationId;
+  scenarios = locationScenarioSets[currentLocation];
+  currentScenario = option.criterion;
+  currentCardIndex = scenarios[currentScenario].recommendedIndex;
+  render();
+  closeLocationSheet();
 }
 
 function syncScenarioControls() {
@@ -510,6 +705,7 @@ function setScreen(name) {
   });
   closeSheet();
   closeSettings();
+  closeLocationSheet();
   window.requestAnimationFrame(() => {
     $(".phone").scrollTop = 0;
   });
@@ -517,6 +713,9 @@ function setScreen(name) {
 
 function setResultForMode(mode) {
   const { scenario, card, combo } = currentData();
+  const appName = cardAppName(card);
+  fields.plannerButton.textContent = `${appName}에서 확인`;
+  fields.cardAppNote.textContent = `${appName}에서 청구할인 반영, 남은 한도, 실적 산입 여부를 확인할 수 있어요.`;
   if (mode === "card") {
     fields.resultSummary.textContent = `${card.displayName}로 결제했어요`;
     fields.resultBenefitAmount.textContent = "기본 결제";
@@ -621,6 +820,7 @@ function closeSheet() {
 
 function openSheet() {
   closeSettings();
+  closeLocationSheet();
   closeReason();
   $("#detailSheet").classList.add("is-open");
   $("#detailSheet").setAttribute("aria-hidden", "false");
@@ -635,9 +835,26 @@ function closeSettings() {
 
 function openSettings() {
   closeSheet();
+  closeLocationSheet();
   closeReason();
   $("#settingsSheet").classList.add("is-open");
   $("#settingsSheet").setAttribute("aria-hidden", "false");
+  updateScrim();
+}
+
+function closeLocationSheet() {
+  $("#locationSheet").classList.remove("is-open");
+  $("#locationSheet").setAttribute("aria-hidden", "true");
+  updateScrim();
+}
+
+function openLocationSheet() {
+  closeSheet();
+  closeSettings();
+  closeReason();
+  renderLocationList();
+  $("#locationSheet").classList.add("is-open");
+  $("#locationSheet").setAttribute("aria-hidden", "false");
   updateScrim();
 }
 
@@ -656,6 +873,7 @@ function openReason() {
 function updateScrim() {
   const isAnyOpen = $("#detailSheet").classList.contains("is-open")
     || $("#settingsSheet").classList.contains("is-open")
+    || $("#locationSheet").classList.contains("is-open")
     || $("#reasonPopover").classList.contains("is-open");
   $("#scrim").classList.toggle("is-open", isAnyOpen);
 }
@@ -665,6 +883,8 @@ function closeOverlays() {
   $("#detailSheet").setAttribute("aria-hidden", "true");
   $("#settingsSheet").classList.remove("is-open");
   $("#settingsSheet").setAttribute("aria-hidden", "true");
+  $("#locationSheet").classList.remove("is-open");
+  $("#locationSheet").setAttribute("aria-hidden", "true");
   $("#reasonPopover").classList.remove("is-open");
   $("#reasonPopover").setAttribute("aria-hidden", "true");
   updateScrim();
@@ -720,6 +940,7 @@ function attachSwipe() {
 }
 
 $("#whyButton").addEventListener("click", openSheet);
+$("#changePlaceButton").addEventListener("click", openLocationSheet);
 $("#closeSheet").addEventListener("click", closeSheet);
 $("#reasonButton").addEventListener("click", openReason);
 $("#reasonPopover").addEventListener("click", (event) => {
@@ -728,6 +949,7 @@ $("#reasonPopover").addEventListener("click", (event) => {
 $("#scrim").addEventListener("click", closeOverlays);
 $("#settingsButton").addEventListener("click", openSettings);
 $("#closeSettings").addEventListener("click", closeSettings);
+$("#closeLocationSheet").addEventListener("click", closeLocationSheet);
 $("#openSettingsFromReason").addEventListener("click", openSettings);
 $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));

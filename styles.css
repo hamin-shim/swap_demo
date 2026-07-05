@@ -275,10 +275,9 @@ button {
 .ai-pill {
   width: 100%;
   margin: 34px auto 0;
-  min-height: 82px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  min-height: 122px;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 12px;
   padding: 15px 16px;
   border: 1px solid #dfe7f3;
@@ -287,9 +286,27 @@ button {
   box-shadow: 0 12px 30px rgba(37, 58, 96, 0.1);
 }
 
+.ai-copy {
+  min-width: 0;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 23px;
+  margin-bottom: 8px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: var(--blue);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+}
+
 .ai-pill span {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: #697386;
   font-size: 12px;
   font-weight: 850;
@@ -306,16 +323,28 @@ button {
   word-break: keep-all;
 }
 
-.ai-pill button {
-  flex: 0 0 auto;
-  min-width: 72px;
+.ai-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.ai-actions button {
+  min-width: 0;
   height: 36px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 13px;
   background: #111;
   color: #fff;
   font-size: 12px;
   font-weight: 950;
+  white-space: nowrap;
+}
+
+.ai-actions button.ghost {
+  border: 1px solid #dfe4ed;
+  background: #fff;
+  color: #5f6774;
 }
 
 .card-carousel {
@@ -1327,6 +1356,16 @@ button {
   text-align: right;
 }
 
+.card-app-note {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: left;
+  word-break: keep-all;
+}
+
 .result-actions {
   display: grid;
   gap: 8px;
@@ -1408,6 +1447,30 @@ button {
   max-width: 270px;
   font-size: 20px;
   line-height: 1.22;
+  word-break: keep-all;
+}
+
+.ai-checklist {
+  display: grid;
+  gap: 3px;
+  margin: 12px 0 8px;
+  padding: 11px 12px;
+  border: 1px solid #dbe7ff;
+  border-radius: 16px;
+  background: #f3f7ff;
+}
+
+.ai-checklist span {
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.ai-checklist strong {
+  color: #4f5b70;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
   word-break: keep-all;
 }
 
@@ -1545,6 +1608,61 @@ button {
   color: #fff;
   font-size: 17px;
   font-weight: 950;
+}
+
+.location-sheet p {
+  margin-bottom: 14px;
+}
+
+.location-list {
+  display: grid;
+  gap: 10px;
+}
+
+.location-option {
+  width: 100%;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  padding: 13px 14px;
+  border: 1px solid #e0e5ee;
+  border-radius: 18px;
+  background: #f8fafc;
+  text-align: left;
+}
+
+.location-option strong {
+  display: block;
+  color: #111;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.location-option span {
+  display: block;
+  margin-top: 3px;
+  color: #7b8493;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.location-option em {
+  color: #4e5969;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.location-option.is-selected {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.location-option.is-selected em {
+  color: var(--blue);
 }
 
 .reason-popover {
