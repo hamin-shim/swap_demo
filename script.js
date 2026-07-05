@@ -866,20 +866,20 @@ function openLocationSheet() {
 function closeReason() {
   $("#reasonPopover").classList.remove("is-open");
   $("#reasonPopover").setAttribute("aria-hidden", "true");
-  updateScrim();
+  $("#reasonButton").setAttribute("aria-expanded", "false");
 }
 
 function openReason() {
-  $("#reasonPopover").classList.add("is-open");
-  $("#reasonPopover").setAttribute("aria-hidden", "false");
-  updateScrim();
+  const shouldOpen = !$("#reasonPopover").classList.contains("is-open");
+  $("#reasonPopover").classList.toggle("is-open", shouldOpen);
+  $("#reasonPopover").setAttribute("aria-hidden", String(!shouldOpen));
+  $("#reasonButton").setAttribute("aria-expanded", String(shouldOpen));
 }
 
 function updateScrim() {
   const isAnyOpen = $("#detailSheet").classList.contains("is-open")
     || $("#settingsSheet").classList.contains("is-open")
-    || $("#locationSheet").classList.contains("is-open")
-    || $("#reasonPopover").classList.contains("is-open");
+    || $("#locationSheet").classList.contains("is-open");
   $("#scrim").classList.toggle("is-open", isAnyOpen);
 }
 
@@ -959,14 +959,11 @@ $("#detailSheet .sheet-handle").addEventListener("pointerup", (event) => {
   detailDragStartY = 0;
 });
 $("#reasonButton").addEventListener("click", openReason);
-$("#reasonPopover").addEventListener("click", (event) => {
-  if (event.target === $("#reasonPopover")) closeReason();
-});
+$("#reasonPopover").addEventListener("click", (event) => event.stopPropagation());
 $("#scrim").addEventListener("click", closeOverlays);
 $("#settingsButton").addEventListener("click", openSettings);
 $("#closeSettings").addEventListener("click", closeSettings);
 $("#closeLocationSheet").addEventListener("click", closeLocationSheet);
-$("#openSettingsFromReason").addEventListener("click", openSettings);
 $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);

@@ -206,7 +206,19 @@
             <button type="button" class="criteria-pill" data-scenario="performance_fill">실적 채우기</button>
             <button type="button" class="criteria-pill" data-scenario="no_condition">조건 없음</button>
           </div>
-          <button type="button" class="reason-button" id="reasonButton">추천 이유 보기</button>
+          <div class="reason-inline">
+            <button type="button" class="reason-button" id="reasonButton" aria-expanded="false">
+              추천 이유 <span aria-hidden="true">?</span>
+            </button>
+            <div class="reason-popover" id="reasonPopover" aria-hidden="true">
+              <h3>추천 이유</h3>
+              <p id="detailText">보유 카드와 등록 쿠폰 기준으로 가장 큰 예상 혜택이 확인됐어요.</p>
+              <div class="ai-checklist" aria-label="확인 기준">
+                <span>확인 기준</span>
+                <strong id="aiCheckText">현재 매장, 등록 카드, 멤버십 기준</strong>
+              </div>
+            </div>
+          </div>
         </div>
         <button type="button" class="expand-detail-button" id="expandDetailButton">다른 기준 보기</button>
       </section>
@@ -219,18 +231,6 @@
         </div>
         <p>근처 매장이 여러 곳 있어요. 결제하려는 매장을 고르면 혜택 후보를 다시 계산할게요.</p>
         <div class="location-list" id="locationList" aria-label="인접 매장 후보"></div>
-      </section>
-
-      <section class="reason-popover" id="reasonPopover" aria-hidden="true">
-        <div>
-          <h3>추천 이유</h3>
-          <div class="ai-checklist" aria-label="Galaxy AI가 확인한 항목">
-            <span>Galaxy AI가 확인했어요</span>
-            <strong id="aiCheckText">현재 매장, 등록 카드, 멤버십 기준</strong>
-          </div>
-          <p id="detailText">보유 카드와 등록 쿠폰 기준으로 가장 큰 예상 혜택이 확인됐어요.</p>
-          <button type="button" id="openSettingsFromReason">추천 기준 바꾸기</button>
-        </div>
       </section>
 
       <section class="bottom-sheet settings-sheet" id="settingsSheet" aria-hidden="true">
