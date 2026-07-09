@@ -42,11 +42,17 @@ async function main() {
       appHeight: Math.round(document.querySelector(".app-shell").getBoundingClientRect().height),
       viewport: window.innerHeight,
       primary: document.querySelector("#whyButton").innerText,
-      secondary: document.querySelector("#changePlaceButton").innerText
+      secondary: document.querySelector("#changePlaceButton").innerText,
+      homeIndicators: document.querySelectorAll(".home-indicator").length,
+      bodyOverflowY: getComputedStyle(document.body).overflowY,
+      bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
     }));
     await assert(initial.appHeight === initial.viewport, "S26 viewport height mismatch");
     await assert(initial.primary === "추천 보기", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
+    await assert(initial.homeIndicators === 0, "OS home indicator should not be implemented inside the page");
+    await assert(initial.bodyOverflowY !== "hidden", "body vertical overflow should not block browser pull-to-refresh");
+    await assert(initial.bodyOverscrollY !== "none", "body overscroll should not block browser pull-to-refresh");
 
     await page.evaluate(() => document.querySelector("#settingsButton").click());
     await sleep(150);
@@ -68,6 +74,24 @@ async function main() {
 
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
+    const expandedByDrag = await page.evaluate(() => {
+      const sheet = document.querySelector("#detailSheet");
+      const handle = sheet.querySelector(".sheet-handle");
+      const box = handle.getBoundingClientRect();
+      const x = box.left + box.width / 2;
+      const y = box.top + box.height / 2;
+      handle.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 2, clientX: x, clientY: y }));
+      window.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, cancelable: true, pointerId: 2, clientX: x, clientY: y - 100 }));
+      const transformDuringDrag = getComputedStyle(sheet).transform;
+      window.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 2, clientX: x, clientY: y - 100 }));
+      return {
+        transformDuringDrag,
+        expanded: sheet.classList.contains("is-expanded")
+      };
+    });
+    await assert(expandedByDrag.transformDuringDrag !== "matrix(1, 0, 0, 1, 0, 0)", "detail sheet should follow upward handle drag");
+    await assert(expandedByDrag.expanded, "detail sheet should expand when dragged up from handle");
+
     const criteria = await page.evaluate(() => Array.from(document.querySelectorAll("#detailSheet .criteria-pill")).map((item) => item.innerText));
     await assert(criteria.join(",") === "혜택,마일리지,실적", "detail criteria should be 3 options");
 

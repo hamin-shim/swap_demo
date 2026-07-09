@@ -1199,10 +1199,13 @@ function moveSheetDrag(event) {
   if (!sheetDrag) return;
   event.preventDefault();
   const point = event.touches?.[0] || event;
-  const deltaY = Math.max(0, point.clientY - sheetDrag.startY);
+  const rawDeltaY = point.clientY - sheetDrag.startY;
+  const deltaY = sheetDrag.sheet.id === "detailSheet"
+    ? Math.max(-170, rawDeltaY)
+    : Math.max(0, rawDeltaY);
   sheetDrag.lastY = point.clientY;
   sheetDrag.sheet.style.setProperty("--sheet-drag-y", `${deltaY}px`);
-  const progress = Math.min(deltaY / 240, 1);
+  const progress = Math.min(Math.max(deltaY, 0) / 240, 1);
   $("#scrim").style.opacity = String(1 - progress * 0.65);
 }
 
@@ -1210,14 +1213,21 @@ function endSheetDrag(event) {
   if (!sheetDrag) return;
   event.preventDefault();
   const point = event.changedTouches?.[0] || event;
-  const deltaY = Math.max(0, point.clientY - sheetDrag.startY);
+  const deltaY = point.clientY - sheetDrag.startY;
   const elapsed = Math.max(performance.now() - sheetDrag.startedAt, 1);
-  const velocity = deltaY / elapsed;
-  const shouldClose = deltaY > 90 || velocity > 0.65;
+  const downVelocity = Math.max(deltaY, 0) / elapsed;
+  const shouldExpand = sheetDrag.sheet.id === "detailSheet" && deltaY < -48;
+  const shouldClose = deltaY > 90 || downVelocity > 0.65;
   const { sheet } = sheetDrag;
   sheetDrag = null;
 
   sheet.classList.remove("is-dragging");
+  if (shouldExpand) {
+    sheet.classList.add("is-expanded");
+    resetSheetDrag(sheet);
+    return;
+  }
+
   if (shouldClose) {
     sheet.style.setProperty("--sheet-drag-y", "105%");
     window.setTimeout(() => closeSheetByElement(sheet), 120);
