@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Samsung Wallet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -26,8 +29,8 @@
         <header class="wallet-header">
           <h1>Samsung Wallet</h1>
           <div class="header-actions">
-            <button type="button" class="icon-button" aria-label="추가"><span class="plus-icon"></span></button>
-            <button type="button" class="icon-button" id="settingsButton" aria-label="더보기"><span class="kebab-icon"></span></button>
+            <button type="button" class="icon-button" aria-label="추가"><span class="material-symbols-rounded" aria-hidden="true">add</span></button>
+            <button type="button" class="icon-button" id="settingsButton" aria-label="더보기"><span class="material-symbols-rounded" aria-hidden="true">more_vert</span></button>
           </div>
         </header>
 
@@ -128,7 +131,7 @@
           <section class="result-progress">
             <div>
               <span id="resultProgressLabel">이번 달 카드 실적</span>
-              <strong id="resultProgressValue">72%</strong>
+              <strong id="resultProgressValue">360,000원/500,000원</strong>
             </div>
             <div class="progress-bar"><i id="resultProgressBar"></i></div>
             <p id="resultNextHint">다음 혜택 구간까지 28,000원 남았어요</p>
@@ -156,7 +159,7 @@
         <div class="sheet-handle"></div>
         <div class="sheet-title">
           <h2 id="detailSheetTitle">혜택이 큰 순서로 골랐어요</h2>
-          <button type="button" id="closeSheet">닫기</button>
+          <button type="button" class="sheet-close-button" id="closeSheet" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
         </div>
         <div class="detail-quick">
           <div class="combo-stack" aria-label="추천 결제 조합">
@@ -202,10 +205,15 @@
           </div>
           <div class="detail-criteria-list" aria-label="추천 기준 선택">
             <button type="button" class="criteria-pill is-selected" data-scenario="max_benefit">혜택 큰 순</button>
-            <button type="button" class="criteria-pill" data-scenario="remaining_cap">남은 한도</button>
+            <button type="button" class="criteria-pill" data-scenario="remaining_cap">할인 한도 기반</button>
             <button type="button" class="criteria-pill" data-scenario="performance_fill">실적 채우기</button>
             <button type="button" class="criteria-pill" data-scenario="no_condition">조건 없음</button>
           </div>
+          <section class="change-preview" id="criteriaPreview" aria-live="polite">
+            <span>변경 미리보기</span>
+            <strong id="criteriaPreviewTitle">현재 추천을 유지하고 있어요</strong>
+            <p id="criteriaPreviewText">다른 기준을 누르면 카드와 예상 혜택 변화를 먼저 보여드릴게요.</p>
+          </section>
           <div class="reason-inline">
             <button type="button" class="reason-button" id="reasonButton" aria-expanded="false">
               추천 이유 <span aria-hidden="true">?</span>
@@ -220,6 +228,7 @@
             </div>
           </div>
         </div>
+        <button type="button" class="apply-button" id="applyCriteriaButton">이 기준 적용</button>
         <button type="button" class="expand-detail-button" id="expandDetailButton">다른 기준 보기</button>
       </section>
 
@@ -227,28 +236,40 @@
         <div class="sheet-handle"></div>
         <div class="sheet-title">
           <h2>어디에서 결제하시나요?</h2>
-          <button type="button" id="closeLocationSheet">닫기</button>
+          <button type="button" class="sheet-close-button" id="closeLocationSheet" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
         </div>
         <p>근처 매장이 여러 곳 있어요. 결제하려는 매장을 고르면 혜택 후보를 다시 계산할게요.</p>
         <div class="location-list" id="locationList" aria-label="인접 매장 후보"></div>
+        <section class="change-preview location-preview" id="locationPreview" aria-live="polite">
+          <span>변경 미리보기</span>
+          <strong id="locationPreviewTitle">현재 매장을 유지하고 있어요</strong>
+          <p id="locationPreviewText">다른 매장을 누르면 추천 카드와 예상 혜택을 먼저 보여드릴게요.</p>
+        </section>
+        <button type="button" class="apply-button" id="applyLocationButton">이 위치 적용</button>
       </section>
 
       <section class="bottom-sheet settings-sheet" id="settingsSheet" aria-hidden="true">
         <div class="sheet-handle"></div>
         <div class="sheet-title">
           <h2>AI 추천 설정</h2>
-          <button type="button" id="closeSettings">닫기</button>
+          <button type="button" class="sheet-close-button" id="closeSettings" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
         </div>
         <p>지금 결제에서 무엇을 우선할지 고를 수 있어요. 선택한 기준은 다음 추천에도 반영됩니다.</p>
         <div class="setting-group">
           <span>추천 기준</span>
           <div class="scenario-list" aria-label="추천 기준 선택">
             <button type="button" class="scenario is-selected" data-scenario="max_benefit">혜택 큰 순</button>
-            <button type="button" class="scenario" data-scenario="remaining_cap">남은 한도</button>
+            <button type="button" class="scenario" data-scenario="remaining_cap">할인 한도 기반</button>
             <button type="button" class="scenario" data-scenario="performance_fill">실적 채우기</button>
             <button type="button" class="scenario" data-scenario="no_condition">조건 없음</button>
           </div>
         </div>
+        <section class="change-preview" id="settingsPreview" aria-live="polite">
+          <span>변경 미리보기</span>
+          <strong id="settingsPreviewTitle">현재 추천 기준을 유지하고 있어요</strong>
+          <p id="settingsPreviewText">기준을 바꾸면 결제 카드와 혜택 변화가 여기에 표시돼요.</p>
+        </section>
+        <button type="button" class="apply-button" id="applySettingsButton">이 기준 적용</button>
         <div class="setting-row">
           <span>추천 표시</span>
           <strong>Wallet 실행 시 즉시</strong>

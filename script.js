@@ -148,10 +148,10 @@ const locationScenarioSets = {
     combinations: [
       {
         reason: "KB국민카드는 이번 결제가 실적에 반영되지만 목표까지 아직 멀어요",
-        benefit: "실적 58% 달성 예상",
+        benefit: "실적 290,000원/500,000원 달성 예상",
         coupon: "적용 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
-        insight: "실적 관리 효과가 크지 않아요"
+        insight: "실적을 채우기엔 아쉬워요"
       },
       {
         reason: "삼성카드 SELECT는 혜택은 크지만 이번 결제 실적 효과는 보통이에요",
@@ -162,7 +162,7 @@ const locationScenarioSets = {
       },
       {
         reason: "우리 카드의정석 실적 2.8만원 부족. 이 결제로 다음 달 혜택 조건에 가까워져요",
-        benefit: "실적 72% 달성 예상",
+        benefit: "실적 360,000원/500,000원 달성 예상",
         coupon: "적용 쿠폰 없음",
         membership: "스타벅스 리워드 적립",
         insight: "다음 달 혜택 유지를 우선하면 이 카드가 좋아요"
@@ -248,9 +248,9 @@ const locationScenarioSets = {
       type: "실적 채우기",
       detail: "편의점 소액 결제도 실적에 산입되는지 기준으로 봤어요.",
       combinations: [
-        { reason: "KB국민카드는 이번 결제가 실적에 반영돼요", benefit: "실적 58% 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 효과는 있지만 혜택은 작아요" },
+        { reason: "KB국민카드는 이번 결제가 실적에 반영돼요", benefit: "실적 290,000원/500,000원 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 효과는 있지만 혜택은 작아요" },
         { reason: "삼성카드는 이번 결제 실적 효과가 보통이에요", benefit: "실적 반영 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 우선 기준에서는 강하지 않아요" },
-        { reason: "우리 카드의정석 실적 2.8만원 부족. 이 결제로 다음 달 조건에 가까워져요", benefit: "실적 72% 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 채우기 기준에서 가장 좋아요" },
+        { reason: "우리 카드의정석 실적 2.8만원 부족. 이 결제로 다음 달 조건에 가까워져요", benefit: "실적 360,000원/500,000원 달성 예상", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적 채우기 기준에서 가장 좋아요" },
         { reason: "롯데 Daily Card는 실적 조건이 없어 관리할 필요가 적어요", benefit: "조건 없이 0.5% 적립", coupon: "적용 쿠폰 없음", membership: "CU 멤버십 적립", insight: "실적을 채우려는 목적에는 맞지 않아요" }
       ]
     },
@@ -317,6 +317,8 @@ let scenarios = locationScenarioSets[currentLocation];
 
 let currentScenario = "max_benefit";
 let currentCardIndex = scenarios[currentScenario].recommendedIndex;
+let previewScenario = currentScenario;
+let previewLocation = currentLocation;
 let currentPayStep = 0;
 let currentPayMode = "combo";
 let dragStartX = 0;
@@ -377,31 +379,42 @@ const fields = {
   plannerButton: $("#plannerButton"),
   cardAppNote: $("#cardAppNote"),
   aiCheckText: $("#aiCheckText"),
-  detailText: $("#detailText")
+  detailText: $("#detailText"),
+  criteriaPreviewTitle: $("#criteriaPreviewTitle"),
+  criteriaPreviewText: $("#criteriaPreviewText"),
+  settingsPreviewTitle: $("#settingsPreviewTitle"),
+  settingsPreviewText: $("#settingsPreviewText"),
+  locationPreviewTitle: $("#locationPreviewTitle"),
+  locationPreviewText: $("#locationPreviewText"),
+  applyCriteriaButton: $("#applyCriteriaButton"),
+  applySettingsButton: $("#applySettingsButton"),
+  applyLocationButton: $("#applyLocationButton")
 };
 
 function formatBenefitCallout(benefit) {
   const amount = benefit.match(/[0-9,]+원/)?.[0];
   if (amount) return `${amount} 혜택을 받으세요`;
-  if (benefit.includes("실적")) return "실적 조건에 가까워져요";
+  if (benefit.includes("실적")) return "실적을 채워요";
   return benefit;
 }
 
 function formatSheetTitle(type) {
   if (type.includes("한도")) return "남은 한도를 먼저 봤어요";
-  if (type.includes("실적")) return "실적을 채우기 좋게 골랐어요";
+  if (type.includes("실적")) return "실적 채우기 좋은 카드예요";
   if (type.includes("조건 없는")) return "조건 없는 혜택으로 골랐어요";
   return "혜택이 큰 순서로 골랐어요";
 }
 
 function formatBenefitAmount(benefit) {
-  return benefit.match(/[0-9,]+원/)?.[0] || benefit.replace(/^예상 혜택\s*/, "");
+  return benefit.match(/[0-9,]+원\/[0-9,]+원/)?.[0]
+    || benefit.match(/[0-9,]+원/)?.[0]
+    || benefit.replace(/^예상 혜택\s*/, "");
 }
 
 function formatBenefitLabel(type) {
   if (type.includes("조건 없는")) return "조건 없는 혜택";
   if (type.includes("한도")) return "남은 혜택";
-  if (type.includes("실적")) return "실적 관리 효과";
+  if (type.includes("실적")) return "이번 달 실적";
   return "예상 혜택";
 }
 
@@ -420,8 +433,16 @@ function formatReasonLead(reason) {
 }
 
 function formatPrimaryAction(benefitAmount) {
+  if (benefitAmount.includes("/")) return "실적 채우기";
   if (benefitAmount.match(/[0-9,]+원/)) return `${benefitAmount} 혜택 받기`;
   return "추천 혜택 받기";
+}
+
+function formatBenefitDisplay(benefitAmount) {
+  return benefitAmount.replace("360,000원/500,000원", "36만원 / 50만원")
+    .replace("290,000원/500,000원", "29만원 / 50만원")
+    .replace("420,000원/500,000원", "42만원 / 50만원")
+    .replace("340,000원/500,000원", "34만원 / 50만원");
 }
 
 function currentData() {
@@ -431,8 +452,21 @@ function currentData() {
   return { scenario, card, combo };
 }
 
+function getDataFor(scenarioKey = currentScenario, locationId = currentLocation) {
+  const scenarioSet = locationScenarioSets[locationId] || scenarios;
+  const scenario = scenarioSet[scenarioKey] || scenarioSet.max_benefit;
+  const cardIndex = scenario.recommendedIndex;
+  const card = cards[cardIndex];
+  const combo = scenario.combinations[cardIndex];
+  return { scenario, card, combo, cardIndex };
+}
+
 function currentLocationOption() {
   return locationOptions.find((option) => option.id === currentLocation) || locationOptions[0];
+}
+
+function getLocationOption(locationId) {
+  return locationOptions.find((option) => option.id === locationId) || locationOptions[0];
 }
 
 function cardAppName(card) {
@@ -639,7 +673,7 @@ function render() {
   fields.comboCoupon.closest(".combo-item").hidden = !hasUsableAsset(combo.coupon);
   fields.comboMembership.closest(".combo-item").hidden = !hasUsableAsset(combo.membership);
   fields.selectedCard.textContent = combo.insight;
-  fields.benefitText.textContent = benefitAmount;
+  fields.benefitText.textContent = formatBenefitDisplay(benefitAmount);
   fields.payCard.textContent = card.displayName;
   fields.payReason.textContent = combo.reason;
   fields.payBrand.textContent = card.issuer;
@@ -661,8 +695,9 @@ function renderLocationList() {
   const list = $("#locationList");
   list.innerHTML = locationOptions.map((option) => {
     const isCurrent = option.id === currentLocation;
+    const isPreview = option.id === previewLocation;
     return `
-      <button type="button" class="location-option ${isCurrent ? "is-selected" : ""}" data-location="${option.id}">
+      <button type="button" class="location-option ${isPreview ? "is-selected" : ""}" data-location="${option.id}">
         <div>
           <strong>${option.name}</strong>
           <span>${option.distance} · 인식 ${option.confidence}</span>
@@ -673,26 +708,86 @@ function renderLocationList() {
   }).join("");
   $$("#locationList .location-option").forEach((button) => {
     button.addEventListener("click", () => {
-      selectLocation(button.dataset.location);
+      previewLocationChange(button.dataset.location);
     });
   });
 }
 
-function selectLocation(locationId) {
+function previewLocationChange(locationId) {
   const option = locationOptions.find((item) => item.id === locationId);
   if (!option) return;
+  previewLocation = locationId;
+  renderLocationList();
+  renderLocationPreview();
+}
+
+function applyLocationChange() {
+  const option = locationOptions.find((item) => item.id === previewLocation);
+  if (!option) return;
+  const locationId = previewLocation;
   currentLocation = locationId;
   scenarios = locationScenarioSets[currentLocation];
   currentScenario = option.criterion;
   currentCardIndex = scenarios[currentScenario].recommendedIndex;
+  previewScenario = currentScenario;
   render();
   closeLocationSheet();
 }
 
+function previewScenarioChange(scenarioKey) {
+  if (!scenarios[scenarioKey]) return;
+  previewScenario = scenarioKey;
+  renderScenarioPreview();
+  syncScenarioControls();
+}
+
+function applyScenarioChange() {
+  if (!scenarios[previewScenario]) return;
+  currentScenario = previewScenario;
+  currentCardIndex = scenarios[currentScenario].recommendedIndex;
+  render();
+  closeSheet();
+  closeSettings();
+}
+
 function syncScenarioControls() {
   $$("[data-scenario]").forEach((item) => {
-    item.classList.toggle("is-selected", item.dataset.scenario === currentScenario);
+    item.classList.toggle("is-selected", item.dataset.scenario === previewScenario);
   });
+}
+
+function renderScenarioPreview() {
+  const next = getDataFor(previewScenario);
+  const current = currentData();
+  const nextBenefit = formatBenefitAmount(next.combo.benefit);
+  const currentBenefit = formatBenefitAmount(current.combo.benefit);
+  const isSame = previewScenario === currentScenario;
+  const title = isSame ? "현재 추천을 유지하고 있어요" : `${next.scenario.type}로 바꾸면`;
+  const text = isSame
+    ? `${current.card.displayName} · ${currentBenefit}`
+    : `${current.card.displayName} ${currentBenefit} → ${next.card.displayName} ${nextBenefit}`;
+
+  fields.criteriaPreviewTitle.textContent = title;
+  fields.criteriaPreviewText.textContent = text;
+  fields.settingsPreviewTitle.textContent = title;
+  fields.settingsPreviewText.textContent = text;
+  fields.applyCriteriaButton.disabled = isSame;
+  fields.applySettingsButton.disabled = isSame;
+}
+
+function renderLocationPreview() {
+  const option = getLocationOption(previewLocation);
+  const next = getDataFor(option.criterion, previewLocation);
+  const current = currentData();
+  const nextBenefit = formatBenefitAmount(next.combo.benefit);
+  const currentBenefit = formatBenefitAmount(current.combo.benefit);
+  const isSame = previewLocation === currentLocation;
+
+  fields.locationPreviewTitle.textContent = isSame ? "현재 매장을 유지하고 있어요" : `${option.name} 기준으로 바꾸면`;
+  fields.locationPreviewText.textContent = isSame
+    ? `${current.scenario.merchant} · ${current.card.displayName} · ${currentBenefit}`
+    : `${current.card.displayName} ${currentBenefit} → ${next.card.displayName} ${nextBenefit}`;
+  fields.applyLocationButton.disabled = isSame;
 }
 
 function setScreen(name) {
@@ -725,7 +820,7 @@ function setResultForMode(mode) {
       { label: "멤버십", value: "사용 안 함", state: "건너뜀" }
     ]);
     fields.resultProgressLabel.textContent = "이번 달 카드 실적";
-    fields.resultProgressValue.textContent = "68%";
+    fields.resultProgressValue.textContent = "340,000원/500,000원";
     fields.resultProgressBar.style.width = "68%";
     fields.resultNextHint.textContent = "추천 기준을 켜면 다음 혜택 구간을 함께 확인할 수 있어요";
     fields.resultCard.textContent = card.displayName;
@@ -733,7 +828,7 @@ function setResultForMode(mode) {
     return;
   }
 
-  const benefitAmount = combo.benefit.match(/[0-9,]+원/)?.[0] || combo.benefit;
+  const benefitAmount = formatBenefitAmount(combo.benefit);
   if (scenario.type.includes("조건 없는")) {
     fields.resultSummary.textContent = `${card.displayName}로 빠르게 결제했어요`;
     fields.resultBenefitAmount.textContent = combo.benefit;
@@ -752,6 +847,7 @@ function setResultForMode(mode) {
   }
 
   const progress = scenario.type.includes("실적") ? 72 : 84;
+  const progressText = scenario.type.includes("실적") ? "360,000원/500,000원" : "420,000원/500,000원";
   const nextAmount = scenario.type.includes("실적") ? "28,000원" : "16,000원";
 
   fields.resultSummary.textContent = `${combo.benefit}을 적용했어요`;
@@ -763,7 +859,7 @@ function setResultForMode(mode) {
     { label: "카드 혜택", value: combo.benefit, state: "예상" }
   ].filter((item) => item.state !== "없음"));
   fields.resultProgressLabel.textContent = "이번 달 카드 실적";
-  fields.resultProgressValue.textContent = `${progress}%`;
+  fields.resultProgressValue.textContent = progressText;
   fields.resultProgressBar.style.width = `${progress}%`;
   fields.resultNextHint.textContent = `다음 혜택 구간까지 ${nextAmount} 남았어요`;
   fields.resultCard.textContent = `${card.displayName} + ${combo.membership}`;
@@ -822,6 +918,9 @@ function openSheet() {
   closeSettings();
   closeLocationSheet();
   closeReason();
+  previewScenario = currentScenario;
+  renderScenarioPreview();
+  syncScenarioControls();
   $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").classList.add("is-open");
   $("#detailSheet").setAttribute("aria-hidden", "false");
@@ -842,6 +941,9 @@ function openSettings() {
   closeSheet();
   closeLocationSheet();
   closeReason();
+  previewScenario = currentScenario;
+  renderScenarioPreview();
+  syncScenarioControls();
   $("#settingsSheet").classList.add("is-open");
   $("#settingsSheet").setAttribute("aria-hidden", "false");
   updateScrim();
@@ -857,7 +959,9 @@ function openLocationSheet() {
   closeSheet();
   closeSettings();
   closeReason();
+  previewLocation = currentLocation;
   renderLocationList();
+  renderLocationPreview();
   $("#locationSheet").classList.add("is-open");
   $("#locationSheet").setAttribute("aria-hidden", "false");
   updateScrim();
@@ -898,10 +1002,7 @@ function closeOverlays() {
 
 $$("[data-scenario]").forEach((button) => {
   button.addEventListener("click", () => {
-    currentScenario = button.dataset.scenario;
-    currentCardIndex = scenarios[currentScenario].recommendedIndex;
-    render();
-    if (button.classList.contains("scenario")) closeSettings();
+    previewScenarioChange(button.dataset.scenario);
   });
 });
 
@@ -964,6 +1065,9 @@ $("#scrim").addEventListener("click", closeOverlays);
 $("#settingsButton").addEventListener("click", openSettings);
 $("#closeSettings").addEventListener("click", closeSettings);
 $("#closeLocationSheet").addEventListener("click", closeLocationSheet);
+$("#applyCriteriaButton").addEventListener("click", applyScenarioChange);
+$("#applySettingsButton").addEventListener("click", applyScenarioChange);
+$("#applyLocationButton").addEventListener("click", applyLocationChange);
 $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
