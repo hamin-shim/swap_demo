@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "qa": "node scripts/qa.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
+  }
+}

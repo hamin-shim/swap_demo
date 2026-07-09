@@ -293,19 +293,20 @@ button {
 
 .ai-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  grid-template-columns: minmax(112px, 0.82fr) minmax(0, 1fr);
   gap: 8px;
 }
 
 .ai-actions button {
   min-width: 0;
-  min-height: 42px;
+  min-height: 38px;
+  padding: 0 16px;
   border: 0;
-  border-radius: 13px;
+  border-radius: 12px;
   background: #111;
   color: #fff;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 650;
   white-space: nowrap;
 }
 
@@ -490,43 +491,32 @@ button {
 }
 
 .sheet-title button {
-  min-width: 32px;
-  width: 32px;
-  height: 32px;
-  margin-right: 4px;
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+  margin-right: -8px;
   border: 0;
   border-radius: 50%;
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: transparent;
+  color: #5f6876;
   font-size: 0;
+  display: grid;
+  place-items: center;
 }
 
 .sheet-close-button .material-symbols-rounded {
-  display: none;
+  display: block;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .sheet-close-button {
   position: relative;
 }
 
-.sheet-close-button::before,
-.sheet-close-button::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 15px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--blue);
-}
-
-.sheet-close-button::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.sheet-close-button::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
+.sheet-close-button:active {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .combo-stack {
@@ -753,8 +743,8 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-44%);
+  top: 124px;
+  transform: none;
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -767,6 +757,7 @@ button {
   color: rgba(255, 255, 255, 0.66);
   font-size: 12px;
   font-weight: 650;
+  order: 1;
 }
 
 .screen-pay[data-pay-step="payment"] .pay-flow-panel {
@@ -780,6 +771,7 @@ button {
   justify-content: space-between;
   gap: 12px;
   color: #fff;
+  order: 0;
 }
 
 .pay-step-meta span {
@@ -1480,6 +1472,73 @@ button {
   word-break: keep-all;
 }
 
+.reason-detail-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.reason-detail-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: #f7f8fb;
+}
+
+.reason-detail-row span {
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.reason-detail-row strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #20242b;
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reason-detail-row em {
+  color: var(--blue);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.reason-alternatives {
+  padding: 10px 11px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #edf0f4;
+}
+
+.reason-alternatives > span {
+  display: block;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.reason-alternatives p {
+  margin: 5px 0 0;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 560;
+  line-height: 1.35;
+}
+
+.reason-alternatives strong {
+  color: #20242b;
+  font-weight: 700;
+}
+
 .detail-quick {
   display: grid;
   gap: 9px;
@@ -1583,7 +1642,7 @@ button {
 
 .detail-criteria-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-top: 12px;
 }
@@ -1595,8 +1654,8 @@ button {
   border-radius: 14px;
   background: #fff;
   color: #6b7280;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .criteria-pill.is-selected {
@@ -1806,10 +1865,6 @@ button {
   color: var(--blue);
 }
 
-.location-preview {
-  margin-top: 12px;
-}
-
 .reason-popover {
   position: absolute;
   left: 50%;
@@ -1882,7 +1937,7 @@ button {
 
 .scenario-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1899,6 +1954,29 @@ button {
 }
 
 .scenario.is-selected {
+  background: #111;
+  color: #fff;
+}
+
+.setting-choice-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.setting-choice {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.setting-choice.is-selected {
   background: #111;
   color: #fff;
 }
