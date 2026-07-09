@@ -105,9 +105,16 @@ async function main() {
       top: document.querySelector("#payTabs").innerText,
       title: document.querySelector("#payStepTitle").innerText,
       button: document.querySelector("#completeButton").innerText,
-      membershipMentions: document.body.innerText.match(/멤버십 적립/g)?.length || 0
+      membershipMentions: document.body.innerText.match(/멤버십 적립/g)?.length || 0,
+      overlayVisible: getComputedStyle(document.querySelector(".pay-overlay")).display !== "none",
+      activeStepWidth: Math.round(document.querySelector(".pay-step-button.is-active").getBoundingClientRect().width),
+      panelWidth: Math.round(document.querySelector("#payFlowPanel").getBoundingClientRect().width),
+      titleVisible: getComputedStyle(document.querySelector("#payStepTitle")).display !== "none"
     }));
     await assert(payCopy.top === "혜택 순서", "pay top copy mismatch");
+    await assert(!payCopy.overlayVisible, "pay overlay should be hidden to avoid duplicated card explanation");
+    await assert(!payCopy.titleVisible, "pay step title should be hidden next to progress badge");
+    await assert(payCopy.activeStepWidth < payCopy.panelWidth * 0.55, "single pay step should not fill the full panel width");
     await assert(!/이어서|이제/.test(payCopy.title), "pay title should avoid repeated transition words");
     await assert(payCopy.membershipMentions === 0, "visible membership wording is too repetitive");
 
