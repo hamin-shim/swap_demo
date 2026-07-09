@@ -332,7 +332,7 @@ let didDrag = false;
 let nfcTimerId = null;
 let nfcRemaining = 50;
 let nfcWasPaymentStep = false;
-let detailDragStartY = 0;
+let sheetDrag = null;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -1058,9 +1058,11 @@ function advancePaymentFlow() {
 }
 
 function closeSheet() {
-  $("#detailSheet").classList.remove("is-open");
-  $("#detailSheet").classList.remove("is-expanded");
-  $("#detailSheet").setAttribute("aria-hidden", "true");
+  const sheet = $("#detailSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.remove("is-open");
+  sheet.classList.remove("is-expanded");
+  sheet.setAttribute("aria-hidden", "true");
   updateScrim();
 }
 
@@ -1071,9 +1073,11 @@ function openSheet() {
   previewScenario = currentScenario;
   renderScenarioPreview();
   syncScenarioControls();
-  $("#detailSheet").classList.remove("is-expanded");
-  $("#detailSheet").classList.add("is-open");
-  $("#detailSheet").setAttribute("aria-hidden", "false");
+  const sheet = $("#detailSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.remove("is-expanded");
+  sheet.classList.add("is-open");
+  sheet.setAttribute("aria-hidden", "false");
   updateScrim();
 }
 
@@ -1082,8 +1086,10 @@ function expandDetailSheet() {
 }
 
 function closeSettings() {
-  $("#settingsSheet").classList.remove("is-open");
-  $("#settingsSheet").setAttribute("aria-hidden", "true");
+  const sheet = $("#settingsSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.remove("is-open");
+  sheet.setAttribute("aria-hidden", "true");
   updateScrim();
 }
 
@@ -1094,14 +1100,18 @@ function openSettings() {
   previewScenario = currentScenario;
   renderScenarioPreview();
   syncScenarioControls();
-  $("#settingsSheet").classList.add("is-open");
-  $("#settingsSheet").setAttribute("aria-hidden", "false");
+  const sheet = $("#settingsSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.add("is-open");
+  sheet.setAttribute("aria-hidden", "false");
   updateScrim();
 }
 
 function closeLocationSheet() {
-  $("#locationSheet").classList.remove("is-open");
-  $("#locationSheet").setAttribute("aria-hidden", "true");
+  const sheet = $("#locationSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.remove("is-open");
+  sheet.setAttribute("aria-hidden", "true");
   updateScrim();
 }
 
@@ -1112,8 +1122,10 @@ function openLocationSheet() {
   previewLocation = currentLocation;
   renderLocationList();
   updateLocationApplyState();
-  $("#locationSheet").classList.add("is-open");
-  $("#locationSheet").setAttribute("aria-hidden", "false");
+  const sheet = $("#locationSheet");
+  resetSheetDrag(sheet);
+  sheet.classList.add("is-open");
+  sheet.setAttribute("aria-hidden", "false");
   updateScrim();
 }
 
@@ -1138,6 +1150,7 @@ function updateScrim() {
 }
 
 function closeOverlays() {
+  [$("#detailSheet"), $("#settingsSheet"), $("#locationSheet")].forEach((sheet) => resetSheetDrag(sheet));
   $("#detailSheet").classList.remove("is-open");
   $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").setAttribute("aria-hidden", "true");
@@ -1148,6 +1161,88 @@ function closeOverlays() {
   $("#reasonPopover").classList.remove("is-open");
   $("#reasonPopover").setAttribute("aria-hidden", "true");
   updateScrim();
+}
+
+function resetSheetDrag(sheet) {
+  if (!sheet) return;
+  sheet.classList.remove("is-dragging");
+  sheet.style.removeProperty("--sheet-drag-y");
+  $("#scrim").style.removeProperty("opacity");
+}
+
+function closeSheetByElement(sheet) {
+  if (sheet.id === "detailSheet") closeSheet();
+  else if (sheet.id === "settingsSheet") closeSettings();
+  else if (sheet.id === "locationSheet") closeLocationSheet();
+}
+
+function startSheetDrag(sheet, handle, event) {
+  if (!sheet.classList.contains("is-open")) return;
+  if (sheetDrag) return;
+  event.preventDefault();
+  const point = event.touches?.[0] || event;
+  sheetDrag = {
+    sheet,
+    startY: point.clientY,
+    lastY: point.clientY,
+    startedAt: performance.now()
+  };
+  sheet.classList.add("is-dragging");
+  try {
+    if (event.pointerId !== undefined) handle.setPointerCapture(event.pointerId);
+  } catch {
+    // Some synthetic QA events do not support pointer capture.
+  }
+}
+
+function moveSheetDrag(event) {
+  if (!sheetDrag) return;
+  event.preventDefault();
+  const point = event.touches?.[0] || event;
+  const deltaY = Math.max(0, point.clientY - sheetDrag.startY);
+  sheetDrag.lastY = point.clientY;
+  sheetDrag.sheet.style.setProperty("--sheet-drag-y", `${deltaY}px`);
+  const progress = Math.min(deltaY / 240, 1);
+  $("#scrim").style.opacity = String(1 - progress * 0.65);
+}
+
+function endSheetDrag(event) {
+  if (!sheetDrag) return;
+  event.preventDefault();
+  const point = event.changedTouches?.[0] || event;
+  const deltaY = Math.max(0, point.clientY - sheetDrag.startY);
+  const elapsed = Math.max(performance.now() - sheetDrag.startedAt, 1);
+  const velocity = deltaY / elapsed;
+  const shouldClose = deltaY > 90 || velocity > 0.65;
+  const { sheet } = sheetDrag;
+  sheetDrag = null;
+
+  sheet.classList.remove("is-dragging");
+  if (shouldClose) {
+    sheet.style.setProperty("--sheet-drag-y", "105%");
+    window.setTimeout(() => closeSheetByElement(sheet), 120);
+    return;
+  }
+
+  resetSheetDrag(sheet);
+}
+
+function attachSheetDrag() {
+  $$(".bottom-sheet").forEach((sheet) => {
+    const handle = sheet.querySelector(".sheet-handle");
+    if (!handle) return;
+    handle.addEventListener("pointerdown", (event) => startSheetDrag(sheet, handle, event));
+    handle.addEventListener("mousedown", (event) => startSheetDrag(sheet, handle, event));
+    handle.addEventListener("touchstart", (event) => startSheetDrag(sheet, handle, event), { passive: false });
+  });
+  window.addEventListener("pointermove", moveSheetDrag, { passive: false });
+  window.addEventListener("pointerup", endSheetDrag, { passive: false });
+  window.addEventListener("pointercancel", endSheetDrag, { passive: false });
+  window.addEventListener("mousemove", moveSheetDrag, { passive: false });
+  window.addEventListener("mouseup", endSheetDrag, { passive: false });
+  window.addEventListener("touchmove", moveSheetDrag, { passive: false });
+  window.addEventListener("touchend", endSheetDrag, { passive: false });
+  window.addEventListener("touchcancel", endSheetDrag, { passive: false });
 }
 
 $$("[data-scenario]").forEach((button) => {
@@ -1200,15 +1295,6 @@ $("#whyButton").addEventListener("click", openSheet);
 $("#changePlaceButton").addEventListener("click", openLocationSheet);
 $("#closeSheet").addEventListener("click", closeSheet);
 $("#expandDetailButton").addEventListener("click", expandDetailSheet);
-$("#detailSheet .sheet-handle").addEventListener("click", expandDetailSheet);
-$("#detailSheet .sheet-handle").addEventListener("pointerdown", (event) => {
-  detailDragStartY = event.clientY;
-  event.currentTarget.setPointerCapture(event.pointerId);
-});
-$("#detailSheet .sheet-handle").addEventListener("pointerup", (event) => {
-  if (detailDragStartY - event.clientY > 24) expandDetailSheet();
-  detailDragStartY = 0;
-});
 $("#reasonButton").addEventListener("click", openReason);
 $("#reasonPopover").addEventListener("click", (event) => event.stopPropagation());
 $("#scrim").addEventListener("click", closeOverlays);
@@ -1227,4 +1313,5 @@ $("#plannerButton").addEventListener("click", () => setScreen("wallet"));
 window.addEventListener("resize", () => updateCardPosition());
 
 attachSwipe();
+attachSheetDrag();
 render();

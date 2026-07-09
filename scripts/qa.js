@@ -48,6 +48,24 @@ async function main() {
     await assert(initial.primary === "추천 보기", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
 
+    await page.evaluate(() => document.querySelector("#settingsButton").click());
+    await sleep(150);
+    const dragState = await page.evaluate(() => {
+      const handle = document.querySelector("#settingsSheet .sheet-handle");
+      const box = handle.getBoundingClientRect();
+      const x = box.left + box.width / 2;
+      const y = box.top + box.height / 2;
+      handle.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 1, clientX: x, clientY: y }));
+      window.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, cancelable: true, pointerId: 1, clientX: x, clientY: y + 150 }));
+      const transformDuringDrag = getComputedStyle(document.querySelector("#settingsSheet")).transform;
+      window.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 1, clientX: x, clientY: y + 150 }));
+      return { transformDuringDrag };
+    });
+    await sleep(250);
+    const settingsClosedByDrag = await page.evaluate(() => !document.querySelector("#settingsSheet").classList.contains("is-open"));
+    await assert(dragState.transformDuringDrag !== "matrix(1, 0, 0, 1, 0, 0)", "settings sheet should follow the drag before closing");
+    await assert(settingsClosedByDrag, "settings sheet should close when dragged down from handle");
+
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
     const criteria = await page.evaluate(() => Array.from(document.querySelectorAll("#detailSheet .criteria-pill")).map((item) => item.innerText));
