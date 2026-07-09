@@ -1222,6 +1222,7 @@ $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
+$("#resultDoneButton").addEventListener("click", () => setScreen("wallet"));
 $("#plannerButton").addEventListener("click", () => setScreen("wallet"));
 window.addEventListener("resize", () => updateCardPosition());
 

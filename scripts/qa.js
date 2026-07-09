@@ -99,10 +99,26 @@ async function main() {
     await sleep(200);
     const result = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
-      rows: document.querySelectorAll(".result-status-row").length
+      rows: document.querySelectorAll(".result-status-row").length,
+      canScroll: document.querySelector(".screen-result").scrollHeight > document.querySelector(".screen-result").clientHeight,
+      doneText: document.querySelector("#resultDoneButton").innerText
     }));
     await assert(result.screen === "result", "result screen did not open");
     await assert(result.rows >= 3, "result rows should render from benefit breakdown");
+    await assert(result.doneText === "완료", "result done button is missing");
+
+    await page.evaluate(() => {
+      const resultScreen = document.querySelector(".screen-result");
+      resultScreen.scrollTop = resultScreen.scrollHeight;
+    });
+    await sleep(100);
+    const scrolled = await page.evaluate(() => document.querySelector(".screen-result").scrollTop > 0);
+    await assert(scrolled || !result.canScroll, "result screen should scroll when content is taller than viewport");
+
+    await page.evaluate(() => document.querySelector("#resultDoneButton").click());
+    await sleep(100);
+    const backToWallet = await page.evaluate(() => document.querySelector(".screen.is-active").dataset.screen);
+    await assert(backToWallet === "wallet", "result done button should return to wallet");
 
     console.log("QA passed");
   } finally {
