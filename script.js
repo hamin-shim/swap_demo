@@ -440,6 +440,7 @@ const fields = {
   nfcStatus: $("#nfcStatus"),
   completeButton: $("#completeButton"),
   resultSummary: $("#resultSummary"),
+  resultBenefitCard: $("#resultBenefitCard"),
   resultBenefitLabel: $("#resultBenefitLabel"),
   resultBenefitAmount: $("#resultBenefitAmount"),
   resultLearning: $("#resultLearning"),
@@ -1325,6 +1326,7 @@ function setResultForMode(mode) {
   fields.plannerButton.textContent = `${appName}에서 확인`;
   fields.cardAppNote.textContent = `${appName}에서 청구할인, 남은 한도, 실적 포함 여부를 최종 확인할 수 있어요.`;
   if (mode === "card") {
+    fields.resultBenefitCard.hidden = false;
     fields.resultSummary.textContent = `${card.displayName}로 결제했어요`;
     fields.resultBenefitLabel.textContent = "이번 결제 방식";
     fields.resultBenefitAmount.textContent = "기본 결제";
@@ -1345,6 +1347,7 @@ function setResultForMode(mode) {
 
   const progress = progressReportFor(scenario);
   const benefitAmount = resultBenefitFor(scenario, combo, progress);
+  fields.resultBenefitCard.hidden = !scenario.type.includes("실적");
   fields.resultBenefitLabel.textContent = scenario.type.includes("실적") ? "이번 결제 후 실적" : "이번 결제 예상 혜택";
   fields.resultSummary.textContent = scenario.type.includes("실적")
     ? "다음 혜택 조건에 가까워졌어요"
