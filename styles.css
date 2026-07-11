@@ -897,9 +897,11 @@ button {
   top: 142px;
   transform: none;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   min-width: 0;
   padding: 0 24px;
+  box-sizing: border-box;
   color: #111;
 }
 
@@ -934,6 +936,8 @@ button {
 }
 
 .pay-stack-list {
+  width: 100%;
+  justify-self: stretch;
   display: flex;
   justify-content: center;
   align-items: center;
