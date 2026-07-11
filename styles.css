@@ -936,7 +936,7 @@ button {
 }
 
 .pay-flow-panel.is-direct-card-pay {
-  top: 132px;
+  top: 118px;
 }
 
 .pay-flow-panel.is-direct-card-pay .pay-step-meta,
@@ -1037,6 +1037,38 @@ button {
 
 .pay-code-card[hidden] {
   display: none;
+}
+
+.pay-flow-panel.is-direct-card-pay .pay-code-card {
+  width: min(100%, 342px);
+  justify-self: center;
+  min-height: 126px;
+  padding: 14px 18px 13px;
+  border-radius: 22px;
+}
+
+.pay-flow-panel.is-direct-card-pay .pay-code-card span {
+  font-size: 11px;
+}
+
+.pay-flow-panel.is-direct-card-pay .pay-code-card strong {
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.pay-flow-panel.is-direct-card-pay .barcode {
+  height: 36px;
+  margin: 11px 0 6px;
+}
+
+.pay-flow-panel.is-direct-card-pay .pay-code-card em {
+  font-size: 11px;
+}
+
+.pay-flow-panel.is-direct-card-pay .pay-extra-toggle {
+  min-height: 30px;
+  margin-top: 9px;
+  font-size: 11px;
 }
 
 .pay-code-card span {
@@ -1319,6 +1351,10 @@ button {
 
 .screen-pay[data-pay-step="payment"] .pay-nfc-panel {
   display: grid;
+}
+
+.screen-pay[data-pay-mode="card"][data-pay-step="payment"] .pay-nfc-panel {
+  top: 310px;
 }
 
 .pay-rings {
