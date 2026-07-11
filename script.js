@@ -17,7 +17,8 @@ const cards = [
     issuer: "SHINHAN",
     name: "Deep Oil",
     displayName: "신한 Deep Oil",
-    bg: "linear-gradient(135deg, #1251f5 0%, #1988ff 100%)"
+    bg: "linear-gradient(135deg, #1251f5 0%, #1988ff 100%)",
+    image: "./assets/card/Sinhan%20oil.png"
   },
   {
     issuer: "HYUNDAI",
