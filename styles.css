@@ -1824,6 +1824,10 @@ button {
   overflow: hidden;
 }
 
+#detailSheet.is-expanded .detail-quick {
+  margin-bottom: 18px;
+}
+
 .detail-expanded {
   display: none;
 }
@@ -1837,7 +1841,7 @@ button {
 }
 
 #detailSheet .benefit-summary {
-  margin: 12px 0 8px;
+  margin: 0 0 10px;
   color: #8a93a3;
   font-size: 17px;
   font-weight: 600;
