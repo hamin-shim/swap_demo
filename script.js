@@ -430,8 +430,23 @@ function formatReasonLead(reason) {
   return lead || reason;
 }
 
-function formatPrimaryAction(benefitAmount) {
-  return benefitAmount.includes("/") ? "실적 보기" : "추천 보기";
+function formatCardBenefitCta(scenario, combo) {
+  if (!combo) return "혜택 확인";
+  if (scenario.type.includes("마일")) return combo.benefit.includes("마일") ? combo.benefit.replace(" 적립 예상", "") : "마일리지 확인";
+  if (scenario.type.includes("실적")) {
+    if (combo.benefit.includes("388,000원/400,000원")) return "실적 12,000원 남음";
+    if (combo.benefit.includes("/")) return formatBenefitDisplay(formatBenefitAmount(combo.benefit));
+    return "실적 반영 확인";
+  }
+  if (combo.benefit.includes("혜택 확인")) return "조건 확인";
+  if (combo.benefit.includes("남은 주유 한도")) return combo.benefit.replace("남은 주유 한도 ", "한도 ");
+  if (combo.benefit.includes("남은 한도")) return combo.benefit.replace("남은 한도 ", "한도 ");
+  const amount = formatBenefitAmount(combo.benefit);
+  return amount.match(/[0-9,]+원/) ? `${amount} 할인 예상` : "혜택 확인";
+}
+
+function formatPrimaryAction(scenario, combo) {
+  return formatCardBenefitCta(scenario, combo);
 }
 
 function formatBenefitDisplay(benefitAmount) {
@@ -798,7 +813,7 @@ function renderCards() {
           <div class="mastercard"><span></span><span></span></div>
         </div>
       `}
-      ${index === currentCardIndex ? `<span class="card-badge">${index === recommendedIndex ? "추천" : "선택"}</span>` : ""}
+      ${index === currentCardIndex ? `<span class="card-badge">${formatCardBenefitCta(scenarios[currentScenario], scenarios[currentScenario].combinations[index])}</span>` : ""}
     </article>
   `).join("");
 
@@ -835,7 +850,7 @@ function render() {
   const location = currentLocationOption();
 
   fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
-  fields.whyButton.textContent = formatPrimaryAction(benefitAmount);
+  fields.whyButton.textContent = formatPrimaryAction(scenario, combo);
   fields.changePlaceButton.textContent = "다른 매장이에요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
   fields.reasonText.textContent = compactCopy(formatReasonLead(combo.reason));

@@ -294,20 +294,20 @@ button {
 
 .ai-actions {
   display: grid;
-  grid-template-columns: minmax(112px, 0.82fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.42fr) minmax(0, 0.92fr);
   gap: 8px;
 }
 
 .ai-actions button {
   min-width: 0;
-  min-height: 38px;
-  padding: 0 16px;
+  min-height: 42px;
+  padding: 0 14px;
   border: 0;
   border-radius: 12px;
   background: #111;
   color: #fff;
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 13.5px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -461,12 +461,16 @@ button {
   right: 10px;
   top: 10px;
   z-index: 2;
-  padding: 7px 9px;
-  border-radius: 999px;
+  max-width: calc(100% - 20px);
+  padding: 7px 10px;
+  border-radius: 14px;
   background: var(--blue);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+  word-break: keep-all;
   box-shadow: 0 8px 18px rgba(40, 120, 255, 0.3);
 }
 

@@ -49,7 +49,7 @@ async function main() {
       bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
     }));
     await assert(initial.appHeight === initial.viewport, "S26 viewport height mismatch");
-    await assert(initial.primary === "추천 보기", "primary recommendation CTA mismatch");
+    await assert(initial.primary === "4,500원 할인 예상", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
     await assert(initial.merchant.includes("GS칼텍스"), "default merchant should be GS Caltex");
     await assert(initial.homeIndicators === 0, "OS home indicator should not be implemented inside the page");
@@ -93,6 +93,22 @@ async function main() {
     });
     await assert(expandedByDrag.transformDuringDrag !== "matrix(1, 0, 0, 1, 0, 0)", "detail sheet should follow upward handle drag");
     await assert(expandedByDrag.expanded, "detail sheet should expand when dragged up from handle");
+
+    await page.evaluate(() => document.querySelector("#closeSheet").click());
+    await sleep(100);
+    await page.evaluate(() => document.querySelector(".payment-card[data-index='2']").click());
+    await sleep(100);
+    const selectedCardCta = await page.evaluate(() => ({
+      primary: document.querySelector("#whyButton").innerText,
+      badge: document.querySelector(".payment-card[data-index='2'] .card-badge")?.innerText
+    }));
+    await assert(selectedCardCta.primary === "조건 확인", "selected card CTA should summarize its benefit condition");
+    await assert(selectedCardCta.badge === "조건 확인", "selected card badge should match its benefit condition");
+
+    await page.evaluate(() => document.querySelector("#whyButton").click());
+    await sleep(150);
+    await page.evaluate(() => document.querySelector("#detailSheet .criteria-pill[data-scenario='max_benefit']").click());
+    await sleep(50);
 
     const criteria = await page.evaluate(() => Array.from(document.querySelectorAll("#detailSheet .criteria-pill")).map((item) => item.innerText));
     await assert(criteria.join(",") === "혜택,마일리지,실적", "detail criteria should be 3 options");
