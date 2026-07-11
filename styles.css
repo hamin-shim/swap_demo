@@ -907,11 +907,6 @@ button {
   display: none;
 }
 
-.screen-pay[data-pay-step="payment"] .pay-flow-panel {
-  top: 156px;
-  transform: none;
-}
-
 .pay-step-meta {
   display: grid;
   align-items: center;
