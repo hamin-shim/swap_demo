@@ -807,6 +807,25 @@ function buildCouponStep(value) {
   };
 }
 
+function shouldCombineBenefitStep(combo) {
+  return hasUsableAsset(combo.coupon)
+    && hasUsableAsset(combo.membership)
+    && combo.coupon.includes("M포인트")
+    && combo.membership.includes("해피포인트");
+}
+
+function buildCombinedBenefitStep(combo) {
+  return {
+    type: "benefit",
+    label: "적립/쿠폰",
+    title: "M포인트 사용과 해피포인트 적립",
+    value: `${compactCopy(combo.coupon)} + ${displayAsset(combo.membership)}`,
+    code: "3108 2407 1142",
+    guide: "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요.",
+    button: "적립/쿠폰 사용 완료"
+  };
+}
+
 function startNfcTimer() {
   stopNfcTimer();
   nfcRemaining = 50;
@@ -839,11 +858,13 @@ function buildPaySteps(mode = currentPayMode) {
     }];
   }
 
-  if (hasUsableAsset(combo.coupon)) {
+  if (shouldCombineBenefitStep(combo)) {
+    steps.push(buildCombinedBenefitStep(combo));
+  } else if (hasUsableAsset(combo.coupon)) {
     steps.push(buildCouponStep(combo.coupon));
   }
 
-  if (hasUsableAsset(combo.membership)) {
+  if (!shouldCombineBenefitStep(combo) && hasUsableAsset(combo.membership)) {
     steps.push({
       type: "membership",
       label: "적립",

@@ -206,6 +206,7 @@ async function main() {
       stepType: document.querySelector("#payStepType").innerText,
       stepCode: document.querySelector("#payStepCode").innerText,
       barcodeVisible: getComputedStyle(document.querySelector(".barcode")).display !== "none",
+      steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
       membershipMentions: document.body.innerText.match(/멤버십 적립/g)?.length || 0,
       overlayVisible: getComputedStyle(document.querySelector(".pay-overlay")).display !== "none",
       activeStepWidth: Math.round(document.querySelector(".pay-step-button.is-active").getBoundingClientRect().width),
@@ -213,16 +214,17 @@ async function main() {
       titleVisible: getComputedStyle(document.querySelector("#payStepTitle")).display !== "none"
     }));
     await assert(payCopy.top === "혜택 순서", "pay top copy mismatch");
-    await assert(payCopy.stepType === "포인트", "M point step should be labeled as point use");
-    await assert(payCopy.stepCode === "직원 또는 키오스크에서 선택", "M point step should explain staff or kiosk selection");
-    await assert(!payCopy.barcodeVisible, "M point step should not show a barcode");
+    await assert(payCopy.steps === "1 적립/쿠폰,2 결제", "Baskin Robbins should combine coupon and membership before payment");
+    await assert(payCopy.stepType === "적립/쿠폰", "combined benefit step should be labeled as coupon and membership use");
+    await assert(payCopy.stepCode === "3108 2407 1142", "combined benefit step should show Happy Point barcode number");
+    await assert(payCopy.barcodeVisible, "combined benefit step should show a barcode");
     await assert(!payCopy.overlayVisible, "pay overlay should be hidden to avoid duplicated card explanation");
     await assert(!payCopy.titleVisible, "pay step title should be hidden next to progress badge");
     await assert(payCopy.activeStepWidth < payCopy.panelWidth * 0.55, "single pay step should not fill the full panel width");
     await assert(!/이어서|이제/.test(payCopy.title), "pay title should avoid repeated transition words");
     await assert(payCopy.membershipMentions === 0, "visible membership wording is too repetitive");
 
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 2; i += 1) {
       await page.evaluate(() => document.querySelector("#completeButton").click());
       await sleep(150);
     }
