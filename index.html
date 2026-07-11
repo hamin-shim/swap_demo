@@ -16,13 +16,20 @@
       <div class="screen screen-wallet is-active" data-screen="wallet">
         <div class="status-bar">
           <div class="status-left">
-            <strong>2:22</strong>
+            <span class="carrier">KT</span>
+            <strong>12:45</strong>
+            <span class="status-notification material-symbols-rounded" aria-hidden="true">fingerprint</span>
+            <span class="status-notification material-symbols-rounded" aria-hidden="true">apps</span>
+            <span class="talk-badge" aria-hidden="true">TALK</span>
+            <span class="status-dot" aria-hidden="true"></span>
           </div>
           <div class="status-right">
+            <span class="status-sound material-symbols-rounded" aria-hidden="true">vibration</span>
+            <span class="hd-badge" aria-hidden="true">HD</span>
             <span class="network-type">5G</span>
+            <span class="status-wifi" aria-hidden="true"><i></i></span>
             <span class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-            <span class="wifi-icon" aria-hidden="true"><i></i></span>
-            <span class="battery-icon" aria-label="배터리 83%"><i></i></span>
+            <span class="battery-icon" aria-label="배터리 84%"><i>84</i></span>
           </div>
         </div>
 
@@ -30,14 +37,19 @@
           <h1>Samsung Wallet</h1>
           <div class="header-actions">
             <button type="button" class="icon-button" aria-label="추가"><span class="material-symbols-rounded" aria-hidden="true">add</span></button>
+            <button type="button" class="icon-button notice-button" aria-label="공지"><span class="material-symbols-rounded" aria-hidden="true">campaign</span><i aria-hidden="true"></i></button>
             <button type="button" class="icon-button" id="settingsButton" aria-label="더보기"><span class="material-symbols-rounded" aria-hidden="true">more_vert</span></button>
           </div>
         </header>
 
-        <section class="ai-pill" aria-live="polite">
-          <img class="galaxy-ai-logo" src="./galaxyAI_logo.webp" alt="Galaxy AI">
+        <section class="ai-pill" id="swapAssist" aria-live="polite">
+          <button type="button" class="ai-minimize-button" id="swapToggleButton" aria-label="SWAP 추천 접기" aria-expanded="true">
+            <span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_up</span>
+          </button>
+          <img class="galaxy-ai-logo" src="./assets/galaxyAI_logo.webp" alt="Galaxy AI">
           <div class="ai-copy">
-            <span id="merchantName">Olive Young</span>
+            <span id="merchantName">GS칼텍스 삼평주유소</span>
+            <small id="swapMinimizedText">결제 추천 다시 켜기</small>
           </div>
           <div class="ai-actions">
             <button type="button" id="whyButton">추천 보기</button>
@@ -51,7 +63,22 @@
         </section>
 
         <button type="button" class="wallet-pay-button" id="walletPayButton">이 카드로 결제</button>
-        <p class="swipe-hint">혜택은 결제 전에 한 번 더 확인할 수 있어요</p>
+        <p class="swipe-hint" id="walletHint">혜택은 결제 전에 한 번 더 확인할 수 있어요</p>
+        <nav class="wallet-tabbar" aria-label="Samsung Wallet 홈 메뉴">
+          <button type="button" class="wallet-tab">
+            <span class="material-symbols-rounded" aria-hidden="true">paid</span>
+            <em>혜택</em>
+          </button>
+          <button type="button" class="wallet-tab is-active">
+            <span class="material-symbols-rounded" aria-hidden="true">credit_card</span>
+            <em>빠른 실행</em>
+          </button>
+          <button type="button" class="wallet-tab">
+            <span class="material-symbols-rounded" aria-hidden="true">apps</span>
+            <em>전체</em>
+            <i aria-hidden="true"></i>
+          </button>
+        </nav>
       </div>
 
       <div class="screen screen-pay" data-screen="pay">
@@ -86,7 +113,7 @@
             <span></span>
           </div>
           <article class="payment-card pay-card-rotated">
-            <img class="card-asset" id="payCardImage" src="./2964card_1.png" alt="KB국민 NEED Pay 카드">
+            <img class="card-asset" id="payCardImage" src="./assets/card/Kb%20need%20pay.png" alt="KB국민 NEED Pay 카드">
             <div class="card-sheen"></div>
             <div class="card-content">
               <span class="brand" id="payBrand">SHINHAN</span>
