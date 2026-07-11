@@ -313,6 +313,7 @@ async function main() {
       screen: document.querySelector(".screen.is-active").dataset.screen,
       rows: document.querySelectorAll(".result-status-row").length,
       summary: document.querySelector("#resultSummary").innerText,
+      benefitCardHidden: document.querySelector("#resultBenefitCard").hidden,
       nextHint: document.querySelector("#resultNextHint").innerText,
       canScroll: document.querySelector(".screen-result").scrollHeight > document.querySelector(".screen-result").clientHeight,
       doneText: document.querySelector("#resultDoneButton").innerText
@@ -320,6 +321,7 @@ async function main() {
     await assert(result.screen === "result", "result screen did not open");
     await assert(result.rows >= 3, "result rows should render from benefit breakdown");
     await assert(result.summary.includes("아꼈어요"), "result should emphasize saved benefit");
+    await assert(result.benefitCardHidden, "discount result should hide duplicated expected benefit card");
     await assert(result.nextHint.includes("8,000원"), "Baskin Robbins result should show remaining lifestyle performance amount");
     await assert(result.doneText === "완료", "result done button is missing");
 
