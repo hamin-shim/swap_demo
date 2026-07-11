@@ -44,6 +44,10 @@ async function main() {
       primary: document.querySelector("#whyButton").innerText,
       secondary: document.querySelector("#changePlaceButton").innerText,
       merchant: document.querySelector("#merchantName").innerText,
+      time: document.querySelector(".status-left strong").innerText,
+      tabs: Array.from(document.querySelectorAll(".wallet-tab em")).map((item) => item.innerText).join(","),
+      activeTab: document.querySelector(".wallet-tab.is-active em").innerText,
+      noticeButtons: document.querySelectorAll(".notice-button").length,
       homeIndicators: document.querySelectorAll(".home-indicator").length,
       bodyOverflowY: getComputedStyle(document.body).overflowY,
       bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
@@ -52,9 +56,32 @@ async function main() {
     await assert(initial.primary === "4,500원 할인 예상", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
     await assert(initial.merchant.includes("GS칼텍스"), "default merchant should be GS Caltex");
+    await assert(initial.time === "12:45", "status bar time should match Galaxy mock time");
+    await assert(initial.tabs === "혜택,빠른 실행,전체", "wallet bottom tabs mismatch");
+    await assert(initial.activeTab === "빠른 실행", "wallet quick launch tab should be active");
+    await assert(initial.noticeButtons === 1, "wallet header should include notice action");
     await assert(initial.homeIndicators === 0, "OS home indicator should not be implemented inside the page");
     await assert(initial.bodyOverflowY !== "hidden", "body vertical overflow should not block browser pull-to-refresh");
     await assert(initial.bodyOverscrollY !== "none", "body overscroll should not block browser pull-to-refresh");
+
+    await page.evaluate(() => document.querySelector("#swapToggleButton").click());
+    await sleep(150);
+    const minimized = await page.evaluate(() => ({
+      minimized: document.querySelector("#swapAssist").classList.contains("is-minimized"),
+      expanded: document.querySelector("#swapToggleButton").getAttribute("aria-expanded"),
+      text: document.querySelector("#swapMinimizedText").innerText,
+      actionsVisible: getComputedStyle(document.querySelector(".ai-actions")).display !== "none",
+      badgeCount: document.querySelectorAll(".card-badge").length,
+      hint: document.querySelector("#walletHint").innerText
+    }));
+    await assert(minimized.minimized, "SWAP assist should enter minimized state");
+    await assert(minimized.expanded === "false", "minimized SWAP assist should expose collapsed aria state");
+    await assert(minimized.text === "결제 추천 다시 켜기", "minimized SWAP copy mismatch");
+    await assert(!minimized.actionsVisible, "recommendation actions should be hidden when minimized");
+    await assert(minimized.badgeCount === 0, "card recommendation badge should be hidden when minimized");
+    await assert(minimized.hint === "추천 없이 선택한 카드로 결제할 수 있어요", "minimized wallet hint mismatch");
+    await page.evaluate(() => document.querySelector("#swapToggleButton").click());
+    await sleep(150);
 
     await page.evaluate(() => document.querySelector("#settingsButton").click());
     await sleep(150);
@@ -103,7 +130,7 @@ async function main() {
       badge: document.querySelector(".payment-card[data-index='2'] .card-badge")?.innerText
     }));
     await assert(selectedCardCta.primary === "조건 확인", "selected card CTA should summarize its benefit condition");
-    await assert(selectedCardCta.badge === "조건 확인", "selected card badge should match its benefit condition");
+    await assert(selectedCardCta.badge === "선택", "selected non-recommended card badge should show selected state");
 
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
@@ -141,12 +168,44 @@ async function main() {
     await page.evaluate(() => document.querySelector("#applyLocationButton").click());
     await sleep(150);
 
+    await page.evaluate(() => document.querySelector("#changePlaceButton").click());
+    await sleep(150);
+    await page.evaluate(() => document.querySelector(".location-option[data-location='baskin']").click());
+    await sleep(100);
+    await page.evaluate(() => document.querySelector("#applyLocationButton").click());
+    await sleep(150);
+    const baskinState = await page.evaluate(() => ({
+      merchant: document.querySelector("#merchantName").innerText,
+      primary: document.querySelector("#whyButton").innerText,
+      badge: document.querySelector(".payment-card[data-index='3'] .card-badge")?.innerText
+    }));
+    await assert(baskinState.merchant.includes("배스킨라빈스"), "Baskin Robbins merchant should render after location change");
+    await assert(baskinState.primary === "7,300원 할인 예상", "Baskin Robbins primary CTA mismatch");
+    await assert(baskinState.badge === "추천", "Baskin Robbins recommended card badge mismatch");
+    await page.evaluate(() => document.querySelector("#whyButton").click());
+    await sleep(150);
+    const baskinCombo = await page.evaluate(() => ({
+      card: document.querySelector("#comboCard").innerText,
+      coupon: document.querySelector("#comboCoupon").innerText,
+      membership: document.querySelector("#comboMembership").innerText,
+      benefit: document.querySelector("#benefitText").innerText
+    }));
+    await assert(baskinCombo.card === "현대카드 M BOOST", "Baskin Robbins combo card mismatch");
+    await assert(baskinCombo.coupon.includes("M포인트"), "Baskin Robbins combo should include Hyundai M point use");
+    await assert(baskinCombo.membership === "해피포인트", "Baskin Robbins combo should include Happy Point");
+    await assert(baskinCombo.benefit === "7,300원", "Baskin Robbins combo benefit mismatch");
+    await page.evaluate(() => document.querySelector("#closeSheet").click());
+    await sleep(100);
+
     await page.evaluate(() => document.querySelector("#comboPayButton").click());
     await sleep(150);
     const payCopy = await page.evaluate(() => ({
       top: document.querySelector("#payTabs").innerText,
       title: document.querySelector("#payStepTitle").innerText,
       button: document.querySelector("#completeButton").innerText,
+      stepType: document.querySelector("#payStepType").innerText,
+      stepCode: document.querySelector("#payStepCode").innerText,
+      barcodeVisible: getComputedStyle(document.querySelector(".barcode")).display !== "none",
       membershipMentions: document.body.innerText.match(/멤버십 적립/g)?.length || 0,
       overlayVisible: getComputedStyle(document.querySelector(".pay-overlay")).display !== "none",
       activeStepWidth: Math.round(document.querySelector(".pay-step-button.is-active").getBoundingClientRect().width),
@@ -154,16 +213,19 @@ async function main() {
       titleVisible: getComputedStyle(document.querySelector("#payStepTitle")).display !== "none"
     }));
     await assert(payCopy.top === "혜택 순서", "pay top copy mismatch");
+    await assert(payCopy.stepType === "포인트", "M point step should be labeled as point use");
+    await assert(payCopy.stepCode === "직원 또는 키오스크에서 선택", "M point step should explain staff or kiosk selection");
+    await assert(!payCopy.barcodeVisible, "M point step should not show a barcode");
     await assert(!payCopy.overlayVisible, "pay overlay should be hidden to avoid duplicated card explanation");
     await assert(!payCopy.titleVisible, "pay step title should be hidden next to progress badge");
     await assert(payCopy.activeStepWidth < payCopy.panelWidth * 0.55, "single pay step should not fill the full panel width");
     await assert(!/이어서|이제/.test(payCopy.title), "pay title should avoid repeated transition words");
     await assert(payCopy.membershipMentions === 0, "visible membership wording is too repetitive");
 
-    await page.evaluate(() => document.querySelector("#completeButton").click());
-    await sleep(100);
-    await page.evaluate(() => document.querySelector("#completeButton").click());
-    await sleep(200);
+    for (let i = 0; i < 3; i += 1) {
+      await page.evaluate(() => document.querySelector("#completeButton").click());
+      await sleep(150);
+    }
     const result = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
       rows: document.querySelectorAll(".result-status-row").length,
@@ -174,8 +236,8 @@ async function main() {
     }));
     await assert(result.screen === "result", "result screen did not open");
     await assert(result.rows >= 3, "result rows should render from benefit breakdown");
-    await assert(result.summary.includes("아꼈어요"), "result should emphasize saved fuel cost");
-    await assert(result.nextHint.includes("12,000원"), "result should show remaining fuel performance amount");
+    await assert(result.summary.includes("아꼈어요"), "result should emphasize saved benefit");
+    await assert(result.nextHint.includes("8,000원"), "Baskin Robbins result should show remaining lifestyle performance amount");
     await assert(result.doneText === "완료", "result done button is missing");
 
     await page.evaluate(() => {

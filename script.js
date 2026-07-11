@@ -4,26 +4,27 @@ const cards = [
     name: "주유패스",
     displayName: "KB국민 주유패스",
     bg: "linear-gradient(135deg, #f9d923 0%, #fff36d 100%)",
-    image: "./2964card_1.png"
+    image: "./assets/card/Kb%20need%20pay.png"
   },
   {
     issuer: "SAMSUNG",
     name: "iD STATION",
     displayName: "삼성 iD STATION",
-    bg: "linear-gradient(135deg, #f8fafc 0%, #dbeafe 48%, #1d4ed8 100%)"
+    bg: "linear-gradient(135deg, #f8fafc 0%, #dbeafe 48%, #1d4ed8 100%)",
+    image: "./assets/card/samsung%20gs.png"
   },
   {
     issuer: "SHINHAN",
     name: "Deep Oil",
     displayName: "신한 Deep Oil",
-    bg: "linear-gradient(135deg, #1251f5 0%, #1988ff 100%)",
-    image: "./2848card_2.png"
+    bg: "linear-gradient(135deg, #1251f5 0%, #1988ff 100%)"
   },
   {
     issuer: "HYUNDAI",
     name: "M BOOST",
     displayName: "현대카드 M BOOST",
-    bg: "linear-gradient(135deg, #111827 0%, #4b5563 100%)"
+    bg: "linear-gradient(135deg, #111827 0%, #4b5563 100%)",
+    image: "./assets/card/mboost.png"
   }
 ];
 
@@ -58,6 +59,14 @@ const locationOptions = [
     distance: "약 320m",
     confidence: "58%",
     hint: "충전 혜택 확인",
+    criterion: "max_benefit"
+  },
+  {
+    id: "baskin",
+    name: "배스킨라빈스 판교역점",
+    distance: "약 180m",
+    confidence: "78%",
+    hint: "KT 멤버십 · 해피포인트",
     criterion: "max_benefit"
   }
 ];
@@ -297,6 +306,60 @@ const locationScenarioSets = {
     remaining_cap: null,
     performance_fill: null,
     no_condition: null
+  },
+  baskin: {
+    max_benefit: {
+      merchant: "배스킨라빈스 판교역점",
+      confidence: "매장 인식 78%",
+      recommendedIndex: 3,
+      type: "혜택",
+      detail: "배스킨라빈스 제휴 혜택, 통신사 쿠폰, 카드 포인트 사용, 해피포인트 적립 가능성을 함께 봤어요.",
+      combinations: [
+        { reason: "KB국민 주유패스는 배스킨라빈스 직접 할인보다 기본 결제 중심이에요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 매장에서는 혜택 임팩트가 작아요" },
+        { reason: "삼성카드는 LINK 쿠폰 연결 시 배스킨라빈스에서 2,000원 할인을 받을 수 있어요", benefit: "예상 혜택 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "LINK 쿠폰을 이미 연결했다면 안정적인 선택이에요" },
+        { reason: "신한 Deep Oil은 주유 특화 카드라 배스킨라빈스 직접 혜택 확인이 필요해요", benefit: "혜택 확인 필요", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "주유소 결제에 더 적합해요" },
+        { reason: "현대카드 M BOOST는 M포인트 50% 사용 혜택을 적용하기 좋아요", benefit: "예상 혜택 7,300원", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 사용까지 포함하면 가장 큰 혜택이에요" }
+      ]
+    },
+    remaining_cap: {
+      merchant: "배스킨라빈스 판교역점",
+      confidence: "매장 인식 78%",
+      recommendedIndex: 1,
+      type: "혜택",
+      detail: "지금 바로 적용 가능한 쿠폰과 포인트 사용 한도를 먼저 확인했어요.",
+      combinations: [
+        { reason: "KB국민 주유패스는 배스킨라빈스 쿠폰 후보가 없어요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "기본 적립만 기대할 수 있어요" },
+        { reason: "삼성카드 LINK 쿠폰은 18,500원 이상 결제 시 2,000원 OFF 조건이 명확해요", benefit: "남은 쿠폰 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 가장 단순해요" },
+        { reason: "신한 Deep Oil은 배스킨라빈스 쿠폰 조건 확인이 필요해요", benefit: "혜택 확인 필요", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 업종에는 맞지 않아요" },
+        { reason: "현대카드 M포인트는 보유 포인트가 충분하면 50% 사용이 가능해요", benefit: "남은 포인트 7,300원", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액이 충분할 때 좋아요" }
+      ]
+    },
+    performance_fill: {
+      merchant: "배스킨라빈스 판교역점",
+      confidence: "매장 인식 78%",
+      recommendedIndex: 1,
+      type: "실적",
+      detail: "오늘 결제가 다음 달 생활/F&B 혜택 조건을 채우는 데 얼마나 도움이 되는지 봤어요.",
+      combinations: [
+        { reason: "KB국민 주유패스는 이번 결제가 실적에 반영되지만 배스킨라빈스 혜택은 약해요", benefit: "실적 322,000원/500,000원 달성 예상", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "실적 관리 목적만으로는 아쉬워요" },
+        { reason: "삼성카드는 LINK 쿠폰을 쓰면서 다음 혜택 조건에도 가까워져요", benefit: "실적 392,000원/400,000원 달성 예상", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "실적과 쿠폰을 함께 챙기기 좋아요" },
+        { reason: "신한 Deep Oil은 실적 반영은 가능하지만 배스킨라빈스 혜택 확실성이 낮아요", benefit: "실적 404,000원/400,000원 달성 예상", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "실적만 보면 가능하지만 혜택은 약해요" },
+        { reason: "현대카드 M BOOST는 포인트 사용 혜택은 크지만 실적 관리 목적은 보조적이에요", benefit: "실적 반영 예상", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "혜택 기준에서는 좋지만 실적형 추천은 아니에요" }
+      ]
+    },
+    no_condition: {
+      merchant: "배스킨라빈스 판교역점",
+      confidence: "매장 인식 78%",
+      recommendedIndex: 1,
+      type: "혜택",
+      detail: "복잡한 통신사 조건을 제외하고 카드에서 바로 확인 가능한 혜택을 우선했어요.",
+      combinations: [
+        { reason: "KB국민 주유패스는 배스킨라빈스 직접 혜택이 작아요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "기본 결제에 가까워요" },
+        { reason: "삼성카드 LINK는 쿠폰 연결만 되어 있으면 조건이 비교적 명확해요", benefit: "예상 혜택 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "확인할 조건이 적은 편이에요" },
+        { reason: "신한 Deep Oil은 주유 혜택 중심이라 배스킨라빈스에서는 확인이 필요해요", benefit: "혜택 확인 필요", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 업종에는 적합하지 않아요" },
+        { reason: "현대카드 M포인트는 잔액 조건이 맞아야 혜택이 커져요", benefit: "혜택 확인 필요", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액 확인이 필요해요" }
+      ]
+    }
   }
 };
 
@@ -319,6 +382,7 @@ let currentScenario = "max_benefit";
 let currentCardIndex = recommendedCardIndex(scenarios[currentScenario]);
 let previewScenario = currentScenario;
 let previewLocation = currentLocation;
+let isSwapMinimized = false;
 let currentPayStep = 0;
 let currentPayMode = "combo";
 let dragStartX = 0;
@@ -335,8 +399,12 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const fields = {
   merchantName: $("#merchantName"),
+  swapAssist: $("#swapAssist"),
+  swapToggleButton: $("#swapToggleButton"),
+  swapMinimizedText: $("#swapMinimizedText"),
   whyButton: $("#whyButton"),
   changePlaceButton: $("#changePlaceButton"),
+  walletHint: $("#walletHint"),
   detailSheetTitle: $("#detailSheetTitle"),
   reasonText: $("#reasonText"),
   benefitHighlight: $("#benefitHighlight"),
@@ -449,6 +517,14 @@ function formatPrimaryAction(scenario, combo) {
   return formatCardBenefitCta(scenario, combo);
 }
 
+function syncSwapAssistState() {
+  const icon = fields.swapToggleButton.querySelector(".material-symbols-rounded");
+  fields.swapAssist.classList.toggle("is-minimized", isSwapMinimized);
+  fields.swapToggleButton.setAttribute("aria-expanded", String(!isSwapMinimized));
+  fields.swapToggleButton.setAttribute("aria-label", isSwapMinimized ? "SWAP 추천 펼치기" : "SWAP 추천 접기");
+  icon.textContent = isSwapMinimized ? "keyboard_arrow_down" : "keyboard_arrow_up";
+}
+
 function formatBenefitDisplay(benefitAmount) {
   return benefitAmount.replace("360,000원/500,000원", "36만원 / 50만원")
     .replace("290,000원/500,000원", "29만원 / 50만원")
@@ -506,19 +582,22 @@ function createMileageScenario(locationId, scenarioSet) {
     gscaltex: "GS&POINT 자동 적립",
     skenergy: "OK캐쉬백 적립",
     soil: "S-OIL 포인트 적립",
-    evcharge: "충전 포인트 적립"
+    evcharge: "충전 포인트 적립",
+    baskin: "해피포인트 적립"
   };
   const milesByLocation = {
     gscaltex: "항공 마일리지 45마일",
     skenergy: "항공 마일리지 42마일",
     soil: "항공 마일리지 40마일",
-    evcharge: "항공 마일리지 18마일"
+    evcharge: "항공 마일리지 18마일",
+    baskin: "항공 마일리지 32마일"
   };
   const displayMerchant = {
     gscaltex: "GS칼텍스",
     skenergy: "SK에너지",
     soil: "S-OIL",
-    evcharge: "충전소"
+    evcharge: "충전소",
+    baskin: "배스킨라빈스"
   };
 
   return {
@@ -584,6 +663,7 @@ function compactCopy(value) {
     .replace(/GS&POINT 자동 적립/g, "GS&POINT")
     .replace(/OK캐쉬백 적립/g, "OK캐쉬백")
     .replace(/S-OIL 포인트 적립/g, "S-OIL 포인트")
+    .replace(/해피포인트 적립/g, "해피포인트")
     .replace(/멤버십/g, "적립")
     .trim();
 }
@@ -618,6 +698,7 @@ function buildBenefitBreakdown(scenario, card, combo) {
 }
 
 function progressReportFor(scenario) {
+  const isBaskin = scenario.merchant.includes("배스킨라빈스");
   if (scenario.type.includes("마일")) {
     return {
       label: "추천 기준",
@@ -629,16 +710,16 @@ function progressReportFor(scenario) {
   if (scenario.type.includes("실적")) {
     return {
       label: "이번 달 카드 실적",
-      value: "388,000원/400,000원",
-      width: "97%",
-      hint: "다음 주유 실적 충족까지 12,000원 남았어요"
+      value: isBaskin ? "392,000원/400,000원" : "388,000원/400,000원",
+      width: isBaskin ? "98%" : "97%",
+      hint: isBaskin ? "다음 생활 혜택 조건까지 8,000원 남았어요" : "다음 주유 실적 충족까지 12,000원 남았어요"
     };
   }
   return {
     label: "이번 달 카드 실적",
-    value: "388,000원/400,000원",
-    width: "97%",
-    hint: "다음 주유 실적 충족까지 12,000원 남았어요"
+    value: isBaskin ? "392,000원/400,000원" : "388,000원/400,000원",
+    width: isBaskin ? "98%" : "97%",
+    hint: isBaskin ? "다음 생활 혜택 조건까지 8,000원 남았어요" : "다음 주유 실적 충족까지 12,000원 남았어요"
   };
 }
 
@@ -684,6 +765,37 @@ function stopNfcTimer() {
   nfcWasPaymentStep = false;
 }
 
+function benefitStepLabel(value) {
+  if (value.includes("M포인트")) return "포인트";
+  if (value.includes("멤버십")) return "멤버십";
+  if (value.includes("LINK")) return "카드쿠폰";
+  return "매장쿠폰";
+}
+
+function buildCouponStep(value) {
+  if (value.includes("M포인트")) {
+    return {
+      type: "point",
+      label: "포인트",
+      title: "M포인트 사용을 요청하세요",
+      value,
+      code: "직원 또는 키오스크에서 선택",
+      guide: "결제 전 M포인트 사용을 요청한 뒤 카드 결제로 넘어가요.",
+      button: "요청 완료"
+    };
+  }
+
+  return {
+    type: "coupon",
+    label: benefitStepLabel(value),
+    title: "먼저 쿠폰 바코드를 보여주세요",
+    value,
+    code: "8801 0427 3000",
+    guide: "아직 결제 전이에요.",
+    button: "쿠폰 사용 완료"
+  };
+}
+
 function startNfcTimer() {
   stopNfcTimer();
   nfcRemaining = 50;
@@ -717,15 +829,7 @@ function buildPaySteps(mode = currentPayMode) {
   }
 
   if (hasUsableAsset(combo.coupon)) {
-    steps.push({
-      type: "coupon",
-      label: "매장쿠폰",
-      title: "먼저 쿠폰 바코드를 보여주세요",
-      value: combo.coupon,
-      code: "8801 0427 3000",
-      guide: "아직 결제 전이에요.",
-      button: "쿠폰 사용 완료"
-    });
+    steps.push(buildCouponStep(combo.coupon));
   }
 
   if (hasUsableAsset(combo.membership)) {
@@ -813,7 +917,7 @@ function renderCards() {
           <div class="mastercard"><span></span><span></span></div>
         </div>
       `}
-      ${index === currentCardIndex ? `<span class="card-badge">${formatCardBenefitCta(scenarios[currentScenario], scenarios[currentScenario].combinations[index])}</span>` : ""}
+      ${!isSwapMinimized && index === currentCardIndex ? `<span class="card-badge">${index === recommendedIndex ? "추천" : "선택"}</span>` : ""}
     </article>
   `).join("");
 
@@ -844,14 +948,21 @@ function setCard(index) {
   render();
 }
 
+function toggleSwapAssist() {
+  isSwapMinimized = !isSwapMinimized;
+  render();
+}
+
 function render() {
   const { scenario, card, combo } = currentData();
   const benefitAmount = formatBenefitAmount(combo.benefit);
   const location = currentLocationOption();
 
   fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
+  fields.swapMinimizedText.textContent = "결제 추천 다시 켜기";
   fields.whyButton.textContent = formatPrimaryAction(scenario, combo);
   fields.changePlaceButton.textContent = "다른 매장이에요";
+  fields.walletHint.textContent = isSwapMinimized ? "추천 없이 선택한 카드로 결제할 수 있어요" : "혜택은 결제 전에 한 번 더 확인할 수 있어요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
   fields.reasonText.textContent = compactCopy(formatReasonLead(combo.reason));
   fields.benefitHighlight.textContent = formatBenefitHighlight(scenario.type, benefitAmount);
@@ -880,6 +991,7 @@ function render() {
   renderLocationList();
   renderPayStep();
   syncScenarioControls();
+  syncSwapAssistState();
 }
 
 function renderLocationList() {
@@ -1012,7 +1124,7 @@ function setResultForMode(mode) {
   const benefitAmount = formatBenefitAmount(combo.benefit);
   const progress = progressReportFor(scenario);
   fields.resultSummary.textContent = scenario.type.includes("실적")
-    ? "다음 주유 혜택 조건에 가까워졌어요"
+    ? "다음 혜택 조건에 가까워졌어요"
     : `방금 결제로 ${benefitAmount} 아꼈어요`;
   fields.resultBenefitAmount.textContent = benefitAmount;
   fields.resultLearning.textContent = "카드사 기준에 따라 실제 반영이 달라질 수 있어요";
@@ -1312,6 +1424,7 @@ function attachSwipe() {
 
 $("#whyButton").addEventListener("click", openSheet);
 $("#changePlaceButton").addEventListener("click", openLocationSheet);
+$("#swapToggleButton").addEventListener("click", toggleSwapAssist);
 $("#closeSheet").addEventListener("click", closeSheet);
 $("#expandDetailButton").addEventListener("click", expandDetailSheet);
 $("#reasonButton").addEventListener("click", openReason);

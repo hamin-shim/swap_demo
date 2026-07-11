@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWAP Demo User Journey</title>
+  <style>
+    :root {
+      --bg: #f5f3ef;
+      --ink: #111111;
+      --muted: #6f7785;
+      --line: #dedbd4;
+      --blue: #2f7df6;
+      --blue-soft: #eaf2ff;
+      --black: #111111;
+      --white: #ffffff;
+      --card: #ffffff;
+      --shadow: 0 22px 70px rgba(15, 23, 42, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background: #dfddd8;
+      letter-spacing: 0;
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+
+    .slide {
+      position: absolute;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      background: var(--bg);
+      padding: 34px 46px;
+      display: none;
+      overflow: hidden;
+      box-shadow: 0 18px 80px rgba(0, 0, 0, 0.18);
+    }
+
+    .slide.active { display: block; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 24px;
+      font-weight: 760;
+    }
+
+    .topbar::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .brand {
+      position: absolute;
+      top: 30px;
+      right: 48px;
+      font-size: 30px;
+      font-weight: 820;
+    }
+
+    .kicker {
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 760;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: 44px;
+      line-height: 1.18;
+      font-weight: 830;
+    }
+
+    h2 {
+      font-size: 35px;
+      line-height: 1.18;
+      font-weight: 820;
+    }
+
+    h3 {
+      font-size: 19px;
+      line-height: 1.35;
+      font-weight: 760;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+      font-weight: 520;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 74px;
+      align-items: center;
+      height: calc(100% - 64px);
+      padding-top: 20px;
+    }
+
+    .phone-shot {
+      width: 288px;
+      height: 624px;
+      background: var(--white);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(31, 41, 55, 0.18);
+      justify-self: center;
+    }
+
+    .phone-shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 26px;
+      max-width: 760px;
+    }
+
+    .hero-title {
+      font-size: 45px;
+      line-height: 1.34;
+      font-weight: 850;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid #e5e2dc;
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 116px;
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 560;
+    }
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-top: 44px;
+    }
+
+    .step {
+      position: relative;
+      background: var(--white);
+      border: 1px solid #e3e0da;
+      border-radius: 18px;
+      padding: 18px 16px;
+      min-height: 250px;
+      box-shadow: 0 12px 34px rgba(20, 20, 20, 0.05);
+    }
+
+    .step em {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--black);
+      color: var(--white);
+      font-style: normal;
+      font-size: 14px;
+      font-weight: 780;
+      margin-bottom: 18px;
+    }
+
+    .step h3 { margin-bottom: 12px; }
+
+    .step p {
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .tag {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      padding: 9px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #1e5fc5;
+      font-size: 12px;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 54px;
+      align-items: center;
+      height: calc(100% - 70px);
+      padding-top: 22px;
+    }
+
+    .mock-phone {
+      width: 320px;
+      height: 610px;
+      border-radius: 38px;
+      background: #fbfbfb;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      justify-self: center;
+      border: 1px solid #e1e1e1;
+    }
+
+    .mock-screen {
+      height: 100%;
+      border-radius: 28px;
+      background: linear-gradient(#fff, #f4f5f7);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 830;
+      font-size: 18px;
+    }
+
+    .ai-card {
+      background: var(--white);
+      border: 1px solid #e3e8f3;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 8px 26px rgba(37, 99, 235, 0.08);
+    }
+
+    .ai-card strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      color: #5f6b7d;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 8px;
+    }
+
+    .btn {
+      min-height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 760;
+      border: 1px solid #e0e5ef;
+      color: #606b7a;
+      background: #fff;
+    }
+
+    .btn.dark {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 0.8fr 1.4fr 0.8fr;
+      gap: 16px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .mini-card {
+      height: 190px;
+      border-radius: 20px;
+      background: linear-gradient(150deg, #edf6ff, #2f6be8);
+      box-shadow: 0 14px 32px rgba(47, 125, 246, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mini-card.yellow { background: #ffd900; opacity: 0.52; }
+    .mini-card.blue { background: #043ad6; opacity: 0.55; }
+
+    .mini-card .badge {
+      position: absolute;
+      top: 16px;
+      right: 14px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .bottom-cta {
+      margin-top: auto;
+      width: 76%;
+      align-self: center;
+      height: 56px;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .sheet {
+      margin-top: auto;
+      background: #fff;
+      border-radius: 26px 26px 0 0;
+      padding: 22px 20px;
+      box-shadow: 0 -12px 36px rgba(15, 23, 42, 0.13);
+    }
+
+    .sheet h3 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .sheet-row {
+      border: 1px solid #e4e7ef;
+      border-radius: 16px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .screen-note {
+      display: grid;
+      gap: 18px;
+    }
+
+    .screen-note h2 {
+      max-width: 760px;
+    }
+
+    .point-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .point {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .point b {
+      color: var(--blue);
+      font-size: 15px;
+    }
+
+    .point span {
+      font-size: 17px;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .caption-box {
+      margin-top: 22px;
+      background: #111;
+      color: #fff;
+      border-radius: 20px;
+      padding: 18px 22px;
+      font-size: 21px;
+      line-height: 1.45;
+      font-weight: 780;
+    }
+
+    .caption-box small {
+      display: block;
+      color: #adb5c3;
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: 720;
+    }
+
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .criteria-card {
+      background: var(--white);
+      border: 1px solid #e3e0da;
+      border-radius: 18px;
+      padding: 20px;
+      min-height: 154px;
+    }
+
+    .criteria-card strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .criteria-card p {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .flow-line {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .flow-card {
+      position: relative;
+      background: #111;
+      color: #fff;
+      border-radius: 26px;
+      min-height: 210px;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .flow-card:nth-child(2) { background: #242424; }
+    .flow-card:nth-child(3) { background: #f2f2f2; color: #111; }
+
+    .flow-card em {
+      font-style: normal;
+      font-size: 14px;
+      color: #8bb6ff;
+      font-weight: 800;
+    }
+
+    .flow-card strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1.25;
+      margin: 14px 0;
+    }
+
+    .flow-card p {
+      color: inherit;
+      opacity: 0.68;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .result-card {
+      background: #fff;
+      border-radius: 26px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      width: 440px;
+      justify-self: center;
+    }
+
+    .check {
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .result-card h3 {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
+    .money {
+      margin: 20px 0;
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--blue-soft);
+    }
+
+    .money span {
+      color: #4072c7;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .money strong {
+      display: block;
+      font-size: 36px;
+      margin-top: 4px;
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress i {
+      display: block;
+      width: 78%;
+      height: 100%;
+      background: #111;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1.05fr 1.4fr 1.4fr;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .matrix .cell {
+      min-height: 92px;
+      background: #fff;
+      border: 1px solid #e3e0da;
+      border-radius: 16px;
+      padding: 15px;
+    }
+
+    .matrix .head {
+      background: #111;
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .matrix b {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .matrix span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 560;
+    }
+
+    .footer-quote {
+      position: absolute;
+      left: 46px;
+      right: 46px;
+      bottom: 34px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: #3f4652;
+      font-size: 18px;
+      line-height: 1.45;
+      font-weight: 720;
+    }
+
+    .nav {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(17, 17, 17, 0.82);
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 13px;
+      z-index: 10;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .progress-ui {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.12);
+      z-index: 11;
+    }
+
+    .progress-ui i {
+      display: block;
+      width: 0%;
+      height: 100%;
+      background: var(--blue);
+      transition: width 180ms ease;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        overflow: visible;
+      }
+      .deck {
+        display: block;
+        width: auto;
+        height: auto;
+      }
+      .slide {
+        position: relative;
+        display: block !important;
+        width: 100vw;
+        height: 56.25vw;
+        page-break-after: always;
+        box-shadow: none;
+      }
+      .nav, .progress-ui { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide active" data-notes="데모 전체를 한 문장으로 먼저 정리합니다. SWAP은 결제 직전에 위치, 등록 카드, 멤버십, 실적 조건을 조합해서 사용자가 고민하지 않게 만드는 흐름입니다.">
+      <div class="topbar">06 User Journey</div>
+      <div class="brand">SWAP</div>
+      <div class="hero">
+        <figure class="phone-shot">
+          <img src="./assets/card/samsung%20gs.png" alt="삼성 iD STATION 카드 이미지">
+        </figure>
+        <div class="hero-copy">
+          <h1 class="hero-title">결제 직전,<br>최적의 결제조합을 추천해주는<br>Samsung Wallet AI Payment</h1>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <strong>어디서</strong>
+              <span>현재 매장과 업종을 인식해 결제 맥락을 잡습니다.</span>
+            </div>
+            <div class="summary-card">
+              <strong>무엇으로</strong>
+              <span>카드, 멤버십, 포인트를 조합해 추천합니다.</span>
+            </div>
+            <div class="summary-card">
+              <strong>얼마나</strong>
+              <span>예상 할인과 실적 변화를 결제 전에 보여줍니다.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="전체 화면 종류를 한 장에서 보여주는 지도입니다. 이후 장표는 이 여섯 장면을 하나씩 설명하는 구조로 가져가면 됩니다.">
+      <div class="topbar">Journey Map</div>
+      <div class="brand">SWAP</div>
+      <h2 style="margin-top:42px;">데모는 6개의 화면/상태로 설명하면 가장 자연스럽습니다</h2>
+      <div class="journey">
+        <article class="step">
+          <em>1</em>
+          <h3>기본 Wallet 화면</h3>
+          <p>위치 기반으로 결제처를 인식하고, 예상 혜택 CTA를 먼저 보여줍니다.</p>
+          <div class="tag">결제 전 추천 진입점</div>
+        </article>
+        <article class="step">
+          <em>1.1</em>
+          <h3>위치 변경</h3>
+          <p>위치가 틀렸을 때 사용자가 매장을 직접 바꾸고 추천을 다시 계산합니다.</p>
+          <div class="tag">오인식 보정</div>
+        </article>
+        <article class="step">
+          <em>2</em>
+          <h3>혜택 조합 보기</h3>
+          <p>카드, 멤버십, 적립 조합과 예상 혜택을 바텀시트에서 확인합니다.</p>
+          <div class="tag">추천 근거 확인</div>
+        </article>
+        <article class="step">
+          <em>2.1</em>
+          <h3>다른 기준 적용</h3>
+          <p>혜택, 마일리지, 실적 중 어떤 기준으로 추천할지 바꿀 수 있습니다.</p>
+          <div class="tag">개인 목적 반영</div>
+        </article>
+        <article class="step">
+          <em>3</em>
+          <h3>단계별 결제창</h3>
+          <p>멤버십/포인트/카드 결제를 순서대로 수행해 조합 누락을 줄입니다.</p>
+          <div class="tag">실행 보조</div>
+        </article>
+        <article class="step">
+          <em>4</em>
+          <h3>결제 결과</h3>
+          <p>결제 후 예상 혜택과 실적 변화를 정리하고 카드사 앱 확인으로 연결합니다.</p>
+          <div class="tag">결과 학습</div>
+        </article>
+      </div>
+      <div class="footer-quote">하단 멘트 예시: “SWAP은 결제 전 추천, 결제 중 실행, 결제 후 확인까지 이어지는 결제 보조 흐름입니다.”</div>
+    </section>
+
+    <section class="slide" data-notes="첫 화면은 앱의 진입점입니다. 사용자는 카드 혜택을 찾아 들어가지 않아도, 결제 장소에 도착한 순간 추천을 받습니다.">
+      <div class="topbar">01 기본 화면</div>
+      <div class="brand">SWAP</div>
+      <div class="split">
+        <div class="mock-phone">
+          <div class="mock-screen">
+            <div class="mock-header"><span>Samsung Wallet</span><span>+ ⋮</span></div>
+            <div class="ai-card">
+              <strong>GS칼텍스 삼평주유소에서<br>결제하시나요?</strong>
+              <div class="button-row">
+                <div class="btn dark">4,500원 할인 예상</div>
+                <div class="btn">다른 매장이에요</div>
+              </div>
+            </div>
+            <div class="card-row">
+              <div class="mini-card yellow"></div>
+              <div class="mini-card"><div class="badge">4,500원 할인 예상</div></div>
+              <div class="mini-card blue"></div>
+            </div>
+            <div class="bottom-cta">이 카드로 결제</div>
+          </div>
+        </div>
+        <div class="screen-note">
+          <div>
+            <div class="kicker">Purpose</div>
+            <h2>결제처를 인식하고, 지금 가장 유리한 카드를 먼저 올립니다</h2>
+          </div>
+          <div class="point-list">
+            <div class="point"><b>사용자 행동</b><span>앱을 열고 추천된 카드와 예상 혜택을 확인합니다.</span></div>
+            <div class="point"><b>시스템 역할</b><span>위치, 업종, 등록 카드, 남은 혜택 조건을 결합해 기본 추천을 준비합니다.</span></div>
+            <div class="point"><b>전달 포인트</b><span>“어떤 카드를 써야 하지?”라는 계산을 결제 직전에 대신해줍니다.</span></div>
+          </div>
+          <div class="caption-box"><small>슬라이드 하단 멘트</small>결제 장소에 도착하면 Wallet이 먼저 맥락을 인식하고, 예상 혜택이 가장 큰 결제수단을 제안합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="위치 변경은 AI 추천의 신뢰를 보완하는 장치입니다. 틀렸을 때 그냥 닫히는 것이 아니라, 적용 전 선택을 확인하고 추천을 다시 계산합니다.">
+      <div class="topbar">01-1 위치 변경</div>
+      <div class="brand">SWAP</div>
+      <div class="split">
+        <div class="mock-phone">
+          <div class="mock-screen">
+            <div style="flex:1;"></div>
+            <div class="sheet">
+              <h3>어디에서 결제하시나요?</h3>
+              <div class="sheet-row"><span>GS칼텍스 삼평주유소</span><b>선택됨</b></div>
+              <div class="sheet-row"><span>SK에너지 판교셀프</span><b>변경</b></div>
+              <div class="sheet-row"><span>S-OIL 판교충전소</span><b>변경</b></div>
+              <div class="btn dark" style="margin-top:16px;height:48px;">이 매장으로 보기</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-note">
+          <div>
+            <div class="kicker">Purpose</div>
+            <h2>위치가 틀렸을 때도 사용자가 추천 조건을 통제할 수 있게 합니다</h2>
+          </div>
+          <div class="point-list">
+            <div class="point"><b>진입</b><span>`다른 매장이에요` 버튼을 누르면 주변 매장 후보를 보여줍니다.</span></div>
+            <div class="point"><b>핵심</b><span>선택 즉시 닫히지 않고, `이 매장으로 보기`를 눌러야 추천이 적용됩니다.</span></div>
+            <div class="point"><b>효과</b><span>잘못된 위치 인식 때문에 엉뚱한 혜택을 추천하는 리스크를 줄입니다.</span></div>
+          </div>
+          <div class="caption-box"><small>슬라이드 하단 멘트</small>추천의 전제인 위치가 틀리면, 사용자가 직접 매장을 바꾸고 적용한 뒤 혜택 조합을 다시 받을 수 있습니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="혜택 조합 화면에서는 추천 카드만 보여주는 것이 아니라 왜 이 조합인지와 함께 카드, 멤버십, 적립 항목을 함께 보여줍니다.">
+      <div class="topbar">02 혜택 조합으로 결제하기</div>
+      <div class="brand">SWAP</div>
+      <div class="split">
+        <div class="mock-phone">
+          <div class="mock-screen">
+            <div style="flex:1;"></div>
+            <div class="sheet">
+              <h3>4,500원 할인 예상</h3>
+              <div class="sheet-row"><span>카드</span><b>삼성 iD STATION</b></div>
+              <div class="sheet-row"><span>적립</span><b>GS&POINT 자동 적립</b></div>
+              <div class="sheet-row"><span>예상 혜택</span><b>4,500원</b></div>
+              <div class="btn dark" style="margin-top:16px;height:48px;">이 조합으로 결제</div>
+              <div class="btn" style="margin-top:10px;height:42px;">다른 기준 보기</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-note">
+          <div>
+            <div class="kicker">Purpose</div>
+            <h2>추천된 카드를 실제 결제 조합으로 이해시킵니다</h2>
+          </div>
+          <div class="point-list">
+            <div class="point"><b>사용자 행동</b><span>`4,500원 할인 예상` CTA를 눌러 추천 조합의 내용을 확인합니다.</span></div>
+            <div class="point"><b>화면 요소</b><span>카드, 멤버십/포인트, 예상 혜택, 추천 이유, 결제 버튼을 한 화면에 묶습니다.</span></div>
+            <div class="point"><b>전달 포인트</b><span>“카드 추천”이 아니라 “결제 순서까지 포함한 조합 추천”이라는 점을 보여줍니다.</span></div>
+          </div>
+          <div class="caption-box"><small>슬라이드 하단 멘트</small>SWAP은 단순히 카드를 추천하는 것이 아니라, 결제 전에 적용해야 할 혜택 조합을 한 번에 정리합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="다른 기준 보기는 사용자가 무엇을 중요하게 보는지에 따라 추천 결과가 달라질 수 있음을 보여줍니다. 이 화면은 설명력이 좋아서 데모에서 꼭 짚고 가면 좋습니다.">
+      <div class="topbar">02-1 혜택 상세보기 및 다른 기준 적용</div>
+      <div class="brand">SWAP</div>
+      <h2 style="margin-top:42px;">같은 결제라도 사용자의 목적에 따라 추천 기준이 달라집니다</h2>
+      <div class="criteria-grid">
+        <div class="criteria-card">
+          <strong>혜택</strong>
+          <p>포인트, 즉시할인, 남은 혜택 횟수 등을 종합해 이번 결제에서 가장 큰 혜택을 찾습니다.</p>
+        </div>
+        <div class="criteria-card">
+          <strong>마일리지</strong>
+          <p>현금 할인보다 항공 마일리지 적립을 우선하는 사용자에게 맞춘 추천입니다.</p>
+        </div>
+        <div class="criteria-card">
+          <strong>실적</strong>
+          <p>다음 달 혜택 조건을 채우기 위해 이번 결제가 어떤 카드 실적에 도움이 되는지 봅니다.</p>
+        </div>
+      </div>
+      <div class="matrix">
+        <div class="cell head">기준</div>
+        <div class="cell head">화면에서 보여줄 것</div>
+        <div class="cell head">하단 멘트</div>
+        <div class="cell"><b>혜택</b><span>4,500원 할인 예상</span></div>
+        <div class="cell"><b>예상 할인 금액</b><span>가장 직관적인 금액 중심 CTA</span></div>
+        <div class="cell"><b>“이번 결제에서 바로 체감되는 혜택을 우선합니다.”</b></div>
+        <div class="cell"><b>마일리지</b><span>항공 마일리지 45마일</span></div>
+        <div class="cell"><b>적립 가치</b><span>할인보다 적립 목적을 반영</span></div>
+        <div class="cell"><b>“사용자의 적립 목적에 맞춰 추천 기준을 바꿀 수 있습니다.”</b></div>
+        <div class="cell"><b>실적</b><span>실적 12,000원 남음</span></div>
+        <div class="cell"><b>다음 혜택 조건</b><span>얼마를 채웠고 얼마나 남았는지 표시</span></div>
+        <div class="cell"><b>“오늘 결제가 다음 달 혜택 조건에 어떻게 반영되는지 보여줍니다.”</b></div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="결제창은 추천이 실제 행동으로 이어지는 부분입니다. 멤버십을 먼저 보여주고, 이후 카드 결제로 넘어가는 구조를 강조하면 좋습니다.">
+      <div class="topbar">03 결제창</div>
+      <div class="brand">SWAP</div>
+      <h2 style="margin-top:42px;">추천 조합을 실제 결제 순서로 변환합니다</h2>
+      <div class="flow-line">
+        <article class="flow-card">
+          <em>STEP 1</em>
+          <strong>멤버십/포인트 먼저 제시</strong>
+          <p>GS&POINT, OK캐쉬백처럼 결제 전에 보여줘야 하는 적립 수단을 먼저 실행합니다.</p>
+        </article>
+        <article class="flow-card">
+          <em>STEP 2</em>
+          <strong>카드 결제 진행</strong>
+          <p>추천 카드가 활성화되고 NFC 결제로 넘어가 조합 누락을 줄입니다.</p>
+        </article>
+        <article class="flow-card">
+          <em>STEP 3</em>
+          <strong>완료 후 결과 확인</strong>
+          <p>적립, 할인, 실적 반영 여부를 결제 결과 화면에서 이어서 확인합니다.</p>
+        </article>
+      </div>
+      <div class="footer-quote">하단 멘트 예시: “사용자는 어떤 순서로 제시해야 하는지 기억하지 않아도, Wallet이 조합을 결제 흐름으로 바꿔줍니다.”</div>
+    </section>
+
+    <section class="slide" data-notes="결제 결과 화면은 사용자의 신뢰를 닫아주는 장면입니다. 실제 청구할인과 실적 반영은 카드사 기준이라 최종 확인 링크가 필요하다는 점도 자연스럽게 설명합니다.">
+      <div class="topbar">04 결제 결과 확인</div>
+      <div class="brand">SWAP</div>
+      <div class="split">
+        <div class="result-card">
+          <div class="check">✓</div>
+          <h3>방금 결제로 4,500원 아꼈어요</h3>
+          <p>카드사 기준에 따라 실제 반영이 달라질 수 있어요.</p>
+          <div class="money">
+            <span>이번 결제 예상 혜택</span>
+            <strong>4,500원</strong>
+          </div>
+          <p><b style="color:#111;">이번 달 카드 실적</b><br>388,000원/400,000원</p>
+          <div class="progress"><i></i></div>
+          <p style="margin-top:12px;">다음 주유 혜택 조건까지 12,000원 남았어요.</p>
+        </div>
+        <div class="screen-note">
+          <div>
+            <div class="kicker">Purpose</div>
+            <h2>결제 후에도 혜택이 어떻게 반영됐는지 확인하게 합니다</h2>
+          </div>
+          <div class="point-list">
+            <div class="point"><b>결과</b><span>이번 결제로 예상되는 할인/적립/실적 변화를 금액으로 보여줍니다.</span></div>
+            <div class="point"><b>신뢰</b><span>카드사 앱으로 이동해 청구할인, 남은 한도, 실적 산입 여부를 최종 확인할 수 있습니다.</span></div>
+            <div class="point"><b>학습</b><span>사용자의 선택과 결제 결과는 다음 추천의 맥락으로 다시 활용됩니다.</span></div>
+          </div>
+          <div class="caption-box"><small>슬라이드 하단 멘트</small>결제가 끝난 뒤에는 예상 혜택과 실적 변화를 정리하고, 카드사 앱 확인으로 신뢰를 보완합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-notes="마지막 장은 발표자가 전체 흐름을 한 문장으로 다시 회수하는 용도입니다. 데모를 보여주기 전후 모두 쓸 수 있습니다.">
+      <div class="topbar">Wrap-up</div>
+      <div class="brand">SWAP</div>
+      <h2 style="margin-top:42px;">PPT에서는 화면보다 “사용자가 왜 이 화면을 보는지”를 먼저 말하면 좋습니다</h2>
+      <div class="matrix" style="grid-template-columns: 0.8fr 1.2fr 1.6fr; margin-top:34px;">
+        <div class="cell head">화면</div>
+        <div class="cell head">한 줄 역할</div>
+        <div class="cell head">추천 멘트</div>
+        <div class="cell"><b>기본 화면</b></div>
+        <div class="cell"><span>결제처 인식 + 추천 진입</span></div>
+        <div class="cell"><span>“지금 이 장소에서 가장 유리한 결제수단을 먼저 보여줍니다.”</span></div>
+        <div class="cell"><b>위치 변경</b></div>
+        <div class="cell"><span>추천 전제 보정</span></div>
+        <div class="cell"><span>“위치가 다르면 사용자가 직접 고르고 추천을 다시 받을 수 있습니다.”</span></div>
+        <div class="cell"><b>혜택 조합</b></div>
+        <div class="cell"><span>카드/멤버십/혜택 확인</span></div>
+        <div class="cell"><span>“카드 하나가 아니라 결제에 필요한 조합 전체를 추천합니다.”</span></div>
+        <div class="cell"><b>기준 변경</b></div>
+        <div class="cell"><span>개인 목적 반영</span></div>
+        <div class="cell"><span>“혜택, 마일리지, 실적 중 사용자가 원하는 기준으로 바꿀 수 있습니다.”</span></div>
+        <div class="cell"><b>결제창</b></div>
+        <div class="cell"><span>추천을 실행 순서로 전환</span></div>
+        <div class="cell"><span>“Wallet이 조합을 실제 결제 단계로 안내합니다.”</span></div>
+        <div class="cell"><b>결과 확인</b></div>
+        <div class="cell"><span>혜택 신뢰 보완</span></div>
+        <div class="cell"><span>“예상 혜택과 실적 변화를 정리하고 카드사 앱 확인으로 연결합니다.”</span></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="슬라이드 이동">
+    <button type="button" id="prev" aria-label="이전">‹</button>
+    <span id="counter">1 / 9</span>
+    <button type="button" id="next" aria-label="다음">›</button>
+    <button type="button" id="notes" aria-label="발표자 노트">S</button>
+  </nav>
+  <div class="progress-ui"><i id="progress"></i></div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.querySelector("#counter");
+    const progress = document.querySelector("#progress");
+    let current = 0;
+    let notesWindow = null;
+
+    function render() {
+      slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      updateNotes();
+    }
+
+    function go(delta) {
+      current = Math.max(0, Math.min(slides.length - 1, current + delta));
+      render();
+    }
+
+    function updateNotes() {
+      if (!notesWindow || notesWindow.closed) return;
+      const notes = slides[current].dataset.notes || "";
+      notesWindow.document.body.innerHTML = `
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif; padding: 24px; line-height: 1.6; }
+          h1 { font-size: 22px; }
+          p { font-size: 17px; }
+        </style>
+        <h1>Slide ${current + 1} Notes</h1>
+        <p>${notes}</p>
+      `;
+    }
+
+    function openNotes() {
+      notesWindow = window.open("", "swap-notes", "width=520,height=420");
+      updateNotes();
+    }
+
+    document.querySelector("#prev").addEventListener("click", () => go(-1));
+    document.querySelector("#next").addEventListener("click", () => go(1));
+    document.querySelector("#notes").addEventListener("click", openNotes);
+
+    window.addEventListener("keydown", (event) => {
+      if (["ArrowRight", " ", "PageDown"].includes(event.key)) go(1);
+      if (["ArrowLeft", "PageUp"].includes(event.key)) go(-1);
+      if (event.key === "Home") { current = 0; render(); }
+      if (event.key === "End") { current = slides.length - 1; render(); }
+      if (event.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
+      if (event.key.toLowerCase() === "s") openNotes();
+    });
+
+    render();
+  </script>
+</body>
+</html>
