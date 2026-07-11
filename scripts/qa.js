@@ -207,6 +207,8 @@ async function main() {
       stepCode: document.querySelector("#payStepCode").innerText,
       barcodeVisible: getComputedStyle(document.querySelector(".barcode")).display !== "none",
       steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
+      extraButtonVisible: !document.querySelector("#payExtraToggle").hidden,
+      extraButtonText: document.querySelector("#payExtraToggle").innerText,
       membershipMentions: document.body.innerText.match(/멤버십 적립/g)?.length || 0,
       overlayVisible: getComputedStyle(document.querySelector(".pay-overlay")).display !== "none",
       activeStepWidth: Math.round(document.querySelector(".pay-step-button.is-active").getBoundingClientRect().width),
@@ -218,11 +220,35 @@ async function main() {
     await assert(payCopy.stepType === "적립/쿠폰", "combined benefit step should be labeled as coupon and membership use");
     await assert(payCopy.stepCode === "3108 2407 1142", "combined benefit step should show Happy Point barcode number");
     await assert(payCopy.barcodeVisible, "combined benefit step should show a barcode");
+    await assert(payCopy.extraButtonVisible, "combined benefit step should expose extra coupon membership selector");
+    await assert(payCopy.extraButtonText === "다른 쿠폰/멤버십 보기", "extra benefit selector copy mismatch");
     await assert(!payCopy.overlayVisible, "pay overlay should be hidden to avoid duplicated card explanation");
     await assert(!payCopy.titleVisible, "pay step title should be hidden next to progress badge");
     await assert(payCopy.activeStepWidth < payCopy.panelWidth * 0.55, "single pay step should not fill the full panel width");
     await assert(!/이어서|이제/.test(payCopy.title), "pay title should avoid repeated transition words");
     await assert(payCopy.membershipMentions === 0, "visible membership wording is too repetitive");
+
+    await page.evaluate(() => document.querySelector("#payExtraToggle").click());
+    await sleep(100);
+    const extraOpen = await page.evaluate(() => ({
+      visible: !document.querySelector("#payExtraList").hidden,
+      options: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option strong")).map((item) => item.innerText).join(",")
+    }));
+    await assert(extraOpen.visible, "extra benefit list should open");
+    await assert(extraOpen.options.includes("KT 멤버십 VIP"), "extra benefit list should include KT membership");
+
+    await page.evaluate(() => document.querySelector("[data-pay-extra='kt']").click());
+    await sleep(100);
+    const extraSelected = await page.evaluate(() => ({
+      value: document.querySelector("#payStepValue").innerText,
+      code: document.querySelector("#payStepCode").innerText,
+      guide: document.querySelector("#payGuide").innerText,
+      listHidden: document.querySelector("#payExtraList").hidden
+    }));
+    await assert(extraSelected.value.includes("KT 멤버십 VIP"), "selected extra membership should update pay step value");
+    await assert(extraSelected.code === "9000 1485 4927", "selected extra membership should update barcode number");
+    await assert(extraSelected.guide.includes("KT 멤버십"), "selected extra membership should update guide copy");
+    await assert(extraSelected.listHidden, "extra benefit list should close after selection");
 
     for (let i = 0; i < 2; i += 1) {
       await page.evaluate(() => document.querySelector("#completeButton").click());

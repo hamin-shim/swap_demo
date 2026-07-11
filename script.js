@@ -386,6 +386,8 @@ let previewLocation = currentLocation;
 let isSwapMinimized = false;
 let currentPayStep = 0;
 let currentPayMode = "combo";
+let selectedPayExtra = null;
+let isPayExtraListOpen = false;
 let dragStartX = 0;
 let dragCurrentX = 0;
 let isDragging = false;
@@ -428,6 +430,8 @@ const fields = {
   payStepType: $("#payStepType"),
   payStepValue: $("#payStepValue"),
   payStepCode: $("#payStepCode"),
+  payExtraToggle: $("#payExtraToggle"),
+  payExtraList: $("#payExtraList"),
   payGuide: $("#payGuide"),
   payTimerBox: $("#payTimerBox"),
   payTimer: $("#payTimer"),
@@ -815,15 +819,52 @@ function shouldCombineBenefitStep(combo) {
 }
 
 function buildCombinedBenefitStep(combo) {
+  const extra = selectedPayExtra || defaultPayExtraOption();
+  const value = extra
+    ? `${compactCopy(combo.coupon)} + ${extra.value}`
+    : `${compactCopy(combo.coupon)} + ${displayAsset(combo.membership)}`;
+
   return {
     type: "benefit",
     label: "적립/쿠폰",
     title: "M포인트 사용과 해피포인트 적립",
-    value: `${compactCopy(combo.coupon)} + ${displayAsset(combo.membership)}`,
-    code: "3108 2407 1142",
-    guide: "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요.",
+    value,
+    code: extra?.code || "3108 2407 1142",
+    guide: extra?.guide || "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요.",
     button: "적립/쿠폰 사용 완료"
   };
+}
+
+function payExtraOptions() {
+  const { scenario } = currentData();
+  if (!scenario.merchant.includes("배스킨라빈스")) return [];
+  return [
+    {
+      id: "happy",
+      type: "멤버십",
+      value: "해피포인트",
+      code: "3108 2407 1142",
+      guide: "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요."
+    },
+    {
+      id: "kt",
+      type: "멤버십",
+      value: "KT 멤버십 VIP",
+      code: "9000 1485 4927",
+      guide: "KT 멤버십 바코드를 먼저 보여주고 M포인트 사용을 요청해요."
+    },
+    {
+      id: "baskin-coupon",
+      type: "매장쿠폰",
+      value: "배스킨 모바일쿠폰 D-3",
+      code: "9350 1669 2404 4324",
+      guide: "모바일쿠폰 바코드를 스캔한 뒤 M포인트 사용 여부를 확인해요."
+    }
+  ];
+}
+
+function defaultPayExtraOption() {
+  return payExtraOptions()[0] || null;
 }
 
 function startNfcTimer() {
@@ -923,6 +964,7 @@ function renderPayStep() {
   fields.payCodeCard.hidden = isPayment;
   $(".screen-pay").dataset.payStep = step.type;
   $(".screen-pay").dataset.payMode = currentPayMode;
+  renderPayExtraControls(step, isPayment);
 
   if (isPayment && !nfcWasPaymentStep) {
     startNfcTimer();
@@ -930,6 +972,35 @@ function renderPayStep() {
   } else if (!isPayment && nfcWasPaymentStep) {
     stopNfcTimer();
   }
+}
+
+function renderPayExtraControls(step, isPayment) {
+  const options = payExtraOptions();
+  const canChooseExtra = !isPayment && step.type === "benefit" && options.length > 1;
+  fields.payExtraToggle.hidden = !canChooseExtra;
+  fields.payExtraList.hidden = !canChooseExtra || !isPayExtraListOpen;
+  fields.payExtraToggle.setAttribute("aria-expanded", String(canChooseExtra && isPayExtraListOpen));
+
+  if (!canChooseExtra) {
+    fields.payExtraList.innerHTML = "";
+    return;
+  }
+
+  const selectedId = (selectedPayExtra || defaultPayExtraOption())?.id;
+  fields.payExtraList.innerHTML = options.map((option) => `
+    <button type="button" class="pay-extra-option ${option.id === selectedId ? "is-selected" : ""}" data-pay-extra="${option.id}">
+      <span>${option.type}</span>
+      <strong>${option.value}</strong>
+    </button>
+  `).join("");
+
+  $$("#payExtraList .pay-extra-option").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedPayExtra = options.find((option) => option.id === button.dataset.payExtra) || null;
+      isPayExtraListOpen = false;
+      renderPayStep();
+    });
+  });
 }
 
 function renderCards() {
@@ -1184,6 +1255,8 @@ function renderResultRows(items) {
 function startPaymentFlow(mode = "combo") {
   currentPayMode = mode;
   currentPayStep = 0;
+  selectedPayExtra = null;
+  isPayExtraListOpen = false;
   setResultForMode(mode);
   renderPayStep();
   setScreen("pay");
@@ -1471,6 +1544,10 @@ $("#applyLocationButton").addEventListener("click", applyLocationChange);
 $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
+$("#payExtraToggle").addEventListener("click", () => {
+  isPayExtraListOpen = !isPayExtraListOpen;
+  renderPayStep();
+});
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
 $("#resultDoneButton").addEventListener("click", () => setScreen("wallet"));
 $("#plannerButton").addEventListener("click", () => setScreen("wallet"));

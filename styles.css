@@ -1076,6 +1076,74 @@ button {
   text-align: center;
 }
 
+.pay-extra-toggle {
+  width: 100%;
+  min-height: 34px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #eceff4;
+  color: #2d3340;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pay-extra-toggle[hidden] {
+  display: none;
+}
+
+.pay-extra-list {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.pay-extra-list[hidden] {
+  display: none;
+}
+
+.pay-extra-list::-webkit-scrollbar {
+  display: none;
+}
+
+.pay-extra-option {
+  flex: 0 0 auto;
+  min-width: 112px;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid #d9dee7;
+  border-radius: 14px;
+  background: #f7f8fb;
+  color: #111;
+  text-align: left;
+}
+
+.pay-extra-option span {
+  display: block;
+  color: #6a7280;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.pay-extra-option strong {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pay-extra-option.is-selected {
+  border-color: #2b7cff;
+  background: #eaf2ff;
+}
+
 .pay-nfc-panel {
   display: none;
   position: absolute;
