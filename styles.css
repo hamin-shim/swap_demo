@@ -999,8 +999,9 @@ button {
   min-height: 164px;
   padding: 18px 20px 16px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--extra-bg, rgba(255, 255, 255, 0.96));
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  color: var(--extra-fg, #111);
 }
 
 .pay-code-card[hidden] {
@@ -1009,7 +1010,7 @@ button {
 
 .pay-code-card span {
   display: block;
-  color: #5c6472;
+  color: var(--extra-muted, #5c6472);
   font-size: 13px;
   font-weight: 700;
 }
@@ -1018,7 +1019,7 @@ button {
   display: block;
   margin-top: 7px;
   overflow: hidden;
-  color: #111;
+  color: var(--extra-fg, #111);
   font-size: 21px;
   font-weight: 700;
   text-overflow: ellipsis;
@@ -1038,7 +1039,8 @@ button {
       transparent 8px 13px,
       #111 13px 17px,
       transparent 17px 22px
-    );
+    ),
+    #fff;
 }
 
 .screen-pay[data-pay-step="point"] .barcode {
@@ -1068,12 +1070,63 @@ button {
 
 .pay-code-card em {
   display: block;
-  color: #30343b;
+  color: var(--extra-fg, #30343b);
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-align: center;
+}
+
+.pay-code-card[data-extra-theme="happy"] {
+  --extra-bg: #ffeb3b;
+  --extra-fg: #171717;
+  --extra-muted: #5f5215;
+}
+
+.pay-code-card[data-extra-theme="kt"] {
+  --extra-bg: #087b5c;
+  --extra-fg: #fff;
+  --extra-muted: rgba(255, 255, 255, 0.78);
+}
+
+.pay-code-card[data-extra-theme="baskin"] {
+  --extra-bg: #f6f7ff;
+  --extra-fg: #151821;
+  --extra-muted: #4f63b5;
+}
+
+.pay-code-card[data-extra-theme="gspoint"] {
+  --extra-bg: #116f4b;
+  --extra-fg: #fff;
+  --extra-muted: rgba(255, 255, 255, 0.78);
+}
+
+.pay-code-card[data-extra-theme="oil"],
+.pay-code-card[data-extra-theme="sk"],
+.pay-code-card[data-extra-theme="soil-coupon"],
+.pay-code-card[data-extra-theme="charge-coupon"] {
+  --extra-bg: #ffd21f;
+  --extra-fg: #171717;
+  --extra-muted: #6a5700;
+}
+
+.pay-code-card[data-extra-theme="ok"] {
+  --extra-bg: #202a44;
+  --extra-fg: #fff;
+  --extra-muted: rgba(255, 255, 255, 0.76);
+}
+
+.pay-code-card[data-extra-theme="soil"] {
+  --extra-bg: #0e8f54;
+  --extra-fg: #fff;
+  --extra-muted: rgba(255, 255, 255, 0.76);
+}
+
+.pay-code-card[data-extra-theme="charge"] {
+  --extra-bg: #2257d7;
+  --extra-fg: #fff;
+  --extra-muted: rgba(255, 255, 255, 0.76);
 }
 
 .pay-extra-toggle {
@@ -1111,19 +1164,36 @@ button {
 
 .pay-extra-option {
   flex: 0 0 auto;
-  min-width: 112px;
-  min-height: 48px;
-  padding: 8px 10px;
+  min-width: 124px;
+  min-height: 58px;
+  padding: 7px 10px 8px 42px;
+  position: relative;
   border: 1px solid #d9dee7;
   border-radius: 14px;
-  background: #f7f8fb;
+  background: var(--option-bg, #f7f8fb);
   color: #111;
   text-align: left;
 }
 
+.pay-extra-option i {
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--option-thumb, #dfe5ef);
+  color: var(--option-thumb-fg, #111);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
 .pay-extra-option span {
   display: block;
-  color: #6a7280;
+  color: var(--option-muted, #6a7280);
   font-size: 9px;
   font-weight: 700;
 }
@@ -1139,9 +1209,66 @@ button {
   white-space: nowrap;
 }
 
+.pay-extra-option em {
+  display: inline-flex;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+  color: var(--option-muted, #6a7280);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 800;
+}
+
 .pay-extra-option.is-selected {
   border-color: #2b7cff;
   background: #eaf2ff;
+}
+
+.pay-extra-option[data-extra-theme="happy"] {
+  --option-bg: #fff7b8;
+  --option-thumb: #ffcf23;
+  --option-muted: #74610d;
+}
+
+.pay-extra-option[data-extra-theme="kt"],
+.pay-extra-option[data-extra-theme="gspoint"],
+.pay-extra-option[data-extra-theme="soil"] {
+  --option-bg: #e7f5ef;
+  --option-thumb: #0f8b62;
+  --option-thumb-fg: #fff;
+  --option-muted: #187057;
+}
+
+.pay-extra-option[data-extra-theme="baskin"] {
+  --option-bg: #eef1ff;
+  --option-thumb: #4266d5;
+  --option-thumb-fg: #fff;
+  --option-muted: #4f63b5;
+}
+
+.pay-extra-option[data-extra-theme="oil"],
+.pay-extra-option[data-extra-theme="sk"],
+.pay-extra-option[data-extra-theme="soil-coupon"],
+.pay-extra-option[data-extra-theme="charge-coupon"] {
+  --option-bg: #fff4c2;
+  --option-thumb: #ffc400;
+  --option-muted: #775f00;
+}
+
+.pay-extra-option[data-extra-theme="ok"] {
+  --option-bg: #e9edf8;
+  --option-thumb: #1e2b52;
+  --option-thumb-fg: #fff;
+  --option-muted: #3d4c76;
+}
+
+.pay-extra-option[data-extra-theme="charge"] {
+  --option-bg: #e8efff;
+  --option-thumb: #2457d6;
+  --option-thumb-fg: #fff;
+  --option-muted: #375fb9;
 }
 
 .pay-nfc-panel {

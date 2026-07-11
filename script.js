@@ -811,54 +811,172 @@ function buildCouponStep(value) {
   };
 }
 
-function shouldCombineBenefitStep(combo) {
-  return hasUsableAsset(combo.coupon)
-    && hasUsableAsset(combo.membership)
-    && combo.coupon.includes("M포인트")
-    && combo.membership.includes("해피포인트");
-}
-
 function buildCombinedBenefitStep(combo) {
   const extra = selectedPayExtra || defaultPayExtraOption();
-  const value = extra
-    ? `${compactCopy(combo.coupon)} + ${extra.value}`
-    : `${compactCopy(combo.coupon)} + ${displayAsset(combo.membership)}`;
+  const baseItems = [
+    hasUsableAsset(combo.coupon) ? compactCopy(combo.coupon) : "",
+    extra?.value || (hasUsableAsset(combo.membership) ? displayAsset(combo.membership) : "")
+  ].filter(Boolean);
 
   return {
     type: "benefit",
     label: "적립/쿠폰",
-    title: "M포인트 사용과 해피포인트 적립",
-    value,
+    title: "적립과 쿠폰을 먼저 확인하세요",
+    value: baseItems.join(" + ") || "추가 혜택 선택",
     code: extra?.code || "3108 2407 1142",
-    guide: extra?.guide || "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요.",
+    guide: extra?.guide || "필요한 쿠폰이나 멤버십을 보여준 뒤 카드 결제로 넘어가요.",
     button: "적립/쿠폰 사용 완료"
   };
 }
 
 function payExtraOptions() {
   const { scenario } = currentData();
-  if (!scenario.merchant.includes("배스킨라빈스")) return [];
+  if (scenario.merchant.includes("배스킨라빈스")) {
+    return [
+      {
+        id: "happy",
+        type: "멤버십",
+        value: "해피포인트",
+        meta: "기본 적립",
+        code: "3108 2407 1142",
+        theme: "happy",
+        guide: "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요."
+      },
+      {
+        id: "kt",
+        type: "멤버십",
+        value: "KT 멤버십 VIP",
+        meta: "VIP 혜택",
+        code: "9000 1485 4927",
+        theme: "kt",
+        guide: "KT 멤버십 바코드를 먼저 보여주고 M포인트 사용을 요청해요."
+      },
+      {
+        id: "baskin-coupon",
+        type: "매장쿠폰",
+        value: "배스킨 모바일쿠폰",
+        meta: "D-3",
+        code: "9350 1669 2404 4324",
+        theme: "baskin",
+        guide: "모바일쿠폰 바코드를 스캔한 뒤 M포인트 사용 여부를 확인해요."
+      }
+    ];
+  }
+
+  if (scenario.merchant.includes("SK에너지")) {
+    return [
+      {
+        id: "okcashbag",
+        type: "멤버십",
+        value: "OK캐쉬백",
+        meta: "포인트 적립",
+        code: "2407 1142 3108",
+        theme: "ok",
+        guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
+      },
+      {
+        id: "sk-coupon",
+        type: "매장쿠폰",
+        value: "SK 주유쿠폰",
+        meta: "D-5",
+        code: "8801 2407 4500",
+        theme: "sk",
+        guide: "SK 주유쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+      },
+      {
+        id: "gs-point",
+        type: "멤버십",
+        value: "GS&POINT",
+        meta: "보유 멤버십",
+        code: "3108 2407 1142",
+        theme: "gspoint",
+        guide: "GS&POINT 바코드를 스캔하고 카드 결제로 넘어가요."
+      }
+    ];
+  }
+
+  if (scenario.merchant.includes("S-OIL")) {
+    return [
+      {
+        id: "soil-point",
+        type: "멤버십",
+        value: "S-OIL 포인트",
+        meta: "포인트 적립",
+        code: "5012 2407 1142",
+        theme: "soil",
+        guide: "S-OIL 포인트 바코드를 스캔하고 카드 결제로 넘어가요."
+      },
+      {
+        id: "soil-coupon",
+        type: "매장쿠폰",
+        value: "S-OIL 주유쿠폰",
+        meta: "D-6",
+        code: "8801 5012 3000",
+        theme: "soil-coupon",
+        guide: "S-OIL 주유쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+      },
+      {
+        id: "okcashbag",
+        type: "멤버십",
+        value: "OK캐쉬백",
+        meta: "보유 멤버십",
+        code: "2407 1142 3108",
+        theme: "ok",
+        guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
+      }
+    ];
+  }
+
+  if (scenario.merchant.includes("EV")) {
+    return [
+      {
+        id: "charge-point",
+        type: "멤버십",
+        value: "충전 포인트",
+        meta: "포인트 적립",
+        code: "7070 2407 1142",
+        theme: "charge",
+        guide: "충전 포인트 바코드를 스캔하고 카드 결제로 넘어가요."
+      },
+      {
+        id: "charge-coupon",
+        type: "매장쿠폰",
+        value: "충전 1천원 쿠폰",
+        meta: "D-4",
+        code: "8801 7070 1000",
+        theme: "charge-coupon",
+        guide: "충전 쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+      }
+    ];
+  }
+
   return [
     {
-      id: "happy",
+      id: "gs-point",
       type: "멤버십",
-      value: "해피포인트",
+      value: "GS&POINT",
+      meta: "자동 적립",
       code: "3108 2407 1142",
-      guide: "M포인트 사용을 요청하고 해피포인트 바코드를 스캔해요."
+      theme: "gspoint",
+      guide: "GS&POINT 바코드를 스캔하고 카드 결제로 넘어가요."
     },
     {
-      id: "kt",
-      type: "멤버십",
-      value: "KT 멤버십 VIP",
-      code: "9000 1485 4927",
-      guide: "KT 멤버십 바코드를 먼저 보여주고 M포인트 사용을 요청해요."
-    },
-    {
-      id: "baskin-coupon",
+      id: "oil-coupon",
       type: "매장쿠폰",
-      value: "배스킨 모바일쿠폰 D-3",
-      code: "9350 1669 2404 4324",
-      guide: "모바일쿠폰 바코드를 스캔한 뒤 M포인트 사용 여부를 확인해요."
+      value: "주유 2천원 쿠폰",
+      meta: "D-7",
+      code: "8801 0427 3000",
+      theme: "oil",
+      guide: "주유 쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+    },
+    {
+      id: "okcashbag",
+      type: "멤버십",
+      value: "OK캐쉬백",
+      meta: "포인트 적립",
+      code: "2407 1142 3108",
+      theme: "ok",
+      guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
     }
   ];
 }
@@ -887,35 +1005,7 @@ function buildPaySteps(mode = currentPayMode) {
   const { card, combo } = currentData();
   const steps = [];
 
-  if (mode === "card") {
-    return [{
-      type: "payment",
-      label: "결제",
-      title: `${card.displayName}`,
-      value: card.displayName,
-      code: "NFC 결제 대기 중",
-      guide: "폰의 뒷면을 카드 리더기에 대세요.",
-      button: "결제 완료"
-    }];
-  }
-
-  if (shouldCombineBenefitStep(combo)) {
-    steps.push(buildCombinedBenefitStep(combo));
-  } else if (hasUsableAsset(combo.coupon)) {
-    steps.push(buildCouponStep(combo.coupon));
-  }
-
-  if (!shouldCombineBenefitStep(combo) && hasUsableAsset(combo.membership)) {
-    steps.push({
-      type: "membership",
-      label: "적립",
-      title: `${displayAsset(combo.membership)} 준비`,
-      value: displayAsset(combo.membership),
-      code: "3108 2407 1142",
-      guide: "바코드를 스캔하면 결제로 넘어가요.",
-      button: "적립 완료"
-    });
-  }
+  steps.push(buildCombinedBenefitStep(combo));
 
   steps.push({
     type: "payment",
@@ -936,7 +1026,7 @@ function renderPayStep() {
   const step = steps[currentPayStep];
   const isPayment = step.type === "payment";
 
-  fields.payTabs.textContent = currentPayMode === "card" ? "카드 결제" : "혜택 순서";
+  fields.payTabs.textContent = "혜택 순서";
   fields.payFlowPanel.style.setProperty("--pay-step-count", steps.length);
   fields.payStackList.innerHTML = steps.map((item, index) => {
     const state = index < currentPayStep ? "is-done" : index === currentPayStep ? "is-active" : "";
@@ -960,6 +1050,7 @@ function renderPayStep() {
   fields.payStepCode.textContent = step.code;
   fields.payGuide.textContent = step.guide;
   fields.completeButton.textContent = step.button;
+  fields.payCodeCard.dataset.extraTheme = (selectedPayExtra || defaultPayExtraOption())?.theme || "default";
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
   fields.payCodeCard.hidden = isPayment;
   $(".screen-pay").dataset.payStep = step.type;
@@ -988,9 +1079,11 @@ function renderPayExtraControls(step, isPayment) {
 
   const selectedId = (selectedPayExtra || defaultPayExtraOption())?.id;
   fields.payExtraList.innerHTML = options.map((option) => `
-    <button type="button" class="pay-extra-option ${option.id === selectedId ? "is-selected" : ""}" data-pay-extra="${option.id}">
+    <button type="button" class="pay-extra-option ${option.id === selectedId ? "is-selected" : ""}" data-pay-extra="${option.id}" data-extra-theme="${option.theme}">
+      <i aria-hidden="true">${option.type === "매장쿠폰" ? "C" : "M"}</i>
       <span>${option.type}</span>
       <strong>${option.value}</strong>
+      <em>${option.meta}</em>
     </button>
   `).join("");
 
