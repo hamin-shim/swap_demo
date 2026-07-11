@@ -68,36 +68,42 @@ async function main() {
     await sleep(150);
     const directPay = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
-      steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
-      stepType: document.querySelector("#payStepType").innerText,
-      stepValue: document.querySelector("#payStepValue").innerText,
-      extraVisible: !document.querySelector("#payExtraToggle").hidden,
-      theme: document.querySelector("#payCodeCard").dataset.extraTheme
+      payStep: document.querySelector(".screen-pay").dataset.payStep,
+      stepListHidden: getComputedStyle(document.querySelector("#payStackList")).display === "none",
+      launcherVisible: !document.querySelector("#payExtraLauncher").hidden,
+      launcherText: document.querySelector("#payExtraLauncher").innerText,
+      codeCardHidden: document.querySelector("#payCodeCard").hidden
     }));
     await assert(directPay.screen === "pay", "direct card pay should open payment screen");
-    await assert(directPay.steps === "1 적립/쿠폰,2 결제", "direct card pay should keep coupon membership step");
-    await assert(directPay.stepType === "적립/쿠폰", "direct card pay first step should be coupon membership");
-    await assert(directPay.stepValue.includes("GS&POINT"), "direct card pay should offer default membership before NFC");
-    await assert(directPay.extraVisible, "direct card pay should expose extra coupon membership selector");
-    await assert(directPay.theme === "gspoint", "direct card pay default membership theme mismatch");
+    await assert(directPay.payStep === "payment", "direct card pay should start directly on NFC payment");
+    await assert(directPay.stepListHidden, "direct card pay should not show the SWAP step sequence");
+    await assert(directPay.launcherVisible, "direct card pay should expose top coupon membership launcher");
+    await assert(directPay.launcherText === "쿠폰/멤버십 사용하기", "direct card pay launcher copy mismatch");
+    await assert(directPay.codeCardHidden, "direct card pay should not show barcode before launcher is tapped");
 
-    await page.evaluate(() => document.querySelector("#payExtraToggle").click());
+    await page.evaluate(() => document.querySelector("#payExtraLauncher").click());
     await sleep(100);
     const directExtra = await page.evaluate(() => ({
+      codeCardHidden: document.querySelector("#payCodeCard").hidden,
+      stepType: document.querySelector("#payStepType").innerText,
+      stepValue: document.querySelector("#payStepValue").innerText,
+      theme: document.querySelector("#payCodeCard").dataset.extraTheme,
       options: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
       themes: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.dataset.extraTheme).join(",")
     }));
+    await assert(!directExtra.codeCardHidden, "direct card pay should show barcode after launcher is tapped");
+    await assert(directExtra.stepType === "멤버십", "direct card pay launcher should show a membership barcode by default");
+    await assert(directExtra.stepValue.includes("GS&POINT"), "direct card pay should offer default membership before NFC");
+    await assert(directExtra.theme === "gspoint", "direct card pay default membership theme mismatch");
     await assert(directExtra.options.includes("D-7"), "direct card pay extra coupon should show remaining days");
     await assert(directExtra.themes.includes("oil") && directExtra.themes.includes("ok"), "direct card pay extra options should expose themed membership and coupon cards");
 
-    await page.evaluate(() => document.querySelector("#completeButton").click());
-    await sleep(150);
     const directPaymentStep = await page.evaluate(() => ({
       payStep: document.querySelector(".screen-pay").dataset.payStep,
-      extraHidden: document.querySelector("#payExtraToggle").hidden
+      launcherVisible: !document.querySelector("#payExtraLauncher").hidden
     }));
-    await assert(directPaymentStep.payStep === "payment", "direct card pay should move to NFC payment after benefit step");
-    await assert(directPaymentStep.extraHidden, "direct card pay should hide extra selector on NFC payment step");
+    await assert(directPaymentStep.payStep === "payment", "direct card pay should stay on NFC payment while using extras");
+    await assert(directPaymentStep.launcherVisible, "direct card pay should keep launcher available on NFC payment");
     await page.evaluate(() => document.querySelector("#completeButton").click());
     await sleep(150);
     await page.evaluate(() => document.querySelector("#resultDoneButton").click());

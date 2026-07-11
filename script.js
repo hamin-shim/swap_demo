@@ -388,6 +388,7 @@ let currentPayStep = 0;
 let currentPayMode = "combo";
 let selectedPayExtra = null;
 let isPayExtraListOpen = false;
+let isDirectPayExtraOpen = false;
 let dragStartX = 0;
 let dragCurrentX = 0;
 let isDragging = false;
@@ -425,6 +426,7 @@ const fields = {
   payFlowPanel: $("#payFlowPanel"),
   payStackList: $("#payStackList"),
   payCodeCard: $("#payCodeCard"),
+  payExtraLauncher: $("#payExtraLauncher"),
   payStepLabel: $("#payStepLabel"),
   payStepTitle: $("#payStepTitle"),
   payStepType: $("#payStepType"),
@@ -1005,6 +1007,18 @@ function buildPaySteps(mode = currentPayMode) {
   const { card, combo } = currentData();
   const steps = [];
 
+  if (mode === "card") {
+    return [{
+      type: "payment",
+      label: "결제",
+      title: `${card.displayName}`,
+      value: card.displayName,
+      code: "NFC 결제 대기 중",
+      guide: "폰의 뒷면을 카드 리더기에 대세요.",
+      button: "결제 완료"
+    }];
+  }
+
   steps.push(buildCombinedBenefitStep(combo));
 
   steps.push({
@@ -1026,7 +1040,7 @@ function renderPayStep() {
   const step = steps[currentPayStep];
   const isPayment = step.type === "payment";
 
-  fields.payTabs.textContent = "혜택 순서";
+  fields.payTabs.textContent = currentPayMode === "card" ? "카드 결제" : "혜택 순서";
   fields.payFlowPanel.style.setProperty("--pay-step-count", steps.length);
   fields.payStackList.innerHTML = steps.map((item, index) => {
     const state = index < currentPayStep ? "is-done" : index === currentPayStep ? "is-active" : "";
@@ -1045,14 +1059,16 @@ function renderPayStep() {
   });
   fields.payStepLabel.textContent = `${currentPayStep + 1}/${steps.length}`;
   fields.payStepTitle.textContent = step.title;
-  fields.payStepType.textContent = step.label;
-  fields.payStepValue.textContent = step.value;
-  fields.payStepCode.textContent = step.code;
+  const directExtra = currentPayMode === "card" && isPayment ? (selectedPayExtra || defaultPayExtraOption()) : null;
+  fields.payStepType.textContent = directExtra?.type || step.label;
+  fields.payStepValue.textContent = directExtra?.value || step.value;
+  fields.payStepCode.textContent = directExtra?.code || step.code;
   fields.payGuide.textContent = step.guide;
   fields.completeButton.textContent = step.button;
-  fields.payCodeCard.dataset.extraTheme = (selectedPayExtra || defaultPayExtraOption())?.theme || "default";
+  fields.payCodeCard.dataset.extraTheme = (directExtra || selectedPayExtra || defaultPayExtraOption())?.theme || "default";
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
-  fields.payCodeCard.hidden = isPayment;
+  fields.payFlowPanel.classList.toggle("is-direct-card-pay", currentPayMode === "card");
+  fields.payCodeCard.hidden = currentPayMode === "card" ? !isDirectPayExtraOpen : isPayment;
   $(".screen-pay").dataset.payStep = step.type;
   $(".screen-pay").dataset.payMode = currentPayMode;
   renderPayExtraControls(step, isPayment);
@@ -1067,8 +1083,13 @@ function renderPayStep() {
 
 function renderPayExtraControls(step, isPayment) {
   const options = payExtraOptions();
-  const canChooseExtra = !isPayment && step.type === "benefit" && options.length > 1;
+  const isDirectCardPayment = currentPayMode === "card" && isPayment;
+  const canChooseExtra = (isDirectCardPayment || (!isPayment && step.type === "benefit")) && options.length > 1;
+  fields.payExtraLauncher.hidden = !isDirectCardPayment;
+  fields.payExtraLauncher.classList.toggle("is-open", isDirectPayExtraOpen);
+  fields.payExtraLauncher.textContent = isDirectPayExtraOpen ? "쿠폰/멤버십 닫기" : "쿠폰/멤버십 사용하기";
   fields.payExtraToggle.hidden = !canChooseExtra;
+  fields.payExtraToggle.textContent = isDirectCardPayment ? "다른 쿠폰/멤버십 보기" : "다른 쿠폰/멤버십 보기";
   fields.payExtraList.hidden = !canChooseExtra || !isPayExtraListOpen;
   fields.payExtraToggle.setAttribute("aria-expanded", String(canChooseExtra && isPayExtraListOpen));
 
@@ -1350,6 +1371,7 @@ function startPaymentFlow(mode = "combo") {
   currentPayStep = 0;
   selectedPayExtra = null;
   isPayExtraListOpen = false;
+  isDirectPayExtraOpen = false;
   setResultForMode(mode);
   renderPayStep();
   setScreen("pay");
@@ -1637,6 +1659,11 @@ $("#applyLocationButton").addEventListener("click", applyLocationChange);
 $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
+$("#payExtraLauncher").addEventListener("click", () => {
+  isDirectPayExtraOpen = !isDirectPayExtraOpen;
+  isPayExtraListOpen = isDirectPayExtraOpen;
+  renderPayStep();
+});
 $("#payExtraToggle").addEventListener("click", () => {
   isPayExtraListOpen = !isPayExtraListOpen;
   renderPayStep();
