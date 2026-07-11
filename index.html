@@ -140,10 +140,10 @@
             <div class="success-mark">✓</div>
             <span>결제 완료</span>
             <h1 id="resultSummary">예상 혜택을 정리했어요</h1>
-            <p id="resultLearning">이번 결과를 다음 추천에 반영했어요</p>
+            <p id="resultLearning">이번 결제 내용을 다음 추천에 참고했어요</p>
           </header>
           <section class="result-benefit-card">
-            <span>이번 결제 예상 혜택</span>
+            <span id="resultBenefitLabel">이번 결제 예상 혜택</span>
             <strong id="resultBenefitAmount">5,000원</strong>
           </section>
           <div class="result-status-list" id="resultStatusList" aria-label="혜택 적용 상태"></div>
@@ -165,7 +165,7 @@
               <dd id="resultType">예상 할인</dd>
             </div>
           </dl>
-          <p class="card-app-note" id="cardAppNote">카드사 앱에서 청구할인, 남은 한도, 실적 산입 여부를 최종 확인할 수 있어요.</p>
+          <p class="card-app-note" id="cardAppNote">카드사 앱에서 청구할인, 남은 한도, 실적 포함 여부를 최종 확인할 수 있어요.</p>
           <div class="result-actions">
             <button type="button" id="resetButton">Wallet으로 돌아가기</button>
             <button type="button" class="secondary" id="plannerButton">카드사 앱에서 확인</button>
@@ -262,7 +262,7 @@
           <h2>AI 추천 설정</h2>
           <button type="button" class="sheet-close-button" id="closeSettings" aria-label="닫기"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
         </div>
-        <p>지금 결제에서 무엇을 우선할지 고를 수 있어요. 선택한 기준은 다음 추천에도 반영됩니다.</p>
+        <p>지금 결제에서 무엇을 우선할지 고를 수 있어요. 선택한 기준은 다음 추천에도 적용됩니다.</p>
         <div class="setting-group">
           <span>추천 기준</span>
           <div class="scenario-list" aria-label="추천 기준 선택">

@@ -129,7 +129,7 @@ async function main() {
       primary: document.querySelector("#whyButton").innerText,
       badge: document.querySelector(".payment-card[data-index='2'] .card-badge")?.innerText
     }));
-    await assert(selectedCardCta.primary === "조건 확인", "selected card CTA should summarize its benefit condition");
+    await assert(selectedCardCta.primary === "정유사 확인", "selected card CTA should summarize its benefit condition");
     await assert(selectedCardCta.badge === "선택", "selected non-recommended card badge should show selected state");
 
     await page.evaluate(() => document.querySelector("#whyButton").click());
