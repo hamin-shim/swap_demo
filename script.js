@@ -406,8 +406,6 @@ const fields = {
   changePlaceButton: $("#changePlaceButton"),
   walletHint: $("#walletHint"),
   detailSheetTitle: $("#detailSheetTitle"),
-  reasonText: $("#reasonText"),
-  benefitHighlight: $("#benefitHighlight"),
   benefitLabel: $("#benefitLabel"),
   comboCard: $("#comboCard"),
   comboCoupon: $("#comboCoupon"),
@@ -964,8 +962,6 @@ function render() {
   fields.changePlaceButton.textContent = "다른 매장이에요";
   fields.walletHint.textContent = isSwapMinimized ? "추천 없이 선택한 카드로 결제할 수 있어요" : "혜택은 결제 전에 한 번 더 확인할 수 있어요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
-  fields.reasonText.textContent = compactCopy(formatReasonLead(combo.reason));
-  fields.benefitHighlight.textContent = formatBenefitHighlight(scenario.type, benefitAmount);
   fields.benefitLabel.textContent = formatBenefitLabel(scenario.type);
   fields.comboCard.textContent = card.displayName;
   fields.comboCoupon.textContent = combo.coupon;

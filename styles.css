@@ -1840,31 +1840,6 @@ button {
   display: none;
 }
 
-#detailSheet .benefit-summary {
-  margin: 0 0 10px;
-  color: #8a93a3;
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.45;
-}
-
-#detailSheet .benefit-summary span,
-#detailSheet .benefit-summary strong,
-#detailSheet .benefit-summary em {
-  display: inline;
-}
-
-#detailSheet .benefit-summary strong {
-  color: var(--blue);
-  font-size: 18px;
-  font-weight: 700;
-}
-
-#detailSheet .benefit-summary em {
-  color: #8a93a3;
-  font-style: normal;
-}
-
 .benefit-total {
   display: grid;
   grid-template-columns: minmax(74px, 0.55fr) minmax(0, 1.45fr);
