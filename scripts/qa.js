@@ -249,6 +249,7 @@ async function main() {
       title: document.querySelector("#payStepTitle").innerText,
       button: document.querySelector("#completeButton").innerText,
       stepType: document.querySelector("#payStepType").innerText,
+      stepValue: document.querySelector("#payStepValue").innerText,
       stepCode: document.querySelector("#payStepCode").innerText,
       barcodeVisible: getComputedStyle(document.querySelector(".barcode")).display !== "none",
       steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
@@ -263,6 +264,8 @@ async function main() {
     await assert(payCopy.top === "혜택 순서", "pay top copy mismatch");
     await assert(payCopy.steps === "1 적립/쿠폰,2 결제", "Baskin Robbins should combine coupon and membership before payment");
     await assert(payCopy.stepType === "적립/쿠폰", "combined benefit step should be labeled as coupon and membership use");
+    await assert(payCopy.stepValue === "해피포인트", "combined benefit step should show only the scannable Happy Point membership");
+    await assert(!payCopy.stepValue.includes("M포인트"), "M point should be reminded during card payment, not merged into the barcode title");
     await assert(payCopy.stepCode === "3108 2407 1142", "combined benefit step should show Happy Point barcode number");
     await assert(payCopy.barcodeVisible, "combined benefit step should show a barcode");
     await assert(payCopy.extraButtonVisible, "combined benefit step should expose extra coupon membership selector");
@@ -295,10 +298,17 @@ async function main() {
     await assert(extraSelected.guide.includes("KT 멤버십"), "selected extra membership should update guide copy");
     await assert(extraSelected.listHidden, "extra benefit list should close after selection");
 
-    for (let i = 0; i < 2; i += 1) {
-      await page.evaluate(() => document.querySelector("#completeButton").click());
-      await sleep(150);
-    }
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(150);
+    const paymentReminder = await page.evaluate(() => ({
+      payStep: document.querySelector(".screen-pay").dataset.payStep,
+      guide: document.querySelector("#payGuide").innerText
+    }));
+    await assert(paymentReminder.payStep === "payment", "Baskin Robbins should move to payment after combined benefit step");
+    await assert(paymentReminder.guide.includes("M포인트 사용을 요청"), "M point use should be reminded during card payment");
+
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(150);
     const result = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
       rows: document.querySelectorAll(".result-status-row").length,
