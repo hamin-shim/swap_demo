@@ -816,7 +816,6 @@ function buildCouponStep(value) {
 function buildCombinedBenefitStep(combo) {
   const extra = selectedPayExtra || defaultPayExtraOption();
   const baseItems = [
-    hasUsableAsset(combo.coupon) ? compactCopy(combo.coupon) : "",
     extra?.value || (hasUsableAsset(combo.membership) ? displayAsset(combo.membership) : "")
   ].filter(Boolean);
 
@@ -829,6 +828,13 @@ function buildCombinedBenefitStep(combo) {
     guide: extra?.guide || "필요한 쿠폰이나 멤버십을 보여준 뒤 카드 결제로 넘어가요.",
     button: "적립/쿠폰 사용 완료"
   };
+}
+
+function paymentGuideFor(combo) {
+  if (hasUsableAsset(combo.coupon) && combo.coupon.includes("M포인트")) {
+    return "결제 전 M포인트 사용을 요청한 뒤 폰의 뒷면을 카드 리더기에 대세요.";
+  }
+  return "폰의 뒷면을 카드 리더기에 대세요.";
 }
 
 function payExtraOptions() {
@@ -1027,7 +1033,7 @@ function buildPaySteps(mode = currentPayMode) {
     title: `${card.displayName}`,
     value: card.displayName,
     code: "NFC 결제 대기 중",
-    guide: "폰의 뒷면을 카드 리더기에 대세요.",
+    guide: paymentGuideFor(combo),
     button: "결제 완료"
   });
 
