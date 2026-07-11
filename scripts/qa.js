@@ -64,6 +64,45 @@ async function main() {
     await assert(initial.bodyOverflowY !== "hidden", "body vertical overflow should not block browser pull-to-refresh");
     await assert(initial.bodyOverscrollY !== "none", "body overscroll should not block browser pull-to-refresh");
 
+    await page.evaluate(() => document.querySelector("#walletPayButton").click());
+    await sleep(150);
+    const directPay = await page.evaluate(() => ({
+      screen: document.querySelector(".screen.is-active").dataset.screen,
+      steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
+      stepType: document.querySelector("#payStepType").innerText,
+      stepValue: document.querySelector("#payStepValue").innerText,
+      extraVisible: !document.querySelector("#payExtraToggle").hidden,
+      theme: document.querySelector("#payCodeCard").dataset.extraTheme
+    }));
+    await assert(directPay.screen === "pay", "direct card pay should open payment screen");
+    await assert(directPay.steps === "1 적립/쿠폰,2 결제", "direct card pay should keep coupon membership step");
+    await assert(directPay.stepType === "적립/쿠폰", "direct card pay first step should be coupon membership");
+    await assert(directPay.stepValue.includes("GS&POINT"), "direct card pay should offer default membership before NFC");
+    await assert(directPay.extraVisible, "direct card pay should expose extra coupon membership selector");
+    await assert(directPay.theme === "gspoint", "direct card pay default membership theme mismatch");
+
+    await page.evaluate(() => document.querySelector("#payExtraToggle").click());
+    await sleep(100);
+    const directExtra = await page.evaluate(() => ({
+      options: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
+      themes: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.dataset.extraTheme).join(",")
+    }));
+    await assert(directExtra.options.includes("D-7"), "direct card pay extra coupon should show remaining days");
+    await assert(directExtra.themes.includes("oil") && directExtra.themes.includes("ok"), "direct card pay extra options should expose themed membership and coupon cards");
+
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(150);
+    const directPaymentStep = await page.evaluate(() => ({
+      payStep: document.querySelector(".screen-pay").dataset.payStep,
+      extraHidden: document.querySelector("#payExtraToggle").hidden
+    }));
+    await assert(directPaymentStep.payStep === "payment", "direct card pay should move to NFC payment after benefit step");
+    await assert(directPaymentStep.extraHidden, "direct card pay should hide extra selector on NFC payment step");
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(150);
+    await page.evaluate(() => document.querySelector("#resultDoneButton").click());
+    await sleep(150);
+
     await page.evaluate(() => document.querySelector("#swapToggleButton").click());
     await sleep(150);
     const minimized = await page.evaluate(() => ({
