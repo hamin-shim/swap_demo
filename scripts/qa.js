@@ -43,6 +43,7 @@ async function main() {
       viewport: window.innerHeight,
       primary: document.querySelector("#whyButton").innerText,
       secondary: document.querySelector("#changePlaceButton").innerText,
+      merchant: document.querySelector("#merchantName").innerText,
       homeIndicators: document.querySelectorAll(".home-indicator").length,
       bodyOverflowY: getComputedStyle(document.body).overflowY,
       bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
@@ -50,6 +51,7 @@ async function main() {
     await assert(initial.appHeight === initial.viewport, "S26 viewport height mismatch");
     await assert(initial.primary === "추천 보기", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
+    await assert(initial.merchant.includes("GS칼텍스"), "default merchant should be GS Caltex");
     await assert(initial.homeIndicators === 0, "OS home indicator should not be implemented inside the page");
     await assert(initial.bodyOverflowY !== "hidden", "body vertical overflow should not block browser pull-to-refresh");
     await assert(initial.bodyOverscrollY !== "none", "body overscroll should not block browser pull-to-refresh");
@@ -110,7 +112,7 @@ async function main() {
 
     await page.evaluate(() => document.querySelector("#changePlaceButton").click());
     await sleep(150);
-    await page.evaluate(() => document.querySelector(".location-option[data-location='cu']").click());
+    await page.evaluate(() => document.querySelector(".location-option[data-location='skenergy']").click());
     await sleep(100);
     const locationState = await page.evaluate(() => ({
       hasPreview: !!document.querySelector("#locationPreview"),
@@ -118,7 +120,7 @@ async function main() {
       text: document.querySelector("#applyLocationButton").innerText
     }));
     await assert(!locationState.hasPreview, "location benefit preview should be removed");
-    await assert(!locationState.disabled, "location apply should be enabled after selecting CU");
+    await assert(!locationState.disabled, "location apply should be enabled after selecting SK Energy");
     await assert(locationState.text === "이 매장으로 보기", "location apply copy mismatch");
     await page.evaluate(() => document.querySelector("#applyLocationButton").click());
     await sleep(150);
@@ -149,11 +151,15 @@ async function main() {
     const result = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
       rows: document.querySelectorAll(".result-status-row").length,
+      summary: document.querySelector("#resultSummary").innerText,
+      nextHint: document.querySelector("#resultNextHint").innerText,
       canScroll: document.querySelector(".screen-result").scrollHeight > document.querySelector(".screen-result").clientHeight,
       doneText: document.querySelector("#resultDoneButton").innerText
     }));
     await assert(result.screen === "result", "result screen did not open");
     await assert(result.rows >= 3, "result rows should render from benefit breakdown");
+    await assert(result.summary.includes("아꼈어요"), "result should emphasize saved fuel cost");
+    await assert(result.nextHint.includes("12,000원"), "result should show remaining fuel performance amount");
     await assert(result.doneText === "완료", "result done button is missing");
 
     await page.evaluate(() => {

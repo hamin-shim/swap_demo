@@ -17,10 +17,10 @@
 
 ### Location scenarios
 
-- `starbucks`: Starbucks
-- `cu`: CU
-- `oliveyoung`: Olive Young
-- `department`: 신세계백화점
+- `gscaltex`: GS칼텍스 삼평주유소
+- `skenergy`: SK에너지 판교셀프
+- `soil`: S-OIL 판교충전소
+- `evcharge`: EV 충전소
 
 ### Text fields per recommendation
 
@@ -29,7 +29,7 @@ Each card recommendation has these editable fields.
 - `reason`: why this card is recommended or not recommended
 - `benefit`: blue benefit/remaining/performance value
 - `coupon`: coupon step text
-- `membership`: membership step text
+- `membership`: point/reward step text
 - `insight`: one-line explanation under recommendation criteria
 
 ## Current phrase types to review
@@ -53,12 +53,11 @@ Each card recommendation has these editable fields.
 
 ### Benefit examples
 
-- 예상 혜택 2,500원
-- 남은 한도 300원
-- 카페 혜택 1회 남음
-- 편의점 혜택 2회 남음
-- 항공 마일리지 12마일 적립 예상
-- 실적 360,000원/500,000원 달성 예상
+- 예상 혜택 4,500원
+- 남은 주유 한도 19,000원
+- 항공 마일리지 45마일 적립 예상
+- 실적 388,000원/400,000원 달성 예상
+- 다음 주유 실적 충족까지 12,000원 남음
 - 혜택 확인 필요
 - 실적 확인 필요
 
