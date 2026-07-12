@@ -428,7 +428,7 @@ button {
 .ai-pill.is-minimized {
   min-height: 56px;
   margin-top: 24px;
-  grid-template-columns: 24px 1fr 34px;
+  grid-template-columns: 24px minmax(0, 1fr) 34px;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
@@ -448,7 +448,9 @@ button {
 
 .ai-pill.is-minimized .ai-copy {
   order: 2;
+  min-width: 0;
   padding-right: 0;
+  overflow: hidden;
 }
 
 .ai-pill.is-minimized .ai-copy span,
@@ -458,6 +460,9 @@ button {
 
 .ai-pill.is-minimized .ai-copy small {
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ai-pill.is-minimized .ai-minimize-button {
@@ -468,6 +473,10 @@ button {
   background: #fff;
   border: 1px solid #dfe6f1;
   color: #5f6774;
+}
+
+.ai-pill.is-minimized .ai-powered {
+  display: none;
 }
 
 .ai-pill.is-minimized + .card-carousel {
@@ -768,21 +777,17 @@ button {
 }
 
 .combo-membership-item > div {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
+  display: block;
   min-width: 0;
-  flex-wrap: wrap;
 }
 
 .combo-membership-item span {
-  margin-bottom: 0;
-  line-height: 1;
-  white-space: nowrap;
+  margin-bottom: 4px;
+  line-height: 1.05;
 }
 
 .combo-membership-item strong {
-  flex: 1 1 190px;
+  display: block;
   white-space: normal;
 }
 
@@ -1437,6 +1442,39 @@ button {
   top: 310px;
 }
 
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-nfc-panel {
+  top: 446px;
+  bottom: 104px;
+  gap: 6px;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+}
+
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-rings {
+  top: 34%;
+  width: min(360px, 92vw);
+  height: min(360px, 92vw);
+  opacity: 0.58;
+}
+
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-card-rotated {
+  width: clamp(112px, 30vw, 132px);
+}
+
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-timer {
+  min-width: 104px;
+  padding: 7px 13px 8px;
+}
+
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-timer strong {
+  font-size: 24px;
+}
+
+.screen-pay.has-direct-extra-open[data-pay-mode="card"][data-pay-step="payment"] .pay-guide {
+  max-width: 270px;
+  font-size: 13px;
+}
+
 .pay-rings {
   position: absolute;
   left: 50%;
@@ -1757,10 +1795,11 @@ button {
   text-align: left;
 }
 
-.result-status-row span {
+.result-status-row > span {
   display: block;
+  flex: 1 1 auto;
   color: #7b8493;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -1768,12 +1807,14 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  max-width: 250px;
-  margin-top: 2px;
+  flex: 0 0 auto;
+  max-width: 190px;
+  margin-top: 0;
   color: #111;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.25;
+  text-align: right;
   word-break: keep-all;
 }
 
@@ -1801,23 +1842,29 @@ button {
 .result-help {
   position: relative;
   display: inline-grid;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   flex: 0 0 auto;
   place-items: center;
   border: 0;
   border-radius: 50%;
   background: #eef4ff;
   color: #2878ff;
+  font: inherit;
+  line-height: 1;
+}
+
+.result-help span {
+  color: var(--blue);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
 }
 
 .result-help::after {
   content: attr(data-help);
   position: absolute;
-  right: -8px;
+  right: 0;
   bottom: calc(100% + 8px);
   z-index: 5;
   display: none;
@@ -1839,7 +1886,7 @@ button {
 .result-help::before {
   content: "";
   position: absolute;
-  right: 2px;
+  right: 4px;
   bottom: calc(100% + 3px);
   z-index: 6;
   display: none;
@@ -2426,7 +2473,6 @@ button {
 }
 
 #detailSheet:not(.is-expanded) .combo-membership-item strong {
-  flex-basis: 150px;
   white-space: normal;
 }
 

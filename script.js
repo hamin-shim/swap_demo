@@ -111,11 +111,13 @@ const locationScenarioSets = {
         insight: "할인액이 가장 크고 GS&POINT 자동 적립까지 같이 챙길 수 있어요"
       },
       {
-        reason: "신한 Deep Oil은 주유 특화 카드지만 사용자가 선택한 정유사가 GS칼텍스인지 먼저 확인해야 해요",
-        benefit: "선택 정유사 확인",
+        reason: "신한 Deep Oil은 사용자가 카드사에 미리 선택한 정유사에서 할인이 적용돼요. 현재 매장이 선택 정유사와 맞는지 먼저 확인해야 해요",
+        benefit: "정유사 선택 확인",
+        prepayValue: "정유사 선택 확인",
+        prepayFormula: "뱅크샐러드에서 카드 사용 상태와 실적은 확인할 수 있지만, 이 카드는 사용자가 카드사에 설정한 정유사와 현재 매장이 일치해야 혜택을 기대할 수 있어요.",
         coupon: "보유 쿠폰 없음",
         membership: "GS&POINT 적립",
-        insight: "조건이 맞으면 후보지만 지금 화면에서는 확정 추천하기 어려워요"
+        insight: "선택 정유사가 현재 매장과 맞는지 확인이 필요해요"
       },
       {
         reason: "현대카드 M BOOST는 기본 포인트 적립 중심이라 GS칼텍스 직접 할인 폭은 작아요",
@@ -169,9 +171,9 @@ const locationScenarioSets = {
   performance_fill: {
     merchant: "GS칼텍스 삼평주유소",
     confidence: "주유소 인식 91%",
-    recommendedIndex: 2,
+    recommendedIndex: 1,
     type: "실적",
-    detail: "오늘 주유가 다음 달 주유 할인 조건을 채우는 데 얼마나 도움이 되는지 봤어요.",
+    detail: "오늘 주유가 다음 주유 혜택 조건을 채우는 데 얼마나 도움이 되는지 봤어요.",
     combinations: [
       {
         reason: "KB국민 주유패스는 현재 318,000원/500,000원으로 다음 혜택까지 182,000원이 남아 있어요",
@@ -188,11 +190,11 @@ const locationScenarioSets = {
         insight: "이번 결제가 다음 주유 혜택 조건에 가장 가까워요"
       },
       {
-        reason: "신한 Deep Oil은 현재 402,000원/400,000원으로 실적은 충족했지만 GS칼텍스 할인 조건은 따로 확인이 필요해요",
+        reason: "신한 Deep Oil은 현재 402,000원/400,000원으로 이미 실적을 채웠어요",
         benefit: "실적 402,000원/400,000원",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 적립",
-        insight: "실적은 충분하지만 이번 매장 혜택 확정성은 낮아요"
+        insight: "이미 채운 카드라 실적 채우기 기준에서는 뒤로 뒀어요"
       },
       {
         reason: "현대카드 M BOOST는 실적 관리 부담은 낮지만 주유 할인 금액이 작아요",
@@ -565,6 +567,7 @@ function formatCardBenefitCta(scenario, combo) {
     if (combo.benefit.includes("/")) return formatBenefitDisplay(formatBenefitAmount(combo.benefit));
     return "실적 조건 확인";
   }
+  if (combo.benefit.includes("정유사 선택")) return "정유사 선택 확인";
   if (combo.benefit.includes("정유사")) return "정유사 확인";
   if (combo.benefit.includes("업종")) return "업종 혜택 확인";
   if (combo.benefit.includes("충전")) return "충전 혜택 확인";
@@ -622,6 +625,15 @@ function parsePerformanceValue(value) {
   return amount ? Number(amount.replace(/,/g, "")) : 0;
 }
 
+function parsePerformanceProgress(value) {
+  const match = value.match(/([0-9,]+)원\/([0-9,]+)원/);
+  if (!match) return null;
+  return {
+    current: Number(match[1].replace(/,/g, "")),
+    target: Number(match[2].replace(/,/g, ""))
+  };
+}
+
 function expectedBenefit({ paymentAmount = 25000, rate = 0, remainingCap = Infinity, fixedAmount = 0 }) {
   const calculated = fixedAmount || Math.round(paymentAmount * rate);
   return Math.max(0, Math.min(calculated, remainingCap));
@@ -631,7 +643,13 @@ function scoreCombo(scenario, combo) {
   if (!combo || /(없음|필요|낮음|아님)/.test(combo.benefit)) return -1;
   if (Number.isFinite(combo.scoreValue)) return combo.scoreValue;
   if (scenario.type.includes("마일")) return parseMiles(combo.benefit);
-  if (scenario.type.includes("실적")) return parsePerformanceValue(combo.benefit) || (combo.benefit.includes("실적") ? 1 : 0);
+  if (scenario.type.includes("실적")) {
+    const progress = parsePerformanceProgress(combo.benefit);
+    if (!progress) return combo.benefit.includes("실적") ? 1 : 0;
+    const shortfall = progress.target - progress.current;
+    if (shortfall <= 0) return 0;
+    return 1_000_000 - shortfall;
+  }
   return expectedBenefit({ fixedAmount: parseWon(combo.benefit) });
 }
 
@@ -1119,7 +1137,16 @@ function buildPaySteps(mode = currentPayMode) {
   const steps = [];
 
   if (mode === "card") {
-    return [{
+    if (isDirectPayExtraOpen) {
+      const extra = selectedPayExtra || defaultPayExtraOption();
+      if (extra?.type === "매장쿠폰") {
+        steps.push(buildCouponStep(extra.value));
+      } else if (extra?.type === "멤버십") {
+        steps.push(buildMembershipStep(extra.value));
+      }
+    }
+
+    steps.push({
       type: "payment",
       label: "결제",
       title: `${card.displayName}`,
@@ -1127,7 +1154,8 @@ function buildPaySteps(mode = currentPayMode) {
       code: "NFC 결제 대기 중",
       guide: "폰의 뒷면을 카드 리더기에 대세요.",
       button: "결제 완료"
-    }];
+    });
+    return steps;
   }
 
   if (hasUsableAsset(combo.coupon)) {
@@ -1156,8 +1184,9 @@ function renderPayStep() {
   currentPayStep = Math.min(currentPayStep, steps.length - 1);
   const step = steps[currentPayStep];
   const isPayment = step.type === "payment";
+  const isDirectPlainPayment = currentPayMode === "card" && !isDirectPayExtraOpen;
 
-  fields.payTabs.textContent = currentPayMode === "card" ? "카드 결제" : "혜택 순서";
+  fields.payTabs.textContent = isDirectPlainPayment ? "카드 결제" : "혜택 순서";
   fields.payFlowPanel.style.setProperty("--pay-step-count", steps.length);
   fields.payStackList.innerHTML = steps.map((item, index) => {
     const state = index < currentPayStep ? "is-done" : index === currentPayStep ? "is-active" : "";
@@ -1176,18 +1205,20 @@ function renderPayStep() {
   });
   fields.payStepLabel.textContent = `${currentPayStep + 1}/${steps.length}`;
   fields.payStepTitle.textContent = step.title;
-  const directExtra = currentPayMode === "card" && isPayment ? (selectedPayExtra || defaultPayExtraOption()) : null;
-  fields.payStepType.textContent = directExtra?.type || step.label;
-  fields.payStepValue.textContent = directExtra?.value || step.value;
-  fields.payStepCode.textContent = directExtra?.code || step.code;
+  fields.payStepType.textContent = step.label;
+  fields.payStepValue.textContent = step.value;
+  fields.payStepCode.textContent = step.code;
   fields.payGuide.textContent = step.guide;
   fields.completeButton.textContent = step.button;
-  fields.payCodeCard.dataset.extraTheme = (directExtra || selectedPayExtra || defaultPayExtraOption())?.theme || "default";
+  fields.payCodeCard.dataset.extraTheme = (selectedPayExtra || defaultPayExtraOption())?.theme || "default";
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
-  fields.payFlowPanel.classList.toggle("is-direct-card-pay", currentPayMode === "card");
-  fields.payCodeCard.hidden = currentPayMode === "card" ? !isDirectPayExtraOpen : isPayment;
-  $(".screen-pay").dataset.payStep = step.type;
-  $(".screen-pay").dataset.payMode = currentPayMode;
+  fields.payFlowPanel.classList.toggle("is-direct-card-pay", isDirectPlainPayment);
+  fields.payFlowPanel.classList.toggle("has-direct-extra-open", currentPayMode === "card" && isDirectPayExtraOpen);
+  fields.payCodeCard.hidden = isPayment;
+  const payScreen = $(".screen-pay");
+  payScreen.dataset.payStep = step.type;
+  payScreen.dataset.payMode = currentPayMode;
+  payScreen.classList.toggle("has-direct-extra-open", currentPayMode === "card" && isDirectPayExtraOpen);
   renderPayExtraControls(step, isPayment);
 
   if (isPayment && !nfcWasPaymentStep) {
@@ -1200,13 +1231,13 @@ function renderPayStep() {
 
 function renderPayExtraControls(step, isPayment) {
   const options = payExtraOptions();
-  const isDirectCardPayment = currentPayMode === "card" && isPayment;
-  const canChooseExtra = (isDirectCardPayment || (!isPayment && (step.type === "coupon" || step.type === "point" || step.type === "membership"))) && options.length > 1;
-  fields.payExtraLauncher.hidden = !isDirectCardPayment;
+  const isDirectPlainPayment = currentPayMode === "card" && isPayment && !isDirectPayExtraOpen;
+  const canChooseExtra = !isPayment && (step.type === "coupon" || step.type === "point" || step.type === "membership") && options.length > 1;
+  fields.payExtraLauncher.hidden = !isDirectPlainPayment;
   fields.payExtraLauncher.classList.toggle("is-open", isDirectPayExtraOpen);
   fields.payExtraLauncher.textContent = isDirectPayExtraOpen ? "쿠폰/멤버십 닫기" : "쿠폰/멤버십 사용하기";
   fields.payExtraToggle.hidden = !canChooseExtra;
-  fields.payExtraToggle.textContent = isDirectCardPayment ? "다른 쿠폰/멤버십 보기" : "다른 쿠폰/멤버십 보기";
+  fields.payExtraToggle.textContent = "다른 쿠폰/멤버십 보기";
   fields.payExtraList.hidden = !canChooseExtra || !isPayExtraListOpen;
   fields.payExtraToggle.setAttribute("aria-expanded", String(canChooseExtra && isPayExtraListOpen));
 
@@ -1480,14 +1511,11 @@ function setResultForMode(mode) {
 function renderResultRows(items) {
   return items.map((item) => `
     <div class="result-status-row">
-      <div>
-        <span>${item.label}</span>
-        <strong>
-          ${item.value}
-          ${item.help ? `<button type="button" class="result-help" aria-label="${item.label} 계산 방식" data-help="${escapeHtml(item.help)}">?</button>` : ""}
-        </strong>
-        ${item.detail ? `<p>${item.detail}</p>` : ""}
-      </div>
+      <span>${item.label}</span>
+      <strong>
+        ${item.value}
+        ${item.help ? `<button type="button" class="result-help" aria-label="${item.label} 계산 방식" data-help="${escapeHtml(item.help)}"><span aria-hidden="true">?</span></button>` : ""}
+      </strong>
       ${item.state ? `<em>${item.state}</em>` : ""}
     </div>
   `).join("");
@@ -1793,8 +1821,9 @@ $("#walletPayButton").addEventListener("click", () => startPaymentFlow("card"));
 $("#comboPayButton").addEventListener("click", () => startPaymentFlow("combo"));
 $("#completeButton").addEventListener("click", advancePaymentFlow);
 $("#payExtraLauncher").addEventListener("click", () => {
-  isDirectPayExtraOpen = !isDirectPayExtraOpen;
-  isPayExtraListOpen = isDirectPayExtraOpen;
+  isDirectPayExtraOpen = true;
+  currentPayStep = 0;
+  isPayExtraListOpen = false;
   renderPayStep();
 });
 $("#payExtraToggle").addEventListener("click", () => {

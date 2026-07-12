@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+demo_captures/*
+!demo_captures/.gitkeep
+demo_video/*
+!demo_video/.gitkeep

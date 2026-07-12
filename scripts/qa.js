@@ -84,6 +84,11 @@ async function main() {
     await page.evaluate(() => document.querySelector("#payExtraLauncher").click());
     await sleep(100);
     const directExtra = await page.evaluate(() => ({
+      payStep: document.querySelector(".screen-pay").dataset.payStep,
+      top: document.querySelector("#payTabs").innerText,
+      steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
+      stepListHidden: getComputedStyle(document.querySelector("#payStackList")).display === "none",
+      launcherVisible: !document.querySelector("#payExtraLauncher").hidden,
       codeCardHidden: document.querySelector("#payCodeCard").hidden,
       stepType: document.querySelector("#payStepType").innerText,
       stepValue: document.querySelector("#payStepValue").innerText,
@@ -91,19 +96,30 @@ async function main() {
       options: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.innerText.replace(/\n/g, " ")).join(","),
       themes: Array.from(document.querySelectorAll("#payExtraList .pay-extra-option")).map((item) => item.dataset.extraTheme).join(",")
     }));
+    await assert(directExtra.payStep === "membership", "direct extra flow should switch to membership step");
+    await assert(directExtra.top === "혜택 순서", "direct extra flow should use the same benefit sequence UI");
+    await assert(directExtra.steps === "1 적립,2 결제", "direct extra flow should show membership then payment steps");
+    await assert(!directExtra.stepListHidden, "direct extra flow should show the step sequence");
+    await assert(!directExtra.launcherVisible, "direct extra flow should not keep the floating coupon membership launcher");
     await assert(!directExtra.codeCardHidden, "direct card pay should show barcode after launcher is tapped");
-    await assert(directExtra.stepType === "멤버십", "direct card pay launcher should show a membership barcode by default");
+    await assert(directExtra.stepType === "적립", "direct extra flow should show the same membership collection label as benefit pay");
     await assert(directExtra.stepValue.includes("GS&POINT"), "direct card pay should offer default membership before NFC");
     await assert(directExtra.theme === "gspoint", "direct card pay default membership theme mismatch");
     await assert(directExtra.options.includes("D-7"), "direct card pay extra coupon should show remaining days");
     await assert(directExtra.themes.includes("oil") && directExtra.themes.includes("ok"), "direct card pay extra options should expose themed membership and coupon cards");
 
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(100);
     const directPaymentStep = await page.evaluate(() => ({
       payStep: document.querySelector(".screen-pay").dataset.payStep,
-      launcherVisible: !document.querySelector("#payExtraLauncher").hidden
+      launcherVisible: !document.querySelector("#payExtraLauncher").hidden,
+      codeCardHidden: document.querySelector("#payCodeCard").hidden,
+      steps: Array.from(document.querySelectorAll("#payStackList .pay-step-button")).map((item) => item.innerText.replace(/\n/g, " ")).join(",")
     }));
     await assert(directPaymentStep.payStep === "payment", "direct card pay should stay on NFC payment while using extras");
-    await assert(directPaymentStep.launcherVisible, "direct card pay should keep launcher available on NFC payment");
+    await assert(!directPaymentStep.launcherVisible, "direct extra flow should keep the floating launcher hidden on NFC payment");
+    await assert(directPaymentStep.codeCardHidden, "direct extra flow should hide barcode during NFC payment");
+    await assert(directPaymentStep.steps === "1 적립,2 결제", "direct extra payment should keep the same step sequence visible");
     await page.evaluate(() => document.querySelector("#completeButton").click());
     await sleep(150);
     await page.evaluate(() => document.querySelector("#resultDoneButton").click());
@@ -115,6 +131,9 @@ async function main() {
       minimized: document.querySelector("#swapAssist").classList.contains("is-minimized"),
       expanded: document.querySelector("#swapToggleButton").getAttribute("aria-expanded"),
       text: document.querySelector("#swapMinimizedText").innerText,
+      textHeight: Math.round(document.querySelector("#swapMinimizedText").getBoundingClientRect().height),
+      pillHeight: Math.round(document.querySelector("#swapAssist").getBoundingClientRect().height),
+      poweredVisible: getComputedStyle(document.querySelector(".ai-powered")).display !== "none",
       actionsVisible: getComputedStyle(document.querySelector(".ai-actions")).display !== "none",
       badgeCount: document.querySelectorAll(".card-badge").length,
       hint: document.querySelector("#walletHint").innerText
@@ -122,6 +141,9 @@ async function main() {
     await assert(minimized.minimized, "SWAP assist should enter minimized state");
     await assert(minimized.expanded === "false", "minimized SWAP assist should expose collapsed aria state");
     await assert(minimized.text === "결제 추천 다시 켜기", "minimized SWAP copy mismatch");
+    await assert(minimized.textHeight <= 20, "minimized SWAP copy should stay on one line");
+    await assert(minimized.pillHeight <= 70, "minimized SWAP assist should stay compact");
+    await assert(!minimized.poweredVisible, "minimized SWAP assist should hide attribution to avoid layout breaks");
     await assert(!minimized.actionsVisible, "recommendation actions should be hidden when minimized");
     await assert(minimized.badgeCount === 0, "card recommendation badge should be hidden when minimized");
     await assert(minimized.hint === "추천 없이 선택한 카드로 결제할 수 있어요", "minimized wallet hint mismatch");
@@ -150,9 +172,12 @@ async function main() {
     await sleep(150);
     const gsCombo = await page.evaluate(() => ({
       membership: document.querySelector("#comboMembership").innerText,
+      membershipLabelDisplay: getComputedStyle(document.querySelector(".combo-membership-item span")).display,
+      membershipValueDisplay: getComputedStyle(document.querySelector("#comboMembership")).display,
       formula: document.querySelector("#benefitFormula").innerText
     }));
     await assert(gsCombo.membership === "GS&POINT 자동 적립 (리터당 2P)", "GS combo membership should be compact and include accrual rate");
+    await assert(gsCombo.membershipLabelDisplay === "block" && gsCombo.membershipValueDisplay === "block", "combo membership label and value should stack vertically");
     await assert(!gsCombo.formula.includes("뱅크샐러드 기준"), "GS formula should not say Banksalad 기준");
     await assert(gsCombo.formula.includes("전월 실적을 충족") && gsCombo.formula.includes("27,500원"), "GS formula should explain remaining monthly discount cap");
     const expandedByDrag = await page.evaluate(() => {
@@ -179,10 +204,12 @@ async function main() {
     await sleep(100);
     const selectedCardCta = await page.evaluate(() => ({
       primary: document.querySelector("#whyButton").innerText,
-      badge: document.querySelector(".payment-card[data-index='2'] .card-badge")?.innerText
+      badge: document.querySelector(".payment-card[data-index='2'] .card-badge")?.innerText,
+      insight: document.querySelector("#selectedCard").innerText
     }));
-    await assert(selectedCardCta.primary === "정유사 확인", "selected card CTA should summarize its benefit condition");
+    await assert(selectedCardCta.primary === "정유사 선택 확인", "selected card CTA should summarize its chosen oil-brand condition");
     await assert(selectedCardCta.badge === "선택", "selected non-recommended card badge should show selected state");
+    await assert(selectedCardCta.insight.includes("선택 정유사"), "selected Deep Oil card should explain chosen oil-brand matching");
 
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
@@ -191,6 +218,16 @@ async function main() {
 
     const criteria = await page.evaluate(() => Array.from(document.querySelectorAll("#detailSheet .criteria-pill")).map((item) => item.innerText));
     await assert(criteria.join(",") === "혜택,마일리지,실적", "detail criteria should be 3 options");
+
+    await page.evaluate(() => document.querySelector("#detailSheet .criteria-pill[data-scenario='performance_fill']").click());
+    await sleep(100);
+    const performancePreview = await page.evaluate(() => ({
+      title: document.querySelector("#criteriaPreviewTitle").innerText,
+      text: document.querySelector("#criteriaPreviewText").innerText
+    }));
+    await assert(performancePreview.title.includes("실적"), "performance preview did not update");
+    await assert(performancePreview.text.includes("삼성 iD STATION") && performancePreview.text.includes("388,000원/400,000원"), "performance criteria should recommend the card closest to filling spend");
+    await assert(!performancePreview.text.includes("신한 Deep Oil 402,000원/400,000원"), "performance criteria should not recommend an already-filled card");
 
     await page.evaluate(() => document.querySelector("#detailSheet .criteria-pill[data-scenario='mileage']").click());
     await sleep(100);
@@ -347,6 +384,11 @@ async function main() {
       planner: document.querySelector("#plannerButton").innerText,
       note: document.querySelector("#cardAppNote").innerText,
       helpCount: document.querySelectorAll(".result-help").length,
+      helpMarkup: document.querySelector(".result-help")?.innerHTML || "",
+      rowPairs: Array.from(document.querySelectorAll(".result-status-row")).map((row) => ({
+        labelLeft: Math.round(row.querySelector(":scope > span").getBoundingClientRect().left),
+        valueLeft: Math.round(row.querySelector("strong").getBoundingClientRect().left)
+      })),
       bg: getComputedStyle(document.querySelector(".screen-result")).backgroundImage
     }));
     await assert(result.screen === "result", "result screen did not open");
@@ -361,6 +403,8 @@ async function main() {
     await assert(result.note.includes("카드사 확정 금액"), "result note should explain final amount variance");
     await assert(!result.note.includes("*"), "result note should not use an asterisk marker");
     await assert(result.helpCount >= 1, "result rows should expose calculation help buttons");
+    await assert(result.helpMarkup.includes('aria-hidden="true"'), "result help button should use the same hidden question mark span pattern");
+    await assert(result.rowPairs.every((pair) => pair.valueLeft > pair.labelLeft), "result rows should place value on the right side of the label");
     await assert(!result.bg.includes("0a0a0b"), "result screen should no longer use dark mode background");
 
     await page.evaluate(() => {
