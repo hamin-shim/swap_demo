@@ -53,7 +53,7 @@ async function main() {
       bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
     }));
     await assert(initial.appHeight === initial.viewport, "S26 viewport height mismatch");
-    await assert(initial.primary === "4,500원 할인 예상", "primary recommendation CTA mismatch");
+    await assert(initial.primary === "10% 할인 가능", "primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
     await assert(initial.merchant.includes("GS칼텍스"), "default merchant should be GS Caltex");
     await assert(initial.time === "12:45", "status bar time should match Galaxy mock time");
@@ -148,6 +148,13 @@ async function main() {
 
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
+    const gsCombo = await page.evaluate(() => ({
+      membership: document.querySelector("#comboMembership").innerText,
+      formula: document.querySelector("#benefitFormula").innerText
+    }));
+    await assert(gsCombo.membership === "GS&POINT 자동 적립 (리터당 2P)", "GS combo membership should be compact and include accrual rate");
+    await assert(!gsCombo.formula.includes("뱅크샐러드 기준"), "GS formula should not say Banksalad 기준");
+    await assert(gsCombo.formula.includes("전월 실적을 충족") && gsCombo.formula.includes("27,500원"), "GS formula should explain remaining monthly discount cap");
     const expandedByDrag = await page.evaluate(() => {
       const sheet = document.querySelector("#detailSheet");
       const handle = sheet.querySelector(".sheet-handle");
@@ -225,20 +232,26 @@ async function main() {
       badge: document.querySelector(".payment-card[data-index='3'] .card-badge")?.innerText
     }));
     await assert(baskinState.merchant.includes("배스킨라빈스"), "Baskin Robbins merchant should render after location change");
-    await assert(baskinState.primary === "7,300원 할인 예상", "Baskin Robbins primary CTA mismatch");
+    await assert(baskinState.primary === "M포인트 50% 사용 가능", "Baskin Robbins primary CTA mismatch");
     await assert(baskinState.badge === "추천", "Baskin Robbins recommended card badge mismatch");
     await page.evaluate(() => document.querySelector("#whyButton").click());
     await sleep(150);
     const baskinCombo = await page.evaluate(() => ({
       card: document.querySelector("#comboCard").innerText,
+      cardHidden: document.querySelector("#comboCard").closest(".combo-item").hidden,
       coupon: document.querySelector("#comboCoupon").innerText,
       membership: document.querySelector("#comboMembership").innerText,
-      benefit: document.querySelector("#benefitText").innerText
+      benefit: document.querySelector("#benefitText").innerText,
+      sheetPowered: !!document.querySelector(".sheet-powered"),
+      poweredCount: document.querySelectorAll(".banksalad-brand img").length
     }));
     await assert(baskinCombo.card === "현대카드 M BOOST", "Baskin Robbins combo card mismatch");
+    await assert(baskinCombo.cardHidden, "Baskin Robbins combo card row should be hidden");
     await assert(baskinCombo.coupon.includes("M포인트"), "Baskin Robbins combo should include Hyundai M point use");
-    await assert(baskinCombo.membership === "해피포인트", "Baskin Robbins combo should include Happy Point");
-    await assert(baskinCombo.benefit === "7,300원", "Baskin Robbins combo benefit mismatch");
+    await assert(baskinCombo.membership.includes("해피포인트"), "Baskin Robbins combo should include Happy Point");
+    await assert(baskinCombo.benefit === "50% 사용", "Baskin Robbins combo benefit mismatch");
+    await assert(!baskinCombo.sheetPowered, "combo sheet should not show Banksalad attribution");
+    await assert(baskinCombo.poweredCount >= 3, "Banksalad attribution should remain mounted outside combo sheet");
     await page.evaluate(() => document.querySelector("#closeSheet").click());
     await sleep(100);
 
@@ -262,19 +275,18 @@ async function main() {
       titleVisible: getComputedStyle(document.querySelector("#payStepTitle")).display !== "none"
     }));
     await assert(payCopy.top === "혜택 순서", "pay top copy mismatch");
-    await assert(payCopy.steps === "1 적립/쿠폰,2 결제", "Baskin Robbins should combine coupon and membership before payment");
-    await assert(payCopy.stepType === "적립/쿠폰", "combined benefit step should be labeled as coupon and membership use");
-    await assert(payCopy.stepValue === "해피포인트", "combined benefit step should show only the scannable Happy Point membership");
-    await assert(!payCopy.stepValue.includes("M포인트"), "M point should be reminded during card payment, not merged into the barcode title");
-    await assert(payCopy.stepCode === "3108 2407 1142", "combined benefit step should show Happy Point barcode number");
-    await assert(payCopy.barcodeVisible, "combined benefit step should show a barcode");
-    await assert(payCopy.extraButtonVisible, "combined benefit step should expose extra coupon membership selector");
+    await assert(payCopy.steps === "1 쿠폰,2 적립,3 결제", "Baskin Robbins should run coupon, membership, payment in order");
+    await assert(payCopy.stepType === "쿠폰", "first benefit step should be coupon");
+    await assert(payCopy.stepValue.includes("M포인트"), "first benefit step should request M point use");
+    await assert(payCopy.stepCode === "직원 또는 키오스크에서 선택", "M point step should show request guidance");
+    await assert(!payCopy.barcodeVisible, "M point request step should not show a barcode");
+    await assert(payCopy.extraButtonVisible, "coupon step should expose extra coupon membership selector");
     await assert(payCopy.extraButtonText === "다른 쿠폰/멤버십 보기", "extra benefit selector copy mismatch");
     await assert(!payCopy.overlayVisible, "pay overlay should be hidden to avoid duplicated card explanation");
     await assert(!payCopy.titleVisible, "pay step title should be hidden next to progress badge");
     await assert(payCopy.activeStepWidth < payCopy.panelWidth * 0.55, "single pay step should not fill the full panel width");
     await assert(!/이어서|이제/.test(payCopy.title), "pay title should avoid repeated transition words");
-    await assert(payCopy.membershipMentions === 0, "visible membership wording is too repetitive");
+    await assert(payCopy.membershipMentions <= 1, "visible membership wording is too repetitive");
 
     await page.evaluate(() => document.querySelector("#payExtraToggle").click());
     await sleep(100);
@@ -293,10 +305,24 @@ async function main() {
       guide: document.querySelector("#payGuide").innerText,
       listHidden: document.querySelector("#payExtraList").hidden
     }));
-    await assert(extraSelected.value.includes("KT 멤버십 VIP"), "selected extra membership should update pay step value");
-    await assert(extraSelected.code === "9000 1485 4927", "selected extra membership should update barcode number");
-    await assert(extraSelected.guide.includes("KT 멤버십"), "selected extra membership should update guide copy");
+    await assert(extraSelected.value.includes("M포인트"), "coupon step should keep M point request visible after selecting a membership");
+    await assert(extraSelected.code === "직원 또는 키오스크에서 선택", "coupon step should keep M point request guidance after selecting a membership");
     await assert(extraSelected.listHidden, "extra benefit list should close after selection");
+
+    await page.evaluate(() => document.querySelector("#completeButton").click());
+    await sleep(150);
+    const membershipStep = await page.evaluate(() => ({
+      payStep: document.querySelector(".screen-pay").dataset.payStep,
+      stepType: document.querySelector("#payStepType").innerText,
+      stepValue: document.querySelector("#payStepValue").innerText,
+      stepCode: document.querySelector("#payStepCode").innerText,
+      guide: document.querySelector("#payGuide").innerText
+    }));
+    await assert(membershipStep.payStep === "membership", "Baskin Robbins should move to membership after coupon step");
+    await assert(membershipStep.stepType === "적립", "second step should show membership collection label");
+    await assert(membershipStep.stepValue.includes("KT 멤버십 VIP"), "selected extra membership should remain visible on membership step");
+    await assert(membershipStep.stepCode === "9000 1485 4927", "membership step should show selected membership barcode");
+    await assert(membershipStep.guide.includes("KT 멤버십"), "membership step should keep selected extra guide");
 
     await page.evaluate(() => document.querySelector("#completeButton").click());
     await sleep(150);
@@ -304,26 +330,38 @@ async function main() {
       payStep: document.querySelector(".screen-pay").dataset.payStep,
       guide: document.querySelector("#payGuide").innerText
     }));
-    await assert(paymentReminder.payStep === "payment", "Baskin Robbins should move to payment after combined benefit step");
+    await assert(paymentReminder.payStep === "payment", "Baskin Robbins should move to payment after membership step");
     await assert(paymentReminder.guide.includes("M포인트 사용을 요청"), "M point use should be reminded during card payment");
 
     await page.evaluate(() => document.querySelector("#completeButton").click());
     await sleep(150);
     const result = await page.evaluate(() => ({
       screen: document.querySelector(".screen.is-active").dataset.screen,
-      rows: document.querySelectorAll(".result-status-row").length,
+      rows: Array.from(document.querySelectorAll(".result-status-row")).map((row) => row.innerText),
       summary: document.querySelector("#resultSummary").innerText,
       benefitCardHidden: document.querySelector("#resultBenefitCard").hidden,
+      benefitCardDisplay: getComputedStyle(document.querySelector("#resultBenefitCard")).display,
       nextHint: document.querySelector("#resultNextHint").innerText,
       canScroll: document.querySelector(".screen-result").scrollHeight > document.querySelector(".screen-result").clientHeight,
-      doneText: document.querySelector("#resultDoneButton").innerText
+      doneText: document.querySelector("#resultDoneButton").innerText,
+      planner: document.querySelector("#plannerButton").innerText,
+      note: document.querySelector("#cardAppNote").innerText,
+      helpCount: document.querySelectorAll(".result-help").length,
+      bg: getComputedStyle(document.querySelector(".screen-result")).backgroundImage
     }));
     await assert(result.screen === "result", "result screen did not open");
-    await assert(result.rows >= 3, "result rows should render from benefit breakdown");
+    await assert(result.rows.length >= 3, "result rows should render from benefit breakdown");
+    await assert(!result.rows.join(" ").includes("카드 결제"), "result rows should not duplicate card payment name");
     await assert(result.summary.includes("아꼈어요"), "result should emphasize saved benefit");
     await assert(result.benefitCardHidden, "discount result should hide duplicated expected benefit card");
+    await assert(result.benefitCardDisplay === "none", "duplicated expected benefit card should not be visible");
     await assert(result.nextHint.includes("8,000원"), "Baskin Robbins result should show remaining lifestyle performance amount");
     await assert(result.doneText === "완료", "result done button is missing");
+    await assert(result.planner === "뱅크샐러드 앱에서 확인", "result confirmation CTA should point to Banksalad");
+    await assert(result.note.includes("카드사 확정 금액"), "result note should explain final amount variance");
+    await assert(!result.note.includes("*"), "result note should not use an asterisk marker");
+    await assert(result.helpCount >= 1, "result rows should expose calculation help buttons");
+    await assert(!result.bg.includes("0a0a0b"), "result screen should no longer use dark mode background");
 
     await page.evaluate(() => {
       const resultScreen = document.querySelector(".screen-result");

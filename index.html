@@ -43,12 +43,17 @@
           </button>
           <img class="galaxy-ai-logo" src="./assets/galaxyAI_logo.webp" alt="Galaxy AI">
           <div class="ai-copy">
-            <span id="merchantName">GS칼텍스 삼평주유소</span>
+            <span id="merchantName"><strong>GS칼텍스 삼평주유소</strong><em>에서 결제하시나요?</em></span>
             <small id="swapMinimizedText">결제 추천 다시 켜기</small>
           </div>
           <div class="ai-actions">
             <button type="button" id="whyButton">추천 보기</button>
             <button type="button" class="ghost" id="changePlaceButton">아니요, 다른 곳이에요</button>
+          </div>
+          <div class="banksalad-brand ai-powered">
+            <span>powered by</span>
+            <img src="./assets/banksalad.png" alt="뱅크샐러드">
+            <strong>뱅크샐러드</strong>
           </div>
         </section>
 
@@ -141,7 +146,6 @@
         <section class="result-panel">
           <header class="result-hero">
             <div class="success-mark">✓</div>
-            <span>결제 완료</span>
             <h1 id="resultSummary">예상 혜택을 정리했어요</h1>
             <p id="resultLearning">이번 결제 내용을 다음 추천에 참고했어요</p>
           </header>
@@ -168,10 +172,15 @@
               <dd id="resultType">예상 할인</dd>
             </div>
           </dl>
-          <p class="card-app-note" id="cardAppNote">카드사 앱에서 청구할인, 남은 한도, 실적 포함 여부를 최종 확인할 수 있어요.</p>
           <div class="result-actions">
             <button type="button" id="resetButton">Wallet으로 돌아가기</button>
             <button type="button" class="secondary" id="plannerButton">카드사 앱에서 확인</button>
+          </div>
+          <p class="card-app-note" id="cardAppNote">카드사 앱에서 청구할인, 남은 한도, 실적 포함 여부를 최종 확인할 수 있어요.</p>
+          <div class="banksalad-brand result-powered">
+            <span>powered by</span>
+            <img src="./assets/banksalad.png" alt="뱅크샐러드">
+            <strong>뱅크샐러드</strong>
           </div>
         </section>
       </div>
@@ -184,24 +193,24 @@
         </div>
         <div class="detail-quick">
           <div class="combo-stack" aria-label="추천 결제 조합">
-            <div class="combo-item">
+            <div class="combo-item combo-card-item">
               <i class="combo-icon" aria-hidden="true"></i>
               <div>
                 <span>카드</span>
                 <strong id="comboCard">신한 Deep Benefit</strong>
               </div>
             </div>
-            <div class="combo-item">
+            <div class="combo-item combo-coupon-item">
               <i class="combo-icon" aria-hidden="true"></i>
               <div>
                 <span>쿠폰</span>
                 <strong id="comboCoupon">올리브영 3천원 쿠폰</strong>
               </div>
             </div>
-            <div class="combo-item">
+            <div class="combo-item combo-membership-item">
               <i class="combo-icon" aria-hidden="true"></i>
               <div>
-                <span>적립</span>
+                <span>멤버십</span>
                 <strong id="comboMembership">CJ ONE 적립</strong>
               </div>
             </div>
@@ -210,6 +219,7 @@
             <span id="benefitLabel">예상 할인 혜택</span>
             <strong id="benefitText">5,000원</strong>
           </div>
+          <p class="benefit-formula" id="benefitFormula">카드 혜택과 적립 기준을 함께 확인했어요.</p>
           <button type="button" class="combo-pay-button" id="comboPayButton">이 조합으로 결제</button>
         </div>
         <div class="detail-expanded">
@@ -241,6 +251,11 @@
                 <strong id="aiCheckText">현재 매장, 등록 카드 기준</strong>
               </div>
               <div class="reason-detail-list" id="reasonDetailList" aria-label="추천 이유 상세"></div>
+              <div class="banksalad-brand reason-powered">
+                <span>powered by</span>
+                <img src="./assets/banksalad.png" alt="뱅크샐러드">
+                <strong>뱅크샐러드</strong>
+              </div>
             </div>
           </div>
         </div>

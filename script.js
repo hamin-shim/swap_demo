@@ -79,35 +79,53 @@ const locationScenarioSets = {
     confidence: "주유소 인식 91%",
     recommendedIndex: 1,
     type: "혜택",
-    detail: "GS칼텍스, 주유 금액, 남은 월 한도, 전월 실적 조건을 함께 보고 계산했어요.",
+    detail: "현재 위치는 GS칼텍스예요. 결제 전에는 금액을 모르기 때문에, 뱅크샐러드로 확인한 카드 상태와 남은 할인 한도를 먼저 봤어요.",
     combinations: [
       {
-        reason: "KB국민 주유패스는 리터당 할인은 있지만 이번 주유 금액에서는 한도가 작아요",
-        benefit: "예상 혜택 2,800원",
+        reason: "KB국민 주유패스는 리터당 100원 할인이 가능하지만, 이번 달 잔여 할인 한도가 2,800원뿐이에요",
+        benefit: "리터당 100원 할인 가능",
+        prepayValue: "리터당 100원",
+        prepayFormula: "이번 달 주유 할인 한도 15,000원 중 12,200원을 이미 사용했어요. 남은 한도는 2,800원까지예요.",
+        scoreValue: 2800,
+        resultBenefit: "2,800원",
+        resultBenefitDetail: "주유량 기준 리터당 100원 할인, 잔여 한도 2,800원까지 적용",
         coupon: "적용 쿠폰 없음",
         membership: "주유 포인트 적립",
-        insight: "남은 한도가 작아 이번에는 뒤로 보냈어요"
+        insight: "혜택은 있지만 이번 결제에서는 삼성카드보다 작아요"
       },
       {
-        reason: "삼성 iD STATION은 GS칼텍스 10% 결제일할인과 GS&POINT 자동 적립을 함께 받을 수 있어요",
-        benefit: "예상 혜택 4,500원",
+        reason: "삼성 iD STATION은 전월 실적을 충족했고, GS칼텍스 10% 결제일 할인을 잔여 한도 27,500원까지 받을 수 있어요",
+        benefit: "10% 할인 가능",
+        prepayValue: "10% 할인",
+        prepayFormula: "전월 실적을 충족해서 이번 달 GS칼텍스 할인 한도 30,000원 중 27,500원이 남아 있어요. 결제금액의 10%까지 할인받을 수 있어요.",
+        scoreValue: 27500,
+        resultBenefit: "4,500원",
+        resultBenefitDetail: "결제액 45,000원에 10% 청구할인 예정이에요.",
+        resultSummary: "4,565원 혜택 적립",
+        resultLearning: "청구 할인 4,500원 + GS&POINT 적립 56P",
+        paymentAmount: "45,000원",
+        accrual: "GS&POINT 56P",
+        accrualDetail: "GS&POINT 리터당 2P 기준, 45,000원 주유를 약 28L로 환산해 56P 적립",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 자동 적립",
-        insight: "이번 주유에서 가장 직관적인 할인 조합이에요"
+        insight: "할인액이 가장 크고 GS&POINT 자동 적립까지 같이 챙길 수 있어요"
       },
       {
-        reason: "신한 Deep Oil은 주유 특화 카드지만 선택 정유사를 먼저 확인해야 해요",
+        reason: "신한 Deep Oil은 주유 특화 카드지만 사용자가 선택한 정유사가 GS칼텍스인지 먼저 확인해야 해요",
         benefit: "선택 정유사 확인",
         coupon: "보유 쿠폰 없음",
         membership: "GS&POINT 적립",
-        insight: "혜택은 크지만 이번 매장 조건은 확인이 필요해요"
+        insight: "조건이 맞으면 후보지만 지금 화면에서는 확정 추천하기 어려워요"
       },
       {
-        reason: "현대카드 M BOOST는 기본 적립은 가능하지만 주유 특화 할인은 약해요",
-        benefit: "예상 혜택 900원",
+        reason: "현대카드 M BOOST는 기본 포인트 적립 중심이라 GS칼텍스 직접 할인 폭은 작아요",
+        benefit: "기본 2% 적립 가능",
+        scoreValue: 900,
+        resultBenefit: "900원",
+        resultBenefitDetail: "실제 주유금액 기준 기본 포인트 약 2% 적립",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 적립",
-        insight: "마일리지나 포인트를 모을 때 선택할 수 있어요"
+        insight: "할인 극대화보다 포인트 적립 목적일 때 선택할 수 있어요"
       }
     ]
   },
@@ -156,25 +174,25 @@ const locationScenarioSets = {
     detail: "오늘 주유가 다음 달 주유 할인 조건을 채우는 데 얼마나 도움이 되는지 봤어요.",
     combinations: [
       {
-        reason: "KB국민 주유패스는 이번 결제가 실적에 포함되지만 목표까지 아직 멀어요",
+        reason: "KB국민 주유패스는 현재 318,000원/500,000원으로 다음 혜택까지 182,000원이 남아 있어요",
         benefit: "실적 318,000원/500,000원",
         coupon: "적용 쿠폰 없음",
         membership: "주유 포인트 적립",
-        insight: "실적 관리 목적만으로는 아쉬워요"
+        insight: "실적을 채우려면 아직 여유가 조금 더 필요해요"
       },
       {
-        reason: "삼성 iD STATION은 이번 결제 후 다음 주유 혜택 조건까지 12,000원 남아요",
+        reason: "삼성 iD STATION은 현재 388,000원/400,000원으로 다음 주유 혜택까지 12,000원만 남았어요",
         benefit: "실적 388,000원/400,000원",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 자동 적립",
-        insight: "할인도 크고 실적 조건에도 가까워져요"
+        insight: "이번 결제가 다음 주유 혜택 조건에 가장 가까워요"
       },
       {
-        reason: "신한 Deep Oil은 이번 결제로 실적 조건은 채우지만 GS칼텍스 할인 확정이 필요해요",
+        reason: "신한 Deep Oil은 현재 402,000원/400,000원으로 실적은 충족했지만 GS칼텍스 할인 조건은 따로 확인이 필요해요",
         benefit: "실적 402,000원/400,000원",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 적립",
-        insight: "실적만 보면 좋지만 할인 조건은 다시 봐야 해요"
+        insight: "실적은 충분하지만 이번 매장 혜택 확정성은 낮아요"
       },
       {
         reason: "현대카드 M BOOST는 실적 관리 부담은 낮지만 주유 할인 금액이 작아요",
@@ -200,8 +218,16 @@ const locationScenarioSets = {
         insight: "주유 조건이 맞는지 확인해야 해요"
       },
       {
-        reason: "삼성 iD STATION은 GS칼텍스 제휴 혜택이라 조건이 가장 명확해요",
-        benefit: "예상 혜택 4,500원",
+        reason: "삼성 iD STATION은 GS칼텍스 제휴 10% 할인 대상이고 잔여 한도도 확인돼 조건이 가장 명확해요",
+        benefit: "10% 할인 가능",
+        prepayValue: "10% 할인",
+        prepayFormula: "전월 실적을 충족해서 이번 달 GS칼텍스 할인 한도 30,000원 중 27,500원이 남아 있어요. 결제금액의 10%까지 할인받을 수 있어요.",
+        scoreValue: 27500,
+        resultBenefit: "4,500원",
+        resultBenefitDetail: "결제액 45,000원에 10% 청구할인 예정이에요.",
+        paymentAmount: "45,000원",
+        accrual: "GS&POINT 56P",
+        accrualDetail: "GS&POINT 리터당 2P 기준, 45,000원 주유를 약 28L로 환산해 56P 적립",
         coupon: "적용 쿠폰 없음",
         membership: "GS&POINT 자동 적립",
         insight: "GS칼텍스에서는 가장 설명하기 쉬운 조합이에요"
@@ -314,12 +340,12 @@ const locationScenarioSets = {
       confidence: "매장 인식 78%",
       recommendedIndex: 3,
       type: "혜택",
-      detail: "배스킨라빈스 제휴 혜택, 통신사 쿠폰, 카드 포인트 사용, 해피포인트 적립 가능성을 함께 봤어요.",
+      detail: "현재 위치는 배스킨라빈스예요. 결제 전에는 금액을 모르기 때문에, 뱅크샐러드로 확인한 포인트 잔액과 쿠폰 조건을 먼저 봤어요.",
       combinations: [
-        { reason: "KB국민 주유패스는 배스킨라빈스 직접 할인보다 기본 결제 중심이에요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 매장에서는 할인 금액이 작아요" },
-        { reason: "삼성카드는 LINK 쿠폰 연결 시 배스킨라빈스에서 2,000원 할인을 받을 수 있어요", benefit: "예상 혜택 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "LINK 쿠폰을 이미 연결했다면 안정적인 선택이에요" },
-        { reason: "신한 Deep Oil은 주유 특화 카드라 배스킨라빈스 직접 혜택이 약해요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "주유소 결제에 더 적합해요" },
-        { reason: "현대카드 M BOOST는 M포인트 50% 사용 혜택을 적용하기 좋아요", benefit: "예상 혜택 7,300원", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 사용까지 포함하면 가장 큰 혜택이에요" }
+        { reason: "KB국민 주유패스는 주유 특화 카드라 배스킨라빈스에서는 기본 결제와 소액 적립 정도만 기대할 수 있어요", benefit: "기본 적립 가능", scoreValue: 300, resultBenefit: "300원", resultBenefitDetail: "실제 결제금액 기준 기본 적립 예상", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 매장에서는 할인 금액이 작아요" },
+        { reason: "삼성카드는 LINK 쿠폰이 연결되어 있으면 18,500원 이상 결제 시 2,000원 할인을 받을 수 있어요", benefit: "2,000원 쿠폰 가능", prepayValue: "2,000원 쿠폰", prepayFormula: "삼성카드 LINK 쿠폰을 보유 중이에요. 실제 결제금액이 18,500원 이상이면 2,000원 할인이 가능해요.", scoreValue: 2000, resultBenefit: "2,000원", resultBenefitDetail: "삼성카드 LINK 2,000원 OFF 쿠폰 적용", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 맞으면 안정적인 대안이에요" },
+        { reason: "신한 Deep Oil은 주유소 혜택 중심이라 배스킨라빈스 업종에서는 직접 할인 근거가 약해요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "주유소 결제에 더 적합해요" },
+        { reason: "현대카드 M BOOST는 M포인트 18,400P를 보유 중이라 결제금액의 50%까지 포인트 사용을 요청할 수 있어요", benefit: "M포인트 50% 사용 가능", prepayValue: "50% 사용", prepayFormula: "M포인트 18,400P를 보유 중이에요. 결제금액의 50%까지 포인트 사용이 가능하고, 실제 사용액은 결제 후 계산돼요.", scoreValue: 18400, resultBenefit: "7,300원", resultBenefitDetail: "실제 결제금액 14,600원 x 50% = M포인트 7,300P 사용", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "할인율이 가장 크고 해피포인트도 별도로 적립돼요" }
       ]
     },
     remaining_cap: {
@@ -411,6 +437,7 @@ const fields = {
   walletHint: $("#walletHint"),
   detailSheetTitle: $("#detailSheetTitle"),
   benefitLabel: $("#benefitLabel"),
+  benefitFormula: $("#benefitFormula"),
   comboCard: $("#comboCard"),
   comboCoupon: $("#comboCoupon"),
   comboMembership: $("#comboMembership"),
@@ -491,6 +518,31 @@ function formatBenefitLabel(type) {
   return "예상 혜택";
 }
 
+function formatBenefitTotalLabel(scenario, combo) {
+  if (scenario.type.includes("마일")) return "마일리지 예상";
+  if (scenario.type.includes("실적")) return "실적 반영 예상";
+  if (combo.benefit.includes("포인트")) return "포인트 사용 예상";
+  return "적용 조건";
+}
+
+function benefitFormulaFor(scenario, card, combo) {
+  if (combo.prepayFormula) return combo.prepayFormula;
+  const amount = formatBenefitDisplay(formatBenefitAmount(combo.benefit));
+  if (scenario.merchant.includes("GS칼텍스") && card.issuer === "SAMSUNG") {
+    return "결제 전에는 승인금액을 모르기 때문에 할인율과 잔여 한도만 안내해요. 실제 할인액은 결제 후 계산돼요.";
+  }
+  if (scenario.merchant.includes("배스킨라빈스") && combo.coupon.includes("M포인트")) {
+    return "결제 전에는 승인금액을 모르기 때문에 사용률과 보유 포인트만 안내해요. 실제 사용액은 결제 후 계산돼요.";
+  }
+  if (scenario.type.includes("실적")) {
+    return `${amount}까지 실적 반영을 예상했어요. 실제 반영 여부는 카드사 기준에 따라 달라질 수 있어요.`;
+  }
+  if (scenario.type.includes("마일")) {
+    return `${amount} 적립을 예상했어요. 적립 시점과 확정 금액은 카드사 기준을 따릅니다.`;
+  }
+  return `${amount}은 카드 혜택 기준 예상액이에요. 멤버십 적립은 별도로 챙겨요.`;
+}
+
 function formatBenefitHighlight(type, benefitAmount) {
   if (type.includes("실적") || type.includes("마일")) return benefitAmount;
   return benefitAmount.includes("혜택") ? benefitAmount : `${benefitAmount} 혜택`;
@@ -522,12 +574,22 @@ function formatCardBenefitCta(scenario, combo) {
   if (combo.benefit.includes("조건") || combo.benefit.includes("확인")) return "혜택 조건 확인";
   if (combo.benefit.includes("남은 주유 한도")) return combo.benefit.replace("남은 주유 한도 ", "한도 ");
   if (combo.benefit.includes("남은 한도")) return combo.benefit.replace("남은 한도 ", "한도 ");
+  if (combo.benefit.includes("가능")) return combo.benefit;
   const amount = formatBenefitAmount(combo.benefit);
   return amount.match(/[0-9,]+원/) ? `${amount} 할인 예상` : "혜택 조건 확인";
 }
 
 function formatPrimaryAction(scenario, combo) {
   return formatCardBenefitCta(scenario, combo);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function syncSwapAssistState() {
@@ -567,6 +629,7 @@ function expectedBenefit({ paymentAmount = 25000, rate = 0, remainingCap = Infin
 
 function scoreCombo(scenario, combo) {
   if (!combo || /(없음|필요|낮음|아님)/.test(combo.benefit)) return -1;
+  if (Number.isFinite(combo.scoreValue)) return combo.scoreValue;
   if (scenario.type.includes("마일")) return parseMiles(combo.benefit);
   if (scenario.type.includes("실적")) return parsePerformanceValue(combo.benefit) || (combo.benefit.includes("실적") ? 1 : 0);
   return expectedBenefit({ fixedAmount: parseWon(combo.benefit) });
@@ -598,13 +661,6 @@ function createMileageScenario(locationId, scenarioSet) {
     evcharge: "충전 포인트 적립",
     baskin: "해피포인트 적립"
   };
-  const milesByLocation = {
-    gscaltex: "항공 마일리지 45마일",
-    skenergy: "항공 마일리지 42마일",
-    soil: "항공 마일리지 40마일",
-    evcharge: "항공 마일리지 18마일",
-    baskin: "항공 마일리지 32마일"
-  };
   const displayMerchant = {
     gscaltex: "GS칼텍스",
     skenergy: "SK에너지",
@@ -618,14 +674,17 @@ function createMileageScenario(locationId, scenarioSet) {
     confidence,
     recommendedIndex: 3,
     type: "마일리지",
-    detail: "현금 할인보다 항공 마일리지 적립을 우선해서 골랐어요.",
+    detail: "현금 할인보다 항공 마일리지 적립을 우선해요. 결제 전에는 금액을 모르기 때문에 적립 가능 조건만 보여줘요.",
     combinations: cards.map((card, index) => {
       const isRecommended = index === 3;
       return {
         reason: isRecommended
           ? `${card.displayName}은 ${displayMerchant[locationId]} 결제도 항공 마일리지로 쌓을 수 있어요`
           : `${card.displayName}은 이번 결제에서 마일리지 적립 효율이 낮아요`,
-        benefit: isRecommended ? `${milesByLocation[locationId]} 적립 예상` : "마일리지 혜택 작음",
+        benefit: isRecommended ? "마일리지 적립 가능" : "마일리지 혜택 작음",
+        prepayValue: isRecommended ? "적립 가능" : "",
+        prepayFormula: isRecommended ? "결제 후 승인금액과 카드사 적립률을 기준으로 실제 마일리지가 확정돼요. 결제 전에는 마일 수를 예측하지 않아요." : "",
+        scoreValue: isRecommended ? 1 : 0,
         coupon: "적용 쿠폰 없음",
         membership: membershipByLocation[locationId],
         insight: isRecommended ? "항공권 적립을 우선하면 이 카드가 적합해요" : "혜택 우선 기준에서는 선택할 수 있어요"
@@ -659,6 +718,10 @@ function cardAppName(card) {
   return "카드사 앱";
 }
 
+function benefitDataAppName() {
+  return "뱅크샐러드";
+}
+
 function hasUsableAsset(value) {
   return value && !/(없음|필요|추가 혜택 없음)/.test(value);
 }
@@ -668,6 +731,22 @@ function displayAsset(value) {
     .replace(/\s*멤버십\s*/g, " ")
     .replace(/\s*적립\s*$/g, "")
     .trim();
+}
+
+function membershipLabel(value) {
+  if (value.includes("GS&POINT")) return "GS&POINT";
+  if (value.includes("해피포인트")) return "해피포인트";
+  if (value.includes("OK캐쉬백")) return "OK캐쉬백";
+  if (value.includes("S-OIL")) return "S-OIL 포인트";
+  return "멤버십";
+}
+
+function membershipDisplay(value) {
+  if (value.includes("GS&POINT")) return "자동 적립 (리터당 2P)";
+  if (value.includes("해피포인트")) return "자동 적립";
+  if (value.includes("OK캐쉬백")) return "자동 적립";
+  if (value.includes("S-OIL")) return "자동 적립";
+  return displayAsset(value);
 }
 
 function compactCopy(value) {
@@ -690,28 +769,55 @@ function benefitTypeFor(scenario, combo) {
 }
 
 function buildBenefitBreakdown(scenario, card, combo) {
+  const isResultMode = arguments[3] === "result";
   const type = benefitTypeFor(scenario, combo);
-  const rows = [
-    { label: "카드 결제", value: card.displayName, state: "완료", benefitType: "payment" }
-  ];
+  const rows = [];
+
+  if (isResultMode && combo.paymentAmount) {
+    rows.push({
+      label: "결제금액",
+      value: combo.paymentAmount,
+      state: "",
+      detail: "",
+      benefitType: "paymentAmount"
+    });
+  }
 
   if (hasUsableAsset(combo.coupon)) {
-    rows.push({ label: "쿠폰", value: combo.coupon, state: "사용 예정", benefitType: "coupon" });
+    rows.push({ label: "쿠폰", value: combo.coupon, state: "사용", benefitType: "coupon" });
   }
 
   if (hasUsableAsset(combo.membership)) {
-    rows.push({ label: "적립", value: displayAsset(combo.membership), state: "적립 예정", benefitType: "membership" });
+    const membershipValue = isResultMode && combo.accrual
+      ? combo.accrual.replace(/^GS&POINT\s*/, "")
+      : membershipDisplay(combo.membership);
+    rows.push({
+      label: membershipLabel(combo.membership),
+      value: membershipValue,
+      state: isResultMode ? "" : "자동",
+      detail: "",
+      help: isResultMode ? combo.accrualDetail : "",
+      benefitType: "membership"
+    });
   }
 
-  const benefitLabel = type === "mileage" ? "마일리지" : type === "performance" ? "실적" : "카드 혜택";
-  const benefitState = type === "performance" ? "실적 포함 예정" : type === "mileage" ? "적립 예정" : "청구할인 예정";
-  rows.push({ label: benefitLabel, value: combo.benefit, state: benefitState, benefitType: type });
+  const benefitLabel = type === "mileage" ? "마일리지" : type === "performance" ? "실적" : type === "point" ? "포인트 사용" : "카드 혜택";
+  const benefitState = type === "performance" ? "실적 포함 예정" : type === "mileage" ? "적립 예정" : type === "point" ? "사용 완료" : "결제일 할인 예정";
+  rows.push({
+    label: benefitLabel,
+    value: isResultMode ? (combo.resultBenefit || combo.benefit) : combo.benefit,
+    state: isResultMode ? "" : benefitState,
+    detail: "",
+    help: isResultMode ? (combo.resultBenefitDetail || "") : "",
+    benefitType: type
+  });
 
   return rows;
 }
 
 function resultBenefitFor(scenario, combo, progress) {
   if (scenario.type.includes("실적")) return progress.value;
+  if (combo.resultBenefit) return combo.resultBenefit;
   return formatBenefitAmount(combo.benefit);
 }
 
@@ -794,7 +900,7 @@ function buildCouponStep(value) {
   if (value.includes("M포인트")) {
     return {
       type: "point",
-      label: "포인트",
+      label: "쿠폰",
       title: "M포인트 사용을 요청하세요",
       value,
       code: "직원 또는 키오스크에서 선택",
@@ -814,20 +920,18 @@ function buildCouponStep(value) {
   };
 }
 
-function buildCombinedBenefitStep(combo) {
+function buildMembershipStep(value) {
   const extra = selectedPayExtra || defaultPayExtraOption();
-  const baseItems = [
-    extra?.value || (hasUsableAsset(combo.membership) ? displayAsset(combo.membership) : "")
-  ].filter(Boolean);
+  const displayValue = extra?.type === "멤버십" ? extra.value : displayAsset(value);
 
   return {
-    type: "benefit",
-    label: "적립/쿠폰",
-    title: "적립과 쿠폰을 먼저 확인하세요",
-    value: baseItems.join(" + ") || "추가 혜택 선택",
+    type: "membership",
+    label: "적립",
+    title: "멤버십 적립을 먼저 해주세요",
+    value: displayValue || "멤버십 선택",
     code: extra?.code || "3108 2407 1142",
-    guide: extra?.guide || "필요한 쿠폰이나 멤버십을 보여준 뒤 카드 결제로 넘어가요.",
-    button: "적립/쿠폰 사용 완료"
+    guide: extra?.guide || "멤버십 바코드를 보여준 뒤 카드 결제로 넘어가요.",
+    button: "적립 완료"
   };
 }
 
@@ -1026,7 +1130,13 @@ function buildPaySteps(mode = currentPayMode) {
     }];
   }
 
-  steps.push(buildCombinedBenefitStep(combo));
+  if (hasUsableAsset(combo.coupon)) {
+    steps.push(buildCouponStep(combo.coupon));
+  }
+
+  if (hasUsableAsset(combo.membership)) {
+    steps.push(buildMembershipStep(combo.membership));
+  }
 
   steps.push({
     type: "payment",
@@ -1091,7 +1201,7 @@ function renderPayStep() {
 function renderPayExtraControls(step, isPayment) {
   const options = payExtraOptions();
   const isDirectCardPayment = currentPayMode === "card" && isPayment;
-  const canChooseExtra = (isDirectCardPayment || (!isPayment && step.type === "benefit")) && options.length > 1;
+  const canChooseExtra = (isDirectCardPayment || (!isPayment && (step.type === "coupon" || step.type === "point" || step.type === "membership"))) && options.length > 1;
   fields.payExtraLauncher.hidden = !isDirectCardPayment;
   fields.payExtraLauncher.classList.toggle("is-open", isDirectPayExtraOpen);
   fields.payExtraLauncher.textContent = isDirectPayExtraOpen ? "쿠폰/멤버십 닫기" : "쿠폰/멤버십 사용하기";
@@ -1182,20 +1292,22 @@ function render() {
   const benefitAmount = formatBenefitAmount(combo.benefit);
   const location = currentLocationOption();
 
-  fields.merchantName.textContent = `${scenario.merchant}에서 결제하시나요?`;
+  fields.merchantName.innerHTML = `<strong>${escapeHtml(scenario.merchant)}</strong><em>에서 결제하시나요?</em>`;
   fields.swapMinimizedText.textContent = "결제 추천 다시 켜기";
   fields.whyButton.textContent = formatPrimaryAction(scenario, combo);
   fields.changePlaceButton.textContent = "다른 매장이에요";
   fields.walletHint.textContent = isSwapMinimized ? "추천 없이 선택한 카드로 결제할 수 있어요" : "혜택은 결제 전에 한 번 더 확인할 수 있어요";
   fields.detailSheetTitle.textContent = formatSheetTitle(scenario.type);
-  fields.benefitLabel.textContent = formatBenefitLabel(scenario.type);
+  fields.benefitLabel.textContent = formatBenefitTotalLabel(scenario, combo);
   fields.comboCard.textContent = card.displayName;
+  fields.comboCard.closest(".combo-item").hidden = true;
   fields.comboCoupon.textContent = combo.coupon;
-  fields.comboMembership.textContent = combo.membership;
+  fields.comboMembership.textContent = `${membershipLabel(combo.membership)} ${membershipDisplay(combo.membership)}`;
   fields.comboCoupon.closest(".combo-item").hidden = !hasUsableAsset(combo.coupon);
   fields.comboMembership.closest(".combo-item").hidden = !hasUsableAsset(combo.membership);
   fields.selectedCard.textContent = combo.insight;
-  fields.benefitText.textContent = formatBenefitDisplay(benefitAmount);
+  fields.benefitText.textContent = combo.prepayValue || formatBenefitDisplay(benefitAmount);
+  fields.benefitFormula.textContent = benefitFormulaFor(scenario, card, combo);
   fields.payCard.textContent = card.displayName;
   fields.payReason.textContent = compactCopy(combo.reason);
   fields.payBrand.textContent = card.issuer;
@@ -1204,7 +1316,6 @@ function render() {
   fields.payCardImage.alt = `${card.displayName} 카드`;
   fields.payCardImage.hidden = !card.image;
   fields.detailText.textContent = scenario.detail;
-  fields.comboMembership.textContent = displayAsset(combo.membership);
   fields.aiCheckText.textContent = `${scenario.merchant}, 등록 카드, 적립 정보`;
   renderReasonDetails(scenario, card, combo);
 
@@ -1322,17 +1433,16 @@ function setScreen(name) {
 
 function setResultForMode(mode) {
   const { scenario, card, combo } = currentData();
-  const appName = cardAppName(card);
-  fields.plannerButton.textContent = `${appName}에서 확인`;
-  fields.cardAppNote.textContent = `${appName}에서 청구할인, 남은 한도, 실적 포함 여부를 최종 확인할 수 있어요.`;
+  const appName = benefitDataAppName();
+  fields.plannerButton.textContent = `${appName} 앱에서 확인`;
+  fields.cardAppNote.textContent = "카드사 확정 금액은 뱅크샐러드 앱에서 더 정확히 확인할 수 있어요.";
   if (mode === "card") {
-    fields.resultBenefitCard.hidden = false;
+    fields.resultBenefitCard.hidden = true;
     fields.resultSummary.textContent = `${card.displayName}로 결제했어요`;
     fields.resultBenefitLabel.textContent = "이번 결제 방식";
     fields.resultBenefitAmount.textContent = "기본 결제";
     fields.resultLearning.textContent = "추천 조합 없이 선택한 카드로 결제했어요";
     fields.resultStatusList.innerHTML = renderResultRows([
-      { label: "카드 결제", value: card.displayName, state: "완료" },
       { label: "쿠폰", value: "추가 혜택 없음", state: "해당 없음" },
       { label: "적립", value: "추가 혜택 없음", state: "해당 없음" }
     ]);
@@ -1347,19 +1457,23 @@ function setResultForMode(mode) {
 
   const progress = progressReportFor(scenario);
   const benefitAmount = resultBenefitFor(scenario, combo, progress);
-  fields.resultBenefitCard.hidden = !scenario.type.includes("실적");
+  fields.resultBenefitCard.hidden = true;
   fields.resultBenefitLabel.textContent = scenario.type.includes("실적") ? "이번 결제 후 실적" : "이번 결제 예상 혜택";
-  fields.resultSummary.textContent = scenario.type.includes("실적")
+  fields.resultSummary.textContent = combo.resultSummary || (scenario.type.includes("실적")
     ? "다음 혜택 조건에 가까워졌어요"
-    : `방금 결제로 ${benefitAmount} 아꼈어요`;
+    : combo.accrual
+      ? `카드할인 ${benefitAmount} + ${combo.accrual}`
+      : `방금 결제로 ${benefitAmount} 아꼈어요`);
   fields.resultBenefitAmount.textContent = benefitAmount;
-  fields.resultLearning.textContent = "카드사 기준에 따라 실제 적용 금액은 달라질 수 있어요";
-  fields.resultStatusList.innerHTML = renderResultRows(buildBenefitBreakdown(scenario, card, combo));
+  fields.resultLearning.textContent = combo.resultLearning || (combo.paymentAmount
+    ? `결제금액 ${combo.paymentAmount} 기준으로 계산했어요`
+    : "결제 후 승인금액 기준으로 정리했어요");
+  fields.resultStatusList.innerHTML = renderResultRows(buildBenefitBreakdown(scenario, card, combo, "result"));
   fields.resultProgressLabel.textContent = progress.label;
   fields.resultProgressValue.textContent = progress.value;
   fields.resultProgressBar.style.width = progress.width;
   fields.resultNextHint.textContent = progress.hint;
-  fields.resultCard.textContent = `${card.displayName} + ${displayAsset(combo.membership)}`;
+  fields.resultCard.textContent = `${card.displayName}`;
   fields.resultType.textContent = scenario.type;
 }
 
@@ -1368,11 +1482,21 @@ function renderResultRows(items) {
     <div class="result-status-row">
       <div>
         <span>${item.label}</span>
-        <strong>${item.value}</strong>
+        <strong>
+          ${item.value}
+          ${item.help ? `<button type="button" class="result-help" aria-label="${item.label} 계산 방식" data-help="${escapeHtml(item.help)}">?</button>` : ""}
+        </strong>
+        ${item.detail ? `<p>${item.detail}</p>` : ""}
       </div>
-      <em>${item.state}</em>
+      ${item.state ? `<em>${item.state}</em>` : ""}
     </div>
   `).join("");
+}
+
+function closeResultHelp(exceptButton = null) {
+  $$(".result-help.is-open").forEach((button) => {
+    if (button !== exceptButton) button.classList.remove("is-open");
+  });
 }
 
 function startPaymentFlow(mode = "combo") {
@@ -1680,6 +1804,15 @@ $("#payExtraToggle").addEventListener("click", () => {
 $("#resetButton").addEventListener("click", () => setScreen("wallet"));
 $("#resultDoneButton").addEventListener("click", () => setScreen("wallet"));
 $("#plannerButton").addEventListener("click", () => setScreen("wallet"));
+$("#resultStatusList").addEventListener("click", (event) => {
+  const helpButton = event.target.closest(".result-help");
+  if (!helpButton) return;
+  event.stopPropagation();
+  const shouldOpen = !helpButton.classList.contains("is-open");
+  closeResultHelp(helpButton);
+  helpButton.classList.toggle("is-open", shouldOpen);
+});
+document.addEventListener("click", () => closeResultHelp());
 window.addEventListener("resize", () => updateCardPosition());
 
 attachSwipe();

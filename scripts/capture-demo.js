@@ -18,7 +18,6 @@ function startServer() {
 }
 
 function prepareOutput() {
-  fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
 }
 
@@ -68,6 +67,14 @@ async function changeLocation(page, locationId) {
 
 async function openDetail(page) {
   await click(page, "#whyButton");
+}
+
+async function advanceUntilPaymentStep(page) {
+  for (let i = 0; i < 4; i += 1) {
+    const payStep = await page.evaluate(() => document.querySelector(".screen-pay")?.dataset.payStep);
+    if (payStep === "payment") return;
+    await click(page, "#completeButton");
+  }
 }
 
 async function openExpandedDetail(page) {
@@ -150,7 +157,7 @@ async function captureComboFlow(page, prefix, locationId, scenarioName) {
     `${scenarioName} 다른 쿠폰/멤버십 보기`,
     "추천 조합 외에 사용자가 직접 추가 쿠폰이나 멤버십을 고를 수 있는 화면"
   );
-  await click(page, "#completeButton");
+  await advanceUntilPaymentStep(page);
   await capture(
     page,
     `${prefix}_09_pay_card_step.png`,
