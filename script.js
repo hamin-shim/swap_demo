@@ -31,314 +31,126 @@ const cards = [
 
 const locationOptions = [
   {
-    id: "gscaltex",
-    name: "GS칼텍스 삼평주유소",
-    distance: "현재 위치",
-    confidence: "91%",
-    hint: "주유 할인 · GS&POINT",
-    criterion: "max_benefit"
-  },
-  {
     id: "skenergy",
-    name: "SK에너지 판교셀프",
-    distance: "약 140m",
-    confidence: "72%",
-    hint: "리터당 할인 · OK캐쉬백",
-    criterion: "max_benefit"
-  },
-  {
-    id: "soil",
-    name: "S-OIL 판교충전소",
-    distance: "약 260m",
-    confidence: "64%",
-    hint: "주유 할인 · 포인트",
-    criterion: "max_benefit"
-  },
-  {
-    id: "evcharge",
-    name: "EV 충전소",
-    distance: "약 320m",
-    confidence: "58%",
-    hint: "충전 혜택 확인",
+    name: "SK엔크린 중앙에너비스 수서지점",
+    distance: "현재 위치",
+    confidence: "92%",
+    hint: "Deep Oil · OK캐쉬백",
     criterion: "max_benefit"
   },
   {
     id: "baskin",
-    name: "배스킨라빈스 판교역점",
-    distance: "약 180m",
-    confidence: "78%",
-    hint: "KT 멤버십 · 해피포인트",
+    name: "배스킨라빈스 강남수서점",
+    distance: "약 40m",
+    confidence: "81%",
+    hint: "해피포인트 · M포인트",
+    criterion: "max_benefit"
+  },
+  {
+    id: "twosome",
+    name: "투썸플레이스 강남수서점",
+    distance: "약 450m",
+    confidence: "58%",
+    hint: "카페 적립 · 생활 혜택",
     criterion: "max_benefit"
   }
 ];
 
 const locationScenarioSets = {
-  gscaltex: {
-  max_benefit: {
-    merchant: "GS칼텍스 삼평주유소",
-    confidence: "주유소 인식 91%",
-    recommendedIndex: 1,
-    type: "혜택",
-    detail: "현재 위치는 GS칼텍스예요. 결제 전에는 금액을 모르기 때문에, 뱅크샐러드로 확인한 카드 상태와 남은 할인 한도를 먼저 봤어요.",
-    combinations: [
-      {
-        reason: "KB국민 주유패스는 리터당 100원 할인이 가능하지만, 이번 달 잔여 할인 한도가 2,800원뿐이에요",
-        benefit: "리터당 100원 할인 가능",
-        prepayValue: "리터당 100원",
-        prepayFormula: "이번 달 주유 할인 한도 15,000원 중 12,200원을 이미 사용했어요. 남은 한도는 2,800원까지예요.",
-        scoreValue: 2800,
-        resultBenefit: "2,800원",
-        resultBenefitDetail: "주유량 기준 리터당 100원 할인, 잔여 한도 2,800원까지 적용",
-        coupon: "적용 쿠폰 없음",
-        membership: "주유 포인트 적립",
-        insight: "혜택은 있지만 이번 결제에서는 삼성카드보다 작아요"
-      },
-      {
-        reason: "삼성 iD STATION은 전월 실적을 충족했고, GS칼텍스 10% 결제일 할인을 잔여 한도 27,500원까지 받을 수 있어요",
-        benefit: "10% 할인 가능",
-        prepayValue: "10% 할인",
-        prepayFormula: "전월 실적을 충족해서 이번 달 GS칼텍스 할인 한도 30,000원 중 27,500원이 남아 있어요. 결제금액의 10%까지 할인받을 수 있어요.",
-        scoreValue: 27500,
-        resultBenefit: "4,500원",
-        resultBenefitDetail: "결제액 45,000원에 10% 청구할인 예정이에요.",
-        resultSummary: "4,565원 혜택 적립",
-        resultLearning: "청구 할인 4,500원 + GS&POINT 적립 56P",
-        paymentAmount: "45,000원",
-        accrual: "GS&POINT 56P",
-        accrualDetail: "GS&POINT 리터당 2P 기준, 45,000원 주유를 약 28L로 환산해 56P 적립",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 자동 적립",
-        insight: "할인액이 가장 크고 GS&POINT 자동 적립까지 같이 챙길 수 있어요"
-      },
-      {
-        reason: "신한 Deep Oil은 사용자가 카드사에 미리 선택한 정유사에서 할인이 적용돼요. 현재 매장이 선택 정유사와 맞는지 먼저 확인해야 해요",
-        benefit: "정유사 선택 확인",
-        prepayValue: "정유사 선택 확인",
-        prepayFormula: "뱅크샐러드에서 카드 사용 상태와 실적은 확인할 수 있지만, 이 카드는 사용자가 카드사에 설정한 정유사와 현재 매장이 일치해야 혜택을 기대할 수 있어요.",
-        coupon: "보유 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "선택 정유사가 현재 매장과 맞는지 확인이 필요해요"
-      },
-      {
-        reason: "현대카드 M BOOST는 기본 포인트 적립 중심이라 GS칼텍스 직접 할인 폭은 작아요",
-        benefit: "기본 2% 적립 가능",
-        scoreValue: 900,
-        resultBenefit: "900원",
-        resultBenefitDetail: "실제 주유금액 기준 기본 포인트 약 2% 적립",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "할인 극대화보다 포인트 적립 목적일 때 선택할 수 있어요"
-      }
-    ]
-  },
-  remaining_cap: {
-    merchant: "GS칼텍스 삼평주유소",
-    confidence: "주유소 인식 91%",
-    recommendedIndex: 1,
-    type: "혜택",
-    detail: "이번 달에 아직 남은 주유 할인 한도와 횟수를 먼저 봤어요.",
-    combinations: [
-      {
-        reason: "KB국민 주유패스는 이번 달 주유 한도를 거의 사용했어요",
-        benefit: "남은 한도 1,200원",
-        coupon: "적용 쿠폰 없음",
-        membership: "주유 포인트 적립",
-        insight: "남은 한도가 작아 우선순위가 낮아요"
-      },
-      {
-        reason: "삼성 iD STATION은 이번 달 GS칼텍스 할인 한도가 19,000원 남아 있어요",
-        benefit: "남은 주유 한도 19,000원",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 자동 적립",
-        insight: "오늘 주유에 적용해도 다음 주유 여유가 남아요"
-      },
-      {
-        reason: "신한 Deep Oil은 이번 달 선택 정유사와 한도를 먼저 확인해야 해요",
-        benefit: "주유 조건 확인",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "선택 정유사와 한도 조건이 맞는지 확인해야 해요"
-      },
-      {
-        reason: "현대카드 M BOOST는 주유 특화 한도보다 기본 적립 중심이에요",
-        benefit: "예상 혜택 900원",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "남은 주유 한도 관점에서는 약해요"
-      }
-    ]
-  },
-  performance_fill: {
-    merchant: "GS칼텍스 삼평주유소",
-    confidence: "주유소 인식 91%",
-    recommendedIndex: 1,
-    type: "실적",
-    detail: "오늘 주유가 다음 주유 혜택 조건을 채우는 데 얼마나 도움이 되는지 봤어요.",
-    combinations: [
-      {
-        reason: "KB국민 주유패스는 현재 318,000원/500,000원으로 다음 혜택까지 182,000원이 남아 있어요",
-        benefit: "실적 318,000원/500,000원",
-        coupon: "적용 쿠폰 없음",
-        membership: "주유 포인트 적립",
-        insight: "실적을 채우려면 아직 여유가 조금 더 필요해요"
-      },
-      {
-        reason: "삼성 iD STATION은 현재 388,000원/400,000원으로 다음 주유 혜택까지 12,000원만 남았어요",
-        benefit: "실적 388,000원/400,000원",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 자동 적립",
-        insight: "이번 결제가 다음 주유 혜택 조건에 가장 가까워요"
-      },
-      {
-        reason: "신한 Deep Oil은 현재 402,000원/400,000원으로 이미 실적을 채웠어요",
-        benefit: "실적 402,000원/400,000원",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "이미 채운 카드라 실적 채우기 기준에서는 뒤로 뒀어요"
-      },
-      {
-        reason: "현대카드 M BOOST는 실적 관리 부담은 낮지만 주유 할인 금액이 작아요",
-        benefit: "실적 조건 확인",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "혜택 조건을 채우는 데는 우선순위가 낮은 선택이에요"
-      }
-    ]
-  },
-  no_condition: {
-    merchant: "GS칼텍스 삼평주유소",
-    confidence: "주유소 인식 91%",
-    recommendedIndex: 3,
-    type: "혜택",
-    detail: "복잡한 주유 조건을 제외하고 바로 확인 가능한 기본 혜택만 봤어요.",
-    combinations: [
-      {
-        reason: "KB국민 주유패스는 전월 실적 조건을 먼저 확인해야 해요",
-        benefit: "실적 조건 확인",
-        coupon: "적용 쿠폰 없음",
-        membership: "주유 포인트 적립",
-        insight: "주유 조건이 맞는지 확인해야 해요"
-      },
-      {
-        reason: "삼성 iD STATION은 GS칼텍스 제휴 10% 할인 대상이고 잔여 한도도 확인돼 조건이 가장 명확해요",
-        benefit: "10% 할인 가능",
-        prepayValue: "10% 할인",
-        prepayFormula: "전월 실적을 충족해서 이번 달 GS칼텍스 할인 한도 30,000원 중 27,500원이 남아 있어요. 결제금액의 10%까지 할인받을 수 있어요.",
-        scoreValue: 27500,
-        resultBenefit: "4,500원",
-        resultBenefitDetail: "결제액 45,000원에 10% 청구할인 예정이에요.",
-        paymentAmount: "45,000원",
-        accrual: "GS&POINT 56P",
-        accrualDetail: "GS&POINT 리터당 2P 기준, 45,000원 주유를 약 28L로 환산해 56P 적립",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 자동 적립",
-        insight: "GS칼텍스에서는 가장 설명하기 쉬운 조합이에요"
-      },
-      {
-        reason: "신한 Deep Oil은 조건이 맞으면 좋지만 선택 정유사 확인이 필요해요",
-        benefit: "실적 조건 확인",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "결제 전 확인할 조건이 더 많아요"
-      },
-      {
-        reason: "현대카드 M BOOST는 기본 포인트 적립 중심이에요",
-        benefit: "예상 혜택 900원",
-        coupon: "적용 쿠폰 없음",
-        membership: "GS&POINT 적립",
-        insight: "할인보다 포인트 적립을 원할 때 선택할 수 있어요"
-      }
-    ]
-  }
-  },
   skenergy: {
     max_benefit: {
-      merchant: "SK에너지 판교셀프",
-      confidence: "주유소 인식 72%",
+      merchant: "SK엔크린 중앙에너비스 수서지점",
+      confidence: "주유소 인식 92%",
       recommendedIndex: 2,
       type: "혜택",
-      detail: "SK에너지 주유 할인과 남은 한도를 기준으로 다시 봤어요.",
+      detail: "현재 위치는 SK 주유소예요. 결제 전에는 금액을 모르기 때문에, 뱅크샐러드로 확인한 카드 상태와 선택 정유사, 남은 한도를 먼저 봤어요.",
       combinations: [
-        { reason: "KB국민 주유패스는 리터당 할인 한도가 남아 있어요", benefit: "예상 혜택 3,100원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "SK에너지에서는 안정적인 선택이에요" },
-        { reason: "삼성 iD STATION GS칼텍스형은 SK에너지 제휴가 아니에요", benefit: "제휴 매장 확인", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "GS칼텍스에서 더 좋아요" },
-        { reason: "신한 Deep Oil은 SK에너지 선택 시 리터당 할인이 커요", benefit: "예상 혜택 4,200원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "이 매장에서는 신한 카드가 더 유리해요" },
-        { reason: "현대카드 M BOOST는 기본 포인트 적립 중심이에요", benefit: "예상 혜택 900원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "할인 금액는 작아요" }
+        {
+          reason: "KB국민 주유패스는 리터당 할인이 가능하지만 이번 달 잔여 한도가 Deep Oil보다 작아요",
+          benefit: "리터당 할인 가능",
+          prepayValue: "리터당 할인",
+          prepayFormula: "결제 전에는 주유량을 모르기 때문에 리터당 할인 조건과 남은 한도만 안내해요. 실제 할인액은 결제 후 계산돼요.",
+          scoreValue: 2200,
+          resultBenefit: "2,200원",
+          resultBenefitDetail: "실제 주유량 기준 리터당 할인, 잔여 한도 2,200원까지 적용",
+          coupon: "보유 쿠폰 없음",
+          membership: "OK캐쉬백 바코드 적립",
+          insight: "혜택은 있지만 이번 결제에서는 Deep Oil보다 작아요"
+        },
+        {
+          reason: "삼성 iD STATION은 현재 SK 주유소에서는 직접 할인 근거가 약해요",
+          benefit: "제휴 매장 확인",
+          coupon: "보유 쿠폰 없음",
+          membership: "OK캐쉬백 바코드 적립",
+          insight: "현재 매장에는 Deep Oil이 더 잘 맞아요"
+        },
+        {
+          reason: "신한 Deep Oil은 선택 정유사가 SK에너지로 확인됐고, 전월 실적도 충족해서 10% 청구할인을 기대할 수 있어요",
+          benefit: "SK에너지 10% 할인 가능",
+          prepayValue: "10% 할인 가능",
+          prepayFormula: "Deep Oil 선택 정유사가 SK에너지로 확인됐어요. 이번 달 주유 할인 대상 이용금액 한도 150,000원 중 92,000원이 남아 있어, 결제금액의 10%를 남은 한도 안에서 청구할인 받을 수 있어요.",
+          scoreValue: 9200,
+          resultBenefit: "4,500원",
+          resultBenefitDetail: "승인금액 45,000원에 10% 청구할인 예정이에요. 남은 할인 가능액 9,200원 안에서 계산했어요.",
+          resultSummary: "이번 결제로 4,546원 혜택 받았어요",
+          resultLearning: "청구할인 4,500원 + OK캐쉬백 46P",
+          paymentAmount: "45,000원",
+          accrual: "OK캐쉬백 46P",
+          accrualDetail: "SK 주유소 OK캐쉬백 기본 적립을 리터당 2P로 두고, 45,000원 주유를 약 23L로 환산해 46P 적립으로 표시했어요. 실제 포인트는 주유소/멤버십 정책에 따라 달라질 수 있어요.",
+          coupon: "SK 주유쿠폰 확인",
+          membership: "OK캐쉬백 바코드 적립",
+          insight: "선택 정유사와 현재 매장이 맞고, 할인 한도도 남아 있어요"
+        },
+        {
+          reason: "현대카드 M BOOST는 기본 포인트 적립 중심이라 SK 주유소 직접 할인 폭은 작아요",
+          benefit: "기본 적립 가능",
+          scoreValue: 900,
+          resultBenefit: "900원",
+          resultBenefitDetail: "실제 승인금액 기준 기본 포인트 적립 예상",
+          coupon: "보유 쿠폰 없음",
+          membership: "OK캐쉬백 바코드 적립",
+          insight: "할인 극대화보다 포인트 적립 목적일 때 선택할 수 있어요"
+        }
       ]
     },
     remaining_cap: {
-      merchant: "SK에너지 판교셀프",
-      confidence: "주유소 인식 72%",
+      merchant: "SK엔크린 중앙에너비스 수서지점",
+      confidence: "주유소 인식 92%",
       recommendedIndex: 2,
       type: "혜택",
-      detail: "SK에너지에서 남은 주유 한도를 먼저 확인했어요.",
+      detail: "SK 주유소에서 남은 주유 할인 대상 이용금액과 할인 가능액을 먼저 확인했어요.",
       combinations: [
-        { reason: "KB국민 주유패스는 한도 8,000원이 남아 있어요", benefit: "남은 주유 한도 8,000원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "아직 쓸 수 있는 한도가 있어요" },
-        { reason: "삼성 iD STATION GS칼텍스형은 SK에너지에서는 제휴 혜택을 받을 수 없어요", benefit: "제휴 매장 확인", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "현재 매장에는 맞지 않아요" },
-        { reason: "신한 Deep Oil은 선택 정유사 조건이 맞으면 한도가 남아 있어요", benefit: "남은 주유 한도 12,000원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "이번 위치에서는 한도 여유가 커요" },
-        { reason: "현대카드 M BOOST는 기본 적립 중심이에요", benefit: "예상 혜택 900원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "할인 한도형 추천은 아니에요" }
+        { reason: "KB국민 주유패스는 이번 달 남은 할인 가능액이 2,200원이에요", benefit: "남은 한도 2,200원", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "아직 쓸 수 있지만 한도 여유가 작아요" },
+        { reason: "삼성 iD STATION은 현재 SK 주유소 제휴 혜택 확인이 필요해요", benefit: "제휴 매장 확인", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "현재 매장에는 맞지 않아요" },
+        { reason: "신한 Deep Oil은 이번 달 주유 할인 대상 이용금액 한도 150,000원 중 92,000원이 남아 있어요", benefit: "할인 가능액 9,200원", prepayValue: "9,200원까지", prepayFormula: "결제금액의 10%를 남은 주유 할인 대상 이용금액 한도 안에서 받을 수 있어요. 결제 전에는 실제 할인액을 계산하지 않아요.", coupon: "SK 주유쿠폰 확인", membership: "OK캐쉬백 바코드 적립", insight: "이번 위치에서는 한도 여유가 가장 커요" },
+        { reason: "현대카드 M BOOST는 주유 특화 한도보다 기본 적립 중심이에요", benefit: "기본 적립 가능", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "할인 한도형 추천은 아니에요" }
       ]
     },
     performance_fill: {
-      merchant: "SK에너지 판교셀프",
-      confidence: "주유소 인식 72%",
-      recommendedIndex: 2,
+      merchant: "SK엔크린 중앙에너비스 수서지점",
+      confidence: "주유소 인식 92%",
+      recommendedIndex: 0,
       type: "실적",
-      detail: "SK에너지 주유가 다음 달 혜택 조건에 포함되는지 봤어요.",
+      detail: "혜택보다 다음 달 조건 유지를 우선할 때는 아직 실적이 부족하고 목표까지 가까운 카드를 먼저 봐요.",
       combinations: [
-        { reason: "KB국민 주유패스는 이번 결제가 실적에 포함돼요", benefit: "실적 318,000원/500,000원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "아직 목표까지 거리가 있어요" },
-        { reason: "삼성 iD STATION은 GS칼텍스에서 실적과 혜택을 함께 보기 좋아요", benefit: "실적 조건 확인", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "이 매장에서는 할인 조건이 맞지 않아요" },
-        { reason: "신한 Deep Oil은 실적 조건을 채우면서 주유 혜택도 노릴 수 있어요", benefit: "실적 402,000원/400,000원", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "실적 기준에서는 가장 좋아요" },
-        { reason: "현대카드 M BOOST는 실적 관리 부담은 낮지만 주유 할인은 약해요", benefit: "실적 조건 확인", coupon: "적용 쿠폰 없음", membership: "OK캐쉬백 적립", insight: "실적 기준에서는 우선순위가 낮아요" }
+        { reason: "KB국민 주유패스는 현재 489,000원/500,000원으로 다음 주유 혜택 조건까지 11,000원이 남았어요", benefit: "실적 489,000원/500,000원", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "실적을 채우는 기준에서는 목표까지 가장 가까워요" },
+        { reason: "삼성 iD STATION은 현재 388,000원/400,000원이지만 SK 주유소 할인 조건과는 직접 연결이 약해요", benefit: "실적 388,000원/400,000원", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "실적은 가깝지만 현재 매장 혜택은 Deep Oil이 더 좋아요" },
+        { reason: "신한 Deep Oil은 현재 402,000원/400,000원으로 이미 실적을 채웠어요", benefit: "실적 402,000원/400,000원", coupon: "SK 주유쿠폰 확인", membership: "OK캐쉬백 바코드 적립", insight: "이미 채운 카드라 실적 채우기 기준에서는 뒤로 뒀어요" },
+        { reason: "현대카드 M BOOST는 포인트형 카드라 이번 주유에서 실적 채우기 우선순위는 낮아요", benefit: "실적 조건 확인", coupon: "보유 쿠폰 없음", membership: "OK캐쉬백 바코드 적립", insight: "실적 기준에서는 우선순위가 낮아요" }
       ]
     },
     no_condition: {
-      merchant: "SK에너지 판교셀프",
-      confidence: "주유소 인식 72%",
+      merchant: "SK엔크린 중앙에너비스 수서지점",
+      confidence: "주유소 인식 92%",
       recommendedIndex: 2,
       type: "혜택",
       detail: "확인할 조건이 적은 혜택을 우선했어요.",
       combinations: []
     }
   },
-  soil: {
-    max_benefit: {
-      merchant: "S-OIL 판교충전소",
-      confidence: "주유소 인식 64%",
-      recommendedIndex: 0,
-      type: "혜택",
-      detail: "S-OIL에서 받을 수 있는 주유 혜택을 확인했어요.",
-      combinations: [
-        { reason: "KB국민 주유패스는 S-OIL에서도 리터당 할인을 받을 수 있어요", benefit: "예상 혜택 3,300원", coupon: "적용 쿠폰 없음", membership: "S-OIL 포인트 적립", insight: "이 위치에서는 KB 카드가 안정적이에요" },
-        { reason: "삼성 iD STATION GS칼텍스형은 S-OIL 제휴가 아니에요", benefit: "제휴 매장 확인", coupon: "적용 쿠폰 없음", membership: "S-OIL 포인트 적립", insight: "GS칼텍스에서 더 좋아요" },
-        { reason: "신한 Deep Oil은 선택 정유사를 먼저 확인해야 해요", benefit: "선택 정유사 확인", coupon: "적용 쿠폰 없음", membership: "S-OIL 포인트 적립", insight: "조건이 맞으면 선택할 수 있어요" },
-        { reason: "현대카드 M BOOST는 기본 적립 중심이에요", benefit: "예상 혜택 900원", coupon: "적용 쿠폰 없음", membership: "S-OIL 포인트 적립", insight: "할인 금액는 작아요" }
-      ]
-    },
-    remaining_cap: null,
-    performance_fill: null,
-    no_condition: null
-  },
-  evcharge: {
-    max_benefit: {
-      merchant: "EV 충전소",
-      confidence: "충전소 인식 58%",
-      recommendedIndex: 3,
-      type: "혜택",
-      detail: "전기차 충전에 맞는 혜택을 확인했어요.",
-      combinations: [
-        { reason: "KB국민 주유패스는 주유 혜택 중심이에요", benefit: "충전 혜택 확인", coupon: "적용 쿠폰 없음", membership: "충전 포인트 적립", insight: "주유소에서 더 적합해요" },
-        { reason: "삼성 iD STATION은 주유소 혜택 중심이에요", benefit: "충전 혜택 확인", coupon: "적용 쿠폰 없음", membership: "충전 포인트 적립", insight: "GS칼텍스 주유에서 더 좋아요" },
-        { reason: "신한 Deep Oil은 주유 할인 중심이에요", benefit: "충전 혜택 확인", coupon: "적용 쿠폰 없음", membership: "충전 포인트 적립", insight: "충전소 혜택은 별도 확인이 필요해요" },
-        { reason: "현대카드 M BOOST는 기본 포인트 적립이 가능해요", benefit: "예상 혜택 1,100원", coupon: "적용 쿠폰 없음", membership: "충전 포인트 적립", insight: "충전소에서는 기본 적립이 가장 단순해요" }
-      ]
-    },
-    remaining_cap: null,
-    performance_fill: null,
-    no_condition: null
-  },
   baskin: {
     max_benefit: {
-      merchant: "배스킨라빈스 판교역점",
+      merchant: "배스킨라빈스 강남수서점",
       confidence: "매장 인식 78%",
       recommendedIndex: 3,
       type: "혜택",
@@ -347,11 +159,11 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 주유 특화 카드라 배스킨라빈스에서는 기본 결제와 소액 적립 정도만 기대할 수 있어요", benefit: "기본 적립 가능", scoreValue: 300, resultBenefit: "300원", resultBenefitDetail: "실제 결제금액 기준 기본 적립 예상", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 매장에서는 할인 금액이 작아요" },
         { reason: "삼성카드는 LINK 쿠폰이 연결되어 있으면 18,500원 이상 결제 시 2,000원 할인을 받을 수 있어요", benefit: "2,000원 쿠폰 가능", prepayValue: "2,000원 쿠폰", prepayFormula: "삼성카드 LINK 쿠폰을 보유 중이에요. 실제 결제금액이 18,500원 이상이면 2,000원 할인이 가능해요.", scoreValue: 2000, resultBenefit: "2,000원", resultBenefitDetail: "삼성카드 LINK 2,000원 OFF 쿠폰 적용", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 맞으면 안정적인 대안이에요" },
         { reason: "신한 Deep Oil은 주유소 혜택 중심이라 배스킨라빈스 업종에서는 직접 할인 근거가 약해요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "주유소 결제에 더 적합해요" },
-        { reason: "현대카드 M BOOST는 M포인트 18,400P를 보유 중이라 결제금액의 50%까지 포인트 사용을 요청할 수 있어요", benefit: "M포인트 50% 사용 가능", prepayValue: "50% 사용", prepayFormula: "M포인트 18,400P를 보유 중이에요. 결제금액의 50%까지 포인트 사용이 가능하고, 실제 사용액은 결제 후 계산돼요.", scoreValue: 18400, resultBenefit: "7,300원", resultBenefitDetail: "실제 결제금액 14,600원 x 50% = M포인트 7,300P 사용", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "할인율이 가장 크고 해피포인트도 별도로 적립돼요" }
+        { reason: "현대카드 M BOOST는 M포인트 18,400P를 보유 중이라 결제금액의 50%까지 포인트 사용을 요청할 수 있어요", benefit: "M포인트 50% 사용 가능", prepayValue: "50% 사용", prepayFormula: "M포인트 18,400P를 보유 중이에요. 결제금액의 50%까지 포인트 사용이 가능하고, 실제 사용액은 결제 후 계산돼요. 해피포인트는 기본 0.5% 적립 예상으로 함께 안내해요.", scoreValue: 18400, resultBenefit: "7,300P", resultBenefitDetail: "승인금액 14,600원 x 50% = M포인트 7,300P 사용으로 계산했어요.", resultSummary: "이번 결제로 7,373P 혜택 받았어요", resultLearning: "M포인트 7,300P 사용 + 해피포인트 73P", paymentAmount: "14,600원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", pointResult: "7,300P", pointDetail: "승인금액 14,600원 x 50% = M포인트 7,300P 사용으로 계산했어요.", membership: "해피포인트 적립", accrual: "해피포인트 73P", accrualDetail: "해피포인트 기본 0.5% 적립 예상으로, 승인금액 14,600원 x 0.5% = 73P로 계산했어요. 실제 적립률은 브랜드/행사/결제 조건에 따라 달라질 수 있어요.", insight: "포인트 사용률이 가장 크고 해피포인트도 함께 적립돼요" }
       ]
     },
     remaining_cap: {
-      merchant: "배스킨라빈스 판교역점",
+      merchant: "배스킨라빈스 강남수서점",
       confidence: "매장 인식 78%",
       recommendedIndex: 1,
       type: "혜택",
@@ -360,11 +172,11 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 배스킨라빈스 쿠폰이 없어요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "기본 적립만 기대할 수 있어요" },
         { reason: "삼성카드 LINK 쿠폰은 18,500원 이상 결제 시 2,000원 OFF 조건이 명확해요", benefit: "남은 쿠폰 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 가장 단순해요" },
         { reason: "신한 Deep Oil은 배스킨라빈스 쿠폰이 없어요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 업종에는 맞지 않아요" },
-        { reason: "현대카드 M포인트는 보유 포인트가 충분하면 50% 사용이 가능해요", benefit: "남은 포인트 7,300원", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액이 충분할 때 좋아요" }
+        { reason: "현대카드 M포인트는 보유 포인트가 충분하면 50% 사용이 가능해요", benefit: "남은 포인트 7,300원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액이 충분할 때 좋아요" }
       ]
     },
     performance_fill: {
-      merchant: "배스킨라빈스 판교역점",
+      merchant: "배스킨라빈스 강남수서점",
       confidence: "매장 인식 78%",
       recommendedIndex: 1,
       type: "실적",
@@ -373,11 +185,11 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 이번 결제가 실적에 포함되지만 배스킨라빈스 혜택은 약해요", benefit: "실적 322,000원/500,000원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "실적 관리 목적만으로는 아쉬워요" },
         { reason: "삼성카드는 LINK 쿠폰을 쓰면서 다음 혜택 조건에도 가까워져요", benefit: "실적 392,000원/400,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "실적과 쿠폰을 함께 챙기기 좋아요" },
         { reason: "신한 Deep Oil은 실적에는 포함될 수 있지만 배스킨라빈스 혜택은 약해요", benefit: "실적 404,000원/400,000원", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "실적만 보면 가능하지만 혜택은 약해요" },
-        { reason: "현대카드 M BOOST는 포인트 사용 혜택은 크지만 실적 기준에서는 우선순위가 낮아요", benefit: "실적 조건 확인", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "혜택 기준에서는 좋지만 실적 기준에서는 밀려요" }
+        { reason: "현대카드 M BOOST는 포인트 사용 혜택은 크지만 실적 기준에서는 우선순위가 낮아요", benefit: "실적 조건 확인", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "혜택 기준에서는 좋지만 실적 기준에서는 밀려요" }
       ]
     },
     no_condition: {
-      merchant: "배스킨라빈스 판교역점",
+      merchant: "배스킨라빈스 강남수서점",
       confidence: "매장 인식 78%",
       recommendedIndex: 1,
       type: "혜택",
@@ -386,25 +198,42 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 배스킨라빈스 직접 혜택이 작아요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "기본 결제에 가까워요" },
         { reason: "삼성카드 LINK는 쿠폰 연결만 되어 있으면 조건이 비교적 명확해요", benefit: "예상 혜택 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "확인할 조건이 적은 편이에요" },
         { reason: "신한 Deep Oil은 주유 혜택 중심이라 배스킨라빈스 혜택은 약해요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 업종에는 적합하지 않아요" },
-        { reason: "현대카드 M포인트는 잔액 조건이 맞아야 혜택이 커져요", benefit: "포인트 잔액 확인", coupon: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액 확인이 필요해요" }
+        { reason: "현대카드 M포인트는 잔액 조건이 맞아야 혜택이 커져요", benefit: "포인트 잔액 확인", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액 확인이 필요해요" }
       ]
     }
   }
 };
 
-["soil", "evcharge"].forEach((locationId) => {
-  ["remaining_cap", "performance_fill", "no_condition"].forEach((criterion) => {
-    locationScenarioSets[locationId][criterion] = locationScenarioSets[locationId].max_benefit;
-  });
-});
-
 locationScenarioSets.skenergy.no_condition = locationScenarioSets.skenergy.max_benefit;
+
+locationScenarioSets.twosome = {
+  max_benefit: {
+    merchant: "투썸플레이스 강남수서점",
+    confidence: "카페 후보 58%",
+    recommendedIndex: 3,
+    type: "혜택",
+    detail: "투썸플레이스는 주유소보다 거리가 있어 위치 후보로만 보여줘요. 카페 결제라면 주유 특화 카드보다 생활/포인트 카드를 먼저 봐요.",
+    combinations: [
+      { reason: "KB국민 주유패스는 주유 특화 카드라 카페 결제에서는 직접 혜택이 약해요", benefit: "기본 적립 가능", coupon: "보유 쿠폰 없음", membership: "투썸하트 적립", insight: "주유소에서 더 좋아요" },
+      { reason: "삼성 iD STATION은 선택 옵션에 따라 생활 업종 혜택을 볼 수 있어요", benefit: "생활 혜택 확인", coupon: "보유 쿠폰 없음", membership: "투썸하트 적립", insight: "선택 옵션 확인이 필요해요" },
+      { reason: "신한 Deep Oil의 커피 생활서비스는 스타벅스/이디야 중심이라 투썸은 직접 대상이 아니에요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "투썸하트 적립", insight: "SK 주유소 결제에 더 적합해요" },
+      { reason: "현대카드 M BOOST는 카페 결제에서도 기본 포인트 적립을 기대할 수 있어요", benefit: "포인트 적립 가능", prepayValue: "포인트 적립", prepayFormula: "결제 전에는 금액을 모르기 때문에 적립 가능 조건만 안내해요. 실제 포인트는 결제 후 승인금액 기준으로 계산돼요.", scoreValue: 128, resultBenefit: "128P", resultBenefitDetail: "승인금액 12,800원에 M BOOST 기본 1% 적립을 적용해 128P 적립 예정으로 계산했어요.", resultSummary: "이번 결제로 128P 혜택 받았어요", resultLearning: "M포인트 128P + 투썸하트 적립", paymentAmount: "12,800원", coupon: "보유 쿠폰 없음", membership: "투썸하트 적립", insight: "카페 후보에서는 포인트형 카드가 가장 무난해요" }
+    ]
+  },
+  remaining_cap: null,
+  performance_fill: null,
+  no_condition: null
+};
+
+["remaining_cap", "performance_fill", "no_condition"].forEach((criterion) => {
+  locationScenarioSets.twosome[criterion] = locationScenarioSets.twosome.max_benefit;
+});
 
 Object.entries(locationScenarioSets).forEach(([locationId, scenarioSet]) => {
   scenarioSet.mileage = createMileageScenario(locationId, scenarioSet);
 });
 
-let currentLocation = "gscaltex";
+let currentLocation = "skenergy";
 let scenarios = locationScenarioSets[currentLocation];
 
 let currentScenario = "max_benefit";
@@ -442,6 +271,7 @@ const fields = {
   benefitFormula: $("#benefitFormula"),
   comboCard: $("#comboCard"),
   comboCoupon: $("#comboCoupon"),
+  comboPoint: $("#comboPoint"),
   comboMembership: $("#comboMembership"),
   selectedCard: $("#selectedCard"),
   benefitText: $("#benefitText"),
@@ -530,10 +360,7 @@ function formatBenefitTotalLabel(scenario, combo) {
 function benefitFormulaFor(scenario, card, combo) {
   if (combo.prepayFormula) return combo.prepayFormula;
   const amount = formatBenefitDisplay(formatBenefitAmount(combo.benefit));
-  if (scenario.merchant.includes("GS칼텍스") && card.issuer === "SAMSUNG") {
-    return "결제 전에는 승인금액을 모르기 때문에 할인율과 잔여 한도만 안내해요. 실제 할인액은 결제 후 계산돼요.";
-  }
-  if (scenario.merchant.includes("배스킨라빈스") && combo.coupon.includes("M포인트")) {
+  if (scenario.merchant.includes("배스킨라빈스") && (combo.point || "").includes("M포인트")) {
     return "결제 전에는 승인금액을 모르기 때문에 사용률과 보유 포인트만 안내해요. 실제 사용액은 결제 후 계산돼요.";
   }
   if (scenario.type.includes("실적")) {
@@ -542,7 +369,7 @@ function benefitFormulaFor(scenario, card, combo) {
   if (scenario.type.includes("마일")) {
     return `${amount} 적립을 예상했어요. 적립 시점과 확정 금액은 카드사 기준을 따릅니다.`;
   }
-  return `${amount}은 카드 혜택 기준 예상액이에요. 멤버십 적립은 별도로 챙겨요.`;
+  return `${amount}은 카드 혜택 기준이에요. 포인트와 멤버십은 결제 단계에서 함께 안내해요.`;
 }
 
 function formatBenefitHighlight(type, benefitAmount) {
@@ -673,18 +500,14 @@ function createMileageScenario(locationId, scenarioSet) {
   const merchant = base.merchant;
   const confidence = base.confidence;
   const membershipByLocation = {
-    gscaltex: "GS&POINT 자동 적립",
-    skenergy: "OK캐쉬백 적립",
-    soil: "S-OIL 포인트 적립",
-    evcharge: "충전 포인트 적립",
-    baskin: "해피포인트 적립"
+    skenergy: "OK캐쉬백 바코드 적립",
+    baskin: "해피포인트 적립",
+    twosome: "투썸하트 적립"
   };
   const displayMerchant = {
-    gscaltex: "GS칼텍스",
     skenergy: "SK에너지",
-    soil: "S-OIL",
-    evcharge: "충전소",
-    baskin: "배스킨라빈스"
+    baskin: "배스킨라빈스",
+    twosome: "투썸플레이스"
   };
 
   return {
@@ -703,8 +526,8 @@ function createMileageScenario(locationId, scenarioSet) {
         prepayValue: isRecommended ? "적립 가능" : "",
         prepayFormula: isRecommended ? "결제 후 승인금액과 카드사 적립률을 기준으로 실제 마일리지가 확정돼요. 결제 전에는 마일 수를 예측하지 않아요." : "",
         scoreValue: isRecommended ? 1 : 0,
-        coupon: "적용 쿠폰 없음",
-        membership: membershipByLocation[locationId],
+        coupon: "보유 쿠폰 없음",
+        membership: membershipByLocation[locationId] || "멤버십 적립",
         insight: isRecommended ? "항공권 적립을 우선하면 이 카드가 적합해요" : "혜택 우선 기준에서는 선택할 수 있어요"
       };
     })
@@ -752,27 +575,22 @@ function displayAsset(value) {
 }
 
 function membershipLabel(value) {
-  if (value.includes("GS&POINT")) return "GS&POINT";
   if (value.includes("해피포인트")) return "해피포인트";
   if (value.includes("OK캐쉬백")) return "OK캐쉬백";
-  if (value.includes("S-OIL")) return "S-OIL 포인트";
+  if (value.includes("투썸")) return "투썸하트";
   return "멤버십";
 }
 
 function membershipDisplay(value) {
-  if (value.includes("GS&POINT")) return "자동 적립 (리터당 2P)";
-  if (value.includes("해피포인트")) return "자동 적립";
-  if (value.includes("OK캐쉬백")) return "자동 적립";
-  if (value.includes("S-OIL")) return "자동 적립";
+  if (value.includes("해피포인트")) return "0.5% 적립 예상";
+  if (value.includes("OK캐쉬백")) return "리터당 2P 적립";
+  if (value.includes("투썸")) return "하트 적립";
   return displayAsset(value);
 }
 
 function compactCopy(value) {
   return value
-    .replace(/\s*\+\s*GS&POINT\s*자동\s*적립/g, "")
-    .replace(/GS&POINT 자동 적립/g, "GS&POINT")
     .replace(/OK캐쉬백 적립/g, "OK캐쉬백")
-    .replace(/S-OIL 포인트 적립/g, "S-OIL 포인트")
     .replace(/해피포인트 적립/g, "해피포인트")
     .replace(/멤버십/g, "적립")
     .trim();
@@ -802,12 +620,29 @@ function buildBenefitBreakdown(scenario, card, combo) {
   }
 
   if (hasUsableAsset(combo.coupon)) {
-    rows.push({ label: "쿠폰", value: combo.coupon, state: "사용", benefitType: "coupon" });
+    const isCouponCheck = combo.coupon.includes("확인");
+    rows.push({
+      label: "쿠폰",
+      value: isCouponCheck ? combo.coupon.replace(/\s*확인$/, "") : combo.coupon,
+      state: isCouponCheck ? "확인" : "사용",
+      benefitType: "coupon"
+    });
+  }
+
+  if (hasUsableAsset(combo.point)) {
+    rows.push({
+      label: "포인트",
+      value: isResultMode ? (combo.pointResult || combo.resultBenefit || combo.point) : combo.point,
+      state: isResultMode ? "" : "사용 요청",
+      detail: "",
+      help: isResultMode ? (combo.pointDetail || combo.resultBenefitDetail || "") : "",
+      benefitType: "point"
+    });
   }
 
   if (hasUsableAsset(combo.membership)) {
     const membershipValue = isResultMode && combo.accrual
-      ? combo.accrual.replace(/^GS&POINT\s*/, "")
+      ? combo.accrual.replace(/^(OK캐쉬백|해피포인트)\s*/, "")
       : membershipDisplay(combo.membership);
     rows.push({
       label: membershipLabel(combo.membership),
@@ -821,14 +656,16 @@ function buildBenefitBreakdown(scenario, card, combo) {
 
   const benefitLabel = type === "mileage" ? "마일리지" : type === "performance" ? "실적" : type === "point" ? "포인트 사용" : "카드 혜택";
   const benefitState = type === "performance" ? "실적 포함 예정" : type === "mileage" ? "적립 예정" : type === "point" ? "사용 완료" : "결제일 할인 예정";
-  rows.push({
-    label: benefitLabel,
-    value: isResultMode ? (combo.resultBenefit || combo.benefit) : combo.benefit,
-    state: isResultMode ? "" : benefitState,
-    detail: "",
-    help: isResultMode ? (combo.resultBenefitDetail || "") : "",
-    benefitType: type
-  });
+  if (!(type === "point" && hasUsableAsset(combo.point))) {
+    rows.push({
+      label: benefitLabel,
+      value: isResultMode ? (combo.resultBenefit || combo.benefit) : combo.benefit,
+      state: isResultMode ? "" : benefitState,
+      detail: "",
+      help: isResultMode ? (combo.resultBenefitDetail || "") : "",
+      benefitType: type
+    });
+  }
 
   return rows;
 }
@@ -841,6 +678,7 @@ function resultBenefitFor(scenario, combo, progress) {
 
 function progressReportFor(scenario) {
   const isBaskin = scenario.merchant.includes("배스킨라빈스");
+  const isSk = scenario.merchant.includes("SK");
   if (scenario.type.includes("마일")) {
     return {
       label: "추천 기준",
@@ -850,11 +688,27 @@ function progressReportFor(scenario) {
     };
   }
   if (scenario.type.includes("실적")) {
+    if (isSk) {
+      return {
+        label: "이번 달 카드 실적",
+        value: "489,000원/500,000원",
+        width: "98%",
+        hint: "KB국민 주유패스 혜택 조건까지 11,000원 남았어요"
+      };
+    }
     return {
       label: "이번 달 카드 실적",
       value: isBaskin ? "392,000원/400,000원" : "388,000원/400,000원",
       width: isBaskin ? "98%" : "97%",
       hint: isBaskin ? "다음 생활 혜택 조건까지 8,000원 남았어요" : "다음 주유 실적 충족까지 12,000원 남았어요"
+    };
+  }
+  if (isSk) {
+    return {
+      label: "이번 달 카드 실적",
+      value: "402,000원/400,000원",
+      width: "100%",
+      hint: "Deep Oil 전월 실적은 충족했고, 이번 달 SK 주유 할인 한도도 남아 있어요"
     };
   }
   return {
@@ -910,51 +764,64 @@ function stopNfcTimer() {
 function benefitStepLabel(value) {
   if (value.includes("M포인트")) return "포인트";
   if (value.includes("멤버십")) return "멤버십";
-  if (value.includes("LINK")) return "카드쿠폰";
-  return "매장쿠폰";
+  if (value.includes("LINK")) return "쿠폰";
+  return "쿠폰";
 }
 
 function buildCouponStep(value) {
-  if (value.includes("M포인트")) {
-    return {
-      type: "point",
-      label: "쿠폰",
-      title: "M포인트 사용을 요청하세요",
-      value,
-      code: "직원 또는 키오스크에서 선택",
-      guide: "결제 전 M포인트 사용을 요청한 뒤 카드 결제로 넘어가요.",
-      button: "요청 완료"
-    };
-  }
-
   return {
     type: "coupon",
+    theme: value.includes("SK") ? "sk" : "baskin",
     label: benefitStepLabel(value),
-    title: "먼저 쿠폰 바코드를 보여주세요",
+    title: value.includes("확인") ? "쿠폰 조건을 확인해주세요" : "먼저 쿠폰 바코드를 보여주세요",
     value,
-    code: "8801 0427 3000",
-    guide: "아직 결제 전이에요.",
-    button: "쿠폰 사용 완료"
+    code: value.includes("SK") ? "8801 2407 4500" : "8801 0427 3000",
+    guide: value.includes("확인") ? "쿠폰 사용 가능 조건을 먼저 확인한 뒤 다음 단계로 넘어가요." : "아직 결제 전이에요.",
+    button: value.includes("확인") ? "확인 완료" : "쿠폰 사용 완료"
+  };
+}
+
+function buildPointStep(value) {
+  return {
+    type: "point",
+    theme: "point",
+    label: "포인트",
+    title: "M포인트 사용을 선택해주세요",
+    value,
+    code: "직원 또는 키오스크에서 선택",
+    guide: "결제 전 M포인트 사용을 선택한 뒤 해피포인트 적립과 카드 결제로 넘어가요.",
+    button: "선택 완료"
   };
 }
 
 function buildMembershipStep(value) {
   const extra = selectedPayExtra || defaultPayExtraOption();
   const displayValue = extra?.type === "멤버십" ? extra.value : displayAsset(value);
+  const code = extra?.type === "멤버십"
+    ? extra.code
+    : displayValue.includes("OK캐쉬백")
+      ? "2407 1142 3108"
+      : "3108 2407 1142";
+  const guide = extra?.type === "멤버십"
+    ? extra.guide
+    : displayValue.includes("OK캐쉬백")
+      ? "OK캐쉬백 바코드를 스캔한 뒤 카드 결제로 넘어가요."
+      : "멤버십 바코드를 보여준 뒤 카드 결제로 넘어가요.";
 
   return {
     type: "membership",
+    theme: displayValue.includes("OK캐쉬백") ? "ok" : displayValue.includes("해피포인트") ? "happy" : displayValue.includes("투썸") ? "twosome" : undefined,
     label: "적립",
     title: "멤버십 적립을 먼저 해주세요",
     value: displayValue || "멤버십 선택",
-    code: extra?.code || "3108 2407 1142",
-    guide: extra?.guide || "멤버십 바코드를 보여준 뒤 카드 결제로 넘어가요.",
+    code,
+    guide,
     button: "적립 완료"
   };
 }
 
 function paymentGuideFor(combo) {
-  if (hasUsableAsset(combo.coupon) && combo.coupon.includes("M포인트")) {
+  if (hasUsableAsset(combo.point) && combo.point.includes("M포인트")) {
     return "결제 전 M포인트 사용을 요청한 뒤 폰의 뒷면을 카드 리더기에 대세요.";
   }
   return "폰의 뒷면을 카드 리더기에 대세요.";
@@ -994,120 +861,61 @@ function payExtraOptions() {
     ];
   }
 
-  if (scenario.merchant.includes("SK에너지")) {
+  if (scenario.merchant.includes("SK")) {
     return [
-      {
-        id: "okcashbag",
-        type: "멤버십",
-        value: "OK캐쉬백",
-        meta: "포인트 적립",
-        code: "2407 1142 3108",
-        theme: "ok",
-        guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
-      },
       {
         id: "sk-coupon",
         type: "매장쿠폰",
         value: "SK 주유쿠폰",
-        meta: "D-5",
+        meta: "조건 확인",
         code: "8801 2407 4500",
         theme: "sk",
-        guide: "SK 주유쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
-      },
-      {
-        id: "gs-point",
-        type: "멤버십",
-        value: "GS&POINT",
-        meta: "보유 멤버십",
-        code: "3108 2407 1142",
-        theme: "gspoint",
-        guide: "GS&POINT 바코드를 스캔하고 카드 결제로 넘어가요."
-      }
-    ];
-  }
-
-  if (scenario.merchant.includes("S-OIL")) {
-    return [
-      {
-        id: "soil-point",
-        type: "멤버십",
-        value: "S-OIL 포인트",
-        meta: "포인트 적립",
-        code: "5012 2407 1142",
-        theme: "soil",
-        guide: "S-OIL 포인트 바코드를 스캔하고 카드 결제로 넘어가요."
-      },
-      {
-        id: "soil-coupon",
-        type: "매장쿠폰",
-        value: "S-OIL 주유쿠폰",
-        meta: "D-6",
-        code: "8801 5012 3000",
-        theme: "soil-coupon",
-        guide: "S-OIL 주유쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+        guide: "주유쿠폰 사용 가능 조건을 확인한 뒤 OK캐쉬백 적립으로 넘어가요."
       },
       {
         id: "okcashbag",
         type: "멤버십",
         value: "OK캐쉬백",
-        meta: "보유 멤버십",
+        meta: "바코드 제시",
         code: "2407 1142 3108",
         theme: "ok",
-        guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
+        guide: "OK캐쉬백 바코드를 스캔한 뒤 Deep Oil 카드 결제로 넘어가요."
       }
     ];
   }
 
-  if (scenario.merchant.includes("EV")) {
+  if (scenario.merchant.includes("투썸플레이스")) {
     return [
       {
-        id: "charge-point",
+        id: "twosome-heart",
         type: "멤버십",
-        value: "충전 포인트",
-        meta: "포인트 적립",
-        code: "7070 2407 1142",
-        theme: "charge",
-        guide: "충전 포인트 바코드를 스캔하고 카드 결제로 넘어가요."
+        value: "투썸하트",
+        meta: "적립 가능",
+        code: "2200 7142 3108",
+        theme: "twosome",
+        guide: "투썸하트 적립 바코드를 먼저 확인하고 카드 결제로 넘어가요."
       },
       {
-        id: "charge-coupon",
+        id: "twosome-coupon",
         type: "매장쿠폰",
-        value: "충전 1천원 쿠폰",
-        meta: "D-4",
-        code: "8801 7070 1000",
-        theme: "charge-coupon",
-        guide: "충전 쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
+        value: "투썸 모바일쿠폰",
+        meta: "조건 확인",
+        code: "9350 2200 2407",
+        theme: "baskin",
+        guide: "모바일쿠폰 사용 조건을 확인한 뒤 카드 결제로 넘어가요."
       }
     ];
   }
 
   return [
     {
-      id: "gs-point",
+      id: "basic-membership",
       type: "멤버십",
-      value: "GS&POINT",
-      meta: "자동 적립",
+      value: "멤버십",
+      meta: "확인",
       code: "3108 2407 1142",
-      theme: "gspoint",
-      guide: "GS&POINT 바코드를 스캔하고 카드 결제로 넘어가요."
-    },
-    {
-      id: "oil-coupon",
-      type: "매장쿠폰",
-      value: "주유 2천원 쿠폰",
-      meta: "D-7",
-      code: "8801 0427 3000",
-      theme: "oil",
-      guide: "주유 쿠폰 바코드를 먼저 보여준 뒤 카드 결제로 넘어가요."
-    },
-    {
-      id: "okcashbag",
-      type: "멤버십",
-      value: "OK캐쉬백",
-      meta: "포인트 적립",
-      code: "2407 1142 3108",
-      theme: "ok",
-      guide: "OK캐쉬백 바코드를 스캔하고 카드 결제로 넘어가요."
+      theme: "default",
+      guide: "매장 멤버십을 확인한 뒤 카드 결제로 넘어가요."
     }
   ];
 }
@@ -1138,11 +946,22 @@ function buildPaySteps(mode = currentPayMode) {
 
   if (mode === "card") {
     if (isDirectPayExtraOpen) {
-      const extra = selectedPayExtra || defaultPayExtraOption();
-      if (extra?.type === "매장쿠폰") {
-        steps.push(buildCouponStep(extra.value));
-      } else if (extra?.type === "멤버십") {
-        steps.push(buildMembershipStep(extra.value));
+      if (hasUsableAsset(combo.coupon)) {
+        steps.push(buildCouponStep(combo.coupon));
+      }
+      if (hasUsableAsset(combo.point)) {
+        steps.push(buildPointStep(combo.point));
+      }
+      if (hasUsableAsset(combo.membership)) {
+        steps.push(buildMembershipStep(combo.membership));
+      }
+      if (!steps.length) {
+        const extra = selectedPayExtra || defaultPayExtraOption();
+        if (extra?.type === "매장쿠폰") {
+          steps.push(buildCouponStep(extra.value));
+        } else if (extra?.type === "멤버십") {
+          steps.push(buildMembershipStep(extra.value));
+        }
       }
     }
 
@@ -1160,6 +979,10 @@ function buildPaySteps(mode = currentPayMode) {
 
   if (hasUsableAsset(combo.coupon)) {
     steps.push(buildCouponStep(combo.coupon));
+  }
+
+  if (hasUsableAsset(combo.point)) {
+    steps.push(buildPointStep(combo.point));
   }
 
   if (hasUsableAsset(combo.membership)) {
@@ -1210,7 +1033,7 @@ function renderPayStep() {
   fields.payStepCode.textContent = step.code;
   fields.payGuide.textContent = step.guide;
   fields.completeButton.textContent = step.button;
-  fields.payCodeCard.dataset.extraTheme = (selectedPayExtra || defaultPayExtraOption())?.theme || "default";
+  fields.payCodeCard.dataset.extraTheme = step.theme || (selectedPayExtra || defaultPayExtraOption())?.theme || "default";
   fields.payFlowPanel.classList.toggle("is-payment-step", isPayment);
   fields.payFlowPanel.classList.toggle("is-direct-card-pay", isDirectPlainPayment);
   fields.payFlowPanel.classList.toggle("has-direct-extra-open", currentPayMode === "card" && isDirectPayExtraOpen);
@@ -1232,12 +1055,12 @@ function renderPayStep() {
 function renderPayExtraControls(step, isPayment) {
   const options = payExtraOptions();
   const isDirectPlainPayment = currentPayMode === "card" && isPayment && !isDirectPayExtraOpen;
-  const canChooseExtra = !isPayment && (step.type === "coupon" || step.type === "point" || step.type === "membership") && options.length > 1;
+  const canChooseExtra = !isPayment && (step.type === "coupon" || step.type === "membership") && options.length > 1;
   fields.payExtraLauncher.hidden = !isDirectPlainPayment;
   fields.payExtraLauncher.classList.toggle("is-open", isDirectPayExtraOpen);
-  fields.payExtraLauncher.textContent = isDirectPayExtraOpen ? "쿠폰/멤버십 닫기" : "쿠폰/멤버십 사용하기";
+  fields.payExtraLauncher.textContent = isDirectPayExtraOpen ? "쿠폰/포인트/멤버십 닫기" : "쿠폰/포인트/멤버십 사용하기";
   fields.payExtraToggle.hidden = !canChooseExtra;
-  fields.payExtraToggle.textContent = "다른 쿠폰/멤버십 보기";
+  fields.payExtraToggle.textContent = "다른 혜택 보기";
   fields.payExtraList.hidden = !canChooseExtra || !isPayExtraListOpen;
   fields.payExtraToggle.setAttribute("aria-expanded", String(canChooseExtra && isPayExtraListOpen));
 
@@ -1249,7 +1072,7 @@ function renderPayExtraControls(step, isPayment) {
   const selectedId = (selectedPayExtra || defaultPayExtraOption())?.id;
   fields.payExtraList.innerHTML = options.map((option) => `
     <button type="button" class="pay-extra-option ${option.id === selectedId ? "is-selected" : ""}" data-pay-extra="${option.id}" data-extra-theme="${option.theme}">
-      <i aria-hidden="true">${option.type === "매장쿠폰" ? "C" : "M"}</i>
+      <i aria-hidden="true">${option.type === "매장쿠폰" ? "C" : option.type === "포인트" ? "P" : "M"}</i>
       <span>${option.type}</span>
       <strong>${option.value}</strong>
       <em>${option.meta}</em>
@@ -1333,8 +1156,10 @@ function render() {
   fields.comboCard.textContent = card.displayName;
   fields.comboCard.closest(".combo-item").hidden = true;
   fields.comboCoupon.textContent = combo.coupon;
+  fields.comboPoint.textContent = combo.point || "";
   fields.comboMembership.textContent = `${membershipLabel(combo.membership)} ${membershipDisplay(combo.membership)}`;
   fields.comboCoupon.closest(".combo-item").hidden = !hasUsableAsset(combo.coupon);
+  fields.comboPoint.closest(".combo-item").hidden = !hasUsableAsset(combo.point);
   fields.comboMembership.closest(".combo-item").hidden = !hasUsableAsset(combo.membership);
   fields.selectedCard.textContent = combo.insight;
   fields.benefitText.textContent = combo.prepayValue || formatBenefitDisplay(benefitAmount);
@@ -1493,11 +1318,13 @@ function setResultForMode(mode) {
   fields.resultSummary.textContent = combo.resultSummary || (scenario.type.includes("실적")
     ? "다음 혜택 조건에 가까워졌어요"
     : combo.accrual
-      ? `카드할인 ${benefitAmount} + ${combo.accrual}`
+      ? `이번 결제로 ${benefitAmount} 혜택 받았어요`
       : `방금 결제로 ${benefitAmount} 아꼈어요`);
   fields.resultBenefitAmount.textContent = benefitAmount;
-  fields.resultLearning.textContent = combo.resultLearning || (combo.paymentAmount
-    ? `결제금액 ${combo.paymentAmount} 기준으로 계산했어요`
+  fields.resultLearning.textContent = combo.resultLearning || (combo.accrual
+    ? `청구할인 ${benefitAmount} + ${combo.accrual}`
+    : combo.paymentAmount
+    ? "결제 후 실제 적용된 혜택을 정리했어요"
     : "결제 후 승인금액 기준으로 정리했어요");
   fields.resultStatusList.innerHTML = renderResultRows(buildBenefitBreakdown(scenario, card, combo, "result"));
   fields.resultProgressLabel.textContent = progress.label;
@@ -1556,6 +1383,8 @@ function advancePaymentFlow() {
     return;
   }
 
+  const resultMode = currentPayMode === "card" && isDirectPayExtraOpen ? "combo" : currentPayMode;
+  setResultForMode(resultMode);
   setScreen("result");
 }
 
