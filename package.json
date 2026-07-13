@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "qa": "node scripts/qa.js"
+    "qa": "node scripts/qa.js",
+    "capture": "node scripts/capture-demo.js",
+    "capture:custom": "node scripts/capture-custom.js"
   },
   "devDependencies": {
     "puppeteer": "^24.0.0"
