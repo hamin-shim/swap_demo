@@ -60,7 +60,7 @@ async function main() {
     await assert(initial.bodyOverflowY !== "hidden", "body vertical overflow should not block browser pull-to-refresh");
     await assert(initial.bodyOverscrollY !== "none", "body overscroll should not block browser pull-to-refresh");
     await assert(!/이전 데모|삼평|판교|GS칼텍스|S-OIL|EV 충전/.test(await page.evaluate(() => document.body.innerText)), "initial screen should not leak old demo locations");
-    await assert(!/45,000원|14,600원|12,800원|4,500원|46P|128P/.test(await page.evaluate(() => document.body.innerText)), "pre-payment wallet should not leak internal payment amounts");
+    await assert(!/45,000원|10,000원|12,800원|4,500원|5,000P|46P|50P|128P/.test(await page.evaluate(() => document.body.innerText)), "pre-payment wallet should not leak internal payment amounts");
 
     await page.evaluate(() => document.querySelector("#swapToggleButton").click());
     await sleep(260);
@@ -103,7 +103,7 @@ async function main() {
     await assert(combo.benefit === "10% 할인 가능", "combo should not estimate pre-payment won amount");
     await assert(combo.formula.includes("선택 정유사가 SK에너지") && combo.formula.includes("150,000원") && combo.formula.includes("92,000원"), "Deep Oil formula should explain selected oil brand and remaining usage cap");
     await assert(!combo.formula.includes("예상 혜택 4,500원"), "pre-payment copy should not estimate a payment amount");
-    await assert(!/45,000원|14,600원|12,800원|4,500원|46P|128P/.test(await page.evaluate(() => document.querySelector("#detailSheet").innerText)), "pre-payment detail sheet should not leak internal payment amounts");
+    await assert(!/45,000원|10,000원|12,800원|4,500원|5,000P|46P|50P|128P/.test(await page.evaluate(() => document.querySelector("#detailSheet").innerText)), "pre-payment detail sheet should not leak internal payment amounts");
     await assert(!combo.sheetPowered, "combo sheet should not add a duplicate sheet-powered attribution");
     await assert(combo.poweredCount >= 3, "Banksalad attribution should remain mounted outside combo sheet");
 
@@ -300,9 +300,9 @@ async function main() {
       })
     }));
     await assert(baskinResult.screen === "result", "Baskin result screen should open");
-    await assert(baskinResult.summary === "이번 결제로 7,373P 혜택 받았어요", "Baskin result hero should show total point benefit");
-    await assert(baskinResult.rows.join(" ").includes("포인트") && baskinResult.rows.join(" ").includes("7,300P"), "Baskin result should show M Point as point row");
-    await assert(baskinResult.rows.join(" ").includes("해피포인트") && baskinResult.rows.join(" ").includes("73P"), "Baskin result should show Happy Point accrual amount");
+    await assert(baskinResult.summary === "이번 결제로 5,050P 혜택 받았어요", "Baskin result hero should show total point benefit");
+    await assert(baskinResult.rows.join(" ").includes("포인트") && baskinResult.rows.join(" ").includes("5,000P"), "Baskin result should show M Point as point row");
+    await assert(baskinResult.rows.join(" ").includes("해피포인트") && baskinResult.rows.join(" ").includes("50P"), "Baskin result should show Happy Point accrual amount");
     await assert(baskinResult.helpButtons.every((button) => button.width === "18px" && button.height === "18px" && button.radius === "50%"), "result help buttons should stay compact circles");
     await page.evaluate(() => document.querySelector("#resultDoneButton").click());
     await sleep(100);

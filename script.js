@@ -159,7 +159,7 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 주유 특화 카드라 배스킨라빈스에서는 기본 결제와 소액 적립 정도만 기대할 수 있어요", benefit: "기본 적립 가능", scoreValue: 300, resultBenefit: "300원", resultBenefitDetail: "실제 결제금액 기준 기본 적립 예상", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 매장에서는 할인 금액이 작아요" },
         { reason: "삼성카드는 LINK 쿠폰이 연결되어 있으면 18,500원 이상 결제 시 2,000원 할인을 받을 수 있어요", benefit: "2,000원 쿠폰 가능", prepayValue: "2,000원 쿠폰", prepayFormula: "삼성카드 LINK 쿠폰을 보유 중이에요. 실제 결제금액이 18,500원 이상이면 2,000원 할인이 가능해요.", scoreValue: 2000, resultBenefit: "2,000원", resultBenefitDetail: "삼성카드 LINK 2,000원 OFF 쿠폰 적용", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 맞으면 안정적인 대안이에요" },
         { reason: "신한 Deep Oil은 주유소 혜택 중심이라 배스킨라빈스 업종에서는 직접 할인 근거가 약해요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "주유소 결제에 더 적합해요" },
-        { reason: "현대카드 M BOOST는 M포인트 18,400P를 보유 중이라 결제금액의 50%까지 포인트 사용을 요청할 수 있어요", benefit: "M포인트 50% 사용 가능", prepayValue: "50% 사용", prepayFormula: "M포인트 18,400P를 보유 중이에요. 결제금액의 50%까지 포인트 사용이 가능하고, 실제 사용액은 결제 후 계산돼요. 해피포인트는 기본 0.5% 적립 예상으로 함께 안내해요.", scoreValue: 18400, resultBenefit: "7,300P", resultBenefitDetail: "승인금액 14,600원 x 50% = M포인트 7,300P 사용으로 계산했어요.", resultSummary: "이번 결제로 7,373P 혜택 받았어요", resultLearning: "M포인트 7,300P 사용 + 해피포인트 73P", paymentAmount: "14,600원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", pointResult: "7,300P", pointDetail: "승인금액 14,600원 x 50% = M포인트 7,300P 사용으로 계산했어요.", membership: "해피포인트 적립", accrual: "해피포인트 73P", accrualDetail: "해피포인트 기본 0.5% 적립 예상으로, 승인금액 14,600원 x 0.5% = 73P로 계산했어요. 실제 적립률은 브랜드/행사/결제 조건에 따라 달라질 수 있어요.", insight: "포인트 사용률이 가장 크고 해피포인트도 함께 적립돼요" }
+        { reason: "현대카드 M BOOST는 M포인트 18,400P를 보유 중이라 결제금액의 50%까지 포인트 사용을 요청할 수 있어요", benefit: "M포인트 50% 사용 가능", prepayValue: "50% 사용", prepayFormula: "M포인트 18,400P를 보유 중이에요. 결제금액의 50%까지 포인트 사용이 가능하고, 실제 사용액은 결제 후 계산돼요. 해피포인트는 기본 0.5% 적립 예상으로 함께 안내해요.", scoreValue: 18400, resultBenefit: "5,000P", resultBenefitDetail: "승인금액 10,000원 x 50% = M포인트 5,000P 사용으로 계산했어요.", resultSummary: "이번 결제로 5,050P 혜택 받았어요", resultLearning: "M포인트 5,000P 사용 + 해피포인트 50P", paymentAmount: "10,000원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", pointResult: "5,000P", pointDetail: "승인금액 10,000원 x 50% = M포인트 5,000P 사용으로 계산했어요.", membership: "해피포인트 적립", accrual: "해피포인트 50P", accrualDetail: "해피포인트 기본 0.5% 적립 예상으로, 승인금액 10,000원 x 0.5% = 50P로 계산했어요. 실제 적립률은 브랜드/행사/결제 조건에 따라 달라질 수 있어요.", insight: "포인트 사용률이 가장 크고 해피포인트도 함께 적립돼요" }
       ]
     },
     remaining_cap: {
@@ -172,7 +172,7 @@ const locationScenarioSets = {
         { reason: "KB국민 주유패스는 배스킨라빈스 쿠폰이 없어요", benefit: "예상 혜택 300원", coupon: "적용 쿠폰 없음", membership: "해피포인트 적립", insight: "기본 적립만 기대할 수 있어요" },
         { reason: "삼성카드 LINK 쿠폰은 18,500원 이상 결제 시 2,000원 OFF 조건이 명확해요", benefit: "남은 쿠폰 2,000원", coupon: "삼성카드 LINK 2,000원 OFF", membership: "해피포인트 적립", insight: "쿠폰 조건이 가장 단순해요" },
         { reason: "신한 Deep Oil은 배스킨라빈스 쿠폰이 없어요", benefit: "업종 혜택 확인", coupon: "보유 쿠폰 없음", membership: "해피포인트 적립", insight: "이번 업종에는 맞지 않아요" },
-        { reason: "현대카드 M포인트는 보유 포인트가 충분하면 50% 사용이 가능해요", benefit: "남은 포인트 7,300원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액이 충분할 때 좋아요" }
+        { reason: "현대카드 M포인트는 보유 포인트가 충분하면 50% 사용이 가능해요", benefit: "남은 포인트 5,000원", coupon: "보유 쿠폰 없음", point: "현대카드 M포인트 50% 사용", membership: "해피포인트 적립", insight: "포인트 잔액이 충분할 때 좋아요" }
       ]
     },
     performance_fill: {
