@@ -21,6 +21,8 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -2309,7 +2311,27 @@ button {
 }
 
 #detailSheet.is-expanded .detail-quick {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
+}
+
+#detailSheet.is-expanded .combo-stack,
+#detailSheet.is-expanded .combo-pay-button {
+  display: none;
+}
+
+#detailSheet.is-expanded .benefit-total {
+  min-height: 48px;
+  padding: 10px 14px;
+}
+
+#detailSheet.is-expanded .benefit-formula {
+  display: -webkit-box;
+  max-height: none;
+  margin-top: 8px !important;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 }
 
 .detail-expanded {
@@ -2370,7 +2392,7 @@ button {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .detail-grid div {
@@ -2400,7 +2422,7 @@ button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .criteria-pill {
@@ -2423,7 +2445,7 @@ button {
 .change-preview {
   display: grid;
   gap: 4px;
-  margin-top: 12px;
+  margin-top: 10px;
   padding: 12px 13px;
   border: 1px solid #dbe7ff;
   border-radius: 16px;
