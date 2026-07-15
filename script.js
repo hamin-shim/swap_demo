@@ -332,6 +332,8 @@ const fields = {
   applyCriteriaButton: $("#applyCriteriaButton"),
   applySettingsButton: $("#applySettingsButton"),
   applyLocationButton: $("#applyLocationButton"),
+  comboPayButton: $("#comboPayButton"),
+  expandDetailButton: $("#expandDetailButton"),
   reasonDetailList: $("#reasonDetailList")
 };
 
@@ -1204,6 +1206,7 @@ function render() {
   renderPayStep();
   syncScenarioControls();
   syncSwapAssistState();
+  syncDetailSheetMode();
 }
 
 function renderLocationList() {
@@ -1420,6 +1423,7 @@ function closeSheet() {
   sheet.classList.remove("is-open");
   sheet.classList.remove("is-expanded");
   sheet.setAttribute("aria-hidden", "true");
+  syncDetailSheetMode();
   updateScrim();
 }
 
@@ -1434,6 +1438,7 @@ function openSheet() {
   const sheet = $("#detailSheet");
   resetSheetDrag(sheet);
   sheet.classList.remove("is-expanded");
+  syncDetailSheetMode();
   sheet.classList.add("is-open");
   sheet.setAttribute("aria-hidden", "false");
   updateScrim();
@@ -1441,7 +1446,17 @@ function openSheet() {
 }
 
 function expandDetailSheet() {
-  $("#detailSheet").classList.add("is-expanded");
+  const sheet = $("#detailSheet");
+  sheet.classList.add("is-expanded");
+  sheet.scrollTop = 0;
+  syncDetailSheetMode();
+}
+
+function syncDetailSheetMode() {
+  const isExpanded = $("#detailSheet").classList.contains("is-expanded");
+  fields.comboPayButton.hidden = false;
+  fields.expandDetailButton.hidden = isExpanded;
+  fields.applyCriteriaButton.hidden = !isExpanded;
 }
 
 function closeSettings() {
@@ -1517,6 +1532,7 @@ function closeOverlays() {
   $("#detailSheet").classList.remove("is-open");
   $("#detailSheet").classList.remove("is-expanded");
   $("#detailSheet").setAttribute("aria-hidden", "true");
+  syncDetailSheetMode();
   $("#settingsSheet").classList.remove("is-open");
   $("#settingsSheet").setAttribute("aria-hidden", "true");
   $("#locationSheet").classList.remove("is-open");

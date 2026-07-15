@@ -2313,12 +2313,9 @@ button {
 }
 
 #detailSheet.is-expanded .detail-quick {
+  flex: 0 0 auto;
   margin-bottom: 12px;
-}
-
-#detailSheet.is-expanded .combo-stack,
-#detailSheet.is-expanded .combo-pay-button {
-  display: none;
+  overflow: visible;
 }
 
 #detailSheet.is-expanded .benefit-total {
@@ -2327,13 +2324,10 @@ button {
 }
 
 #detailSheet.is-expanded .benefit-formula {
-  display: -webkit-box;
+  display: block;
   max-height: none;
   margin-top: 8px !important;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
+  overflow: visible;
 }
 
 .detail-expanded {

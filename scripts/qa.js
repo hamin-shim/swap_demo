@@ -1,25 +1,13 @@
-const { spawn } = require("node:child_process");
 const puppeteer = require("puppeteer");
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const port = 4175;
-const baseUrl = `http://127.0.0.1:${port}`;
-
-function startServer() {
-  return spawn("python3", ["-m", "http.server", String(port)], {
-    cwd: __dirname + "/..",
-    stdio: "ignore"
-  });
-}
+const baseUrl = process.env.QA_BASE_URL || "http://127.0.0.1:4176";
 
 async function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
 async function main() {
-  const server = startServer();
-  await sleep(600);
-
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: {
@@ -330,7 +318,6 @@ async function main() {
     console.log("QA passed");
   } finally {
     await browser.close();
-    server.kill("SIGTERM");
   }
 }
 
