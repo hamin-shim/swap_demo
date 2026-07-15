@@ -51,8 +51,7 @@ button {
   justify-content: flex-start;
   align-items: flex-start;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
 }
 
 .phone {
@@ -121,7 +120,8 @@ button {
 }
 
 .screen-wallet {
-  padding: max(18px, env(safe-area-inset-top)) 18px calc(118px + env(safe-area-inset-bottom));
+  --screen-pad-x: 18px;
+  padding: max(18px, env(safe-area-inset-top)) var(--screen-pad-x) calc(118px + env(safe-area-inset-bottom));
   overflow-x: hidden;
   background: linear-gradient(#fafafa 0%, #f5f5f6 68%, #f0f0f2 100%);
 }
@@ -514,12 +514,13 @@ button {
 .card-carousel {
   --card-width: clamp(136px, 44vw, 178px);
   position: relative;
-  width: 100%;
-  max-width: 100%;
+  width: calc(100% + (var(--screen-pad-x) * 2));
+  max-width: none;
   height: 320px;
   margin-top: 24px;
-  overflow-x: clip;
-  overflow-y: visible;
+  margin-right: calc(var(--screen-pad-x) * -1);
+  margin-left: calc(var(--screen-pad-x) * -1);
+  overflow: visible;
   touch-action: pan-y;
   user-select: none;
   cursor: grab;
@@ -2865,7 +2866,8 @@ button {
 
 @media (max-height: 760px) and (max-width: 519px) {
   .screen-wallet {
-    padding: max(14px, env(safe-area-inset-top)) 14px calc(88px + env(safe-area-inset-bottom));
+    --screen-pad-x: 14px;
+    padding: max(14px, env(safe-area-inset-top)) var(--screen-pad-x) calc(88px + env(safe-area-inset-bottom));
   }
 
   .status-bar {

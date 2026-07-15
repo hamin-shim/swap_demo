@@ -50,6 +50,7 @@ async function inspectLayout(page) {
       bodyWidth: document.body.scrollWidth,
       walletPay: rect("#walletPayButton"),
       tabbar: rect(".wallet-tabbar"),
+      carousel: rect(".card-carousel"),
       detailSheet: rect("#detailSheet"),
       benefitFormula: rect("#benefitFormula"),
       selectedCard: rect("#selectedCard"),
@@ -93,6 +94,8 @@ async function main() {
       await assert(layout.scrollX === 0, `${viewport.name}: page drifted horizontally`);
       await assert(layout.documentWidth <= layout.viewportWidth + 1, `${viewport.name}: document has horizontal overflow`);
       await assert(layout.bodyWidth <= layout.viewportWidth + 1, `${viewport.name}: body has horizontal overflow`);
+      await assert(layout.carousel.left <= 1, `${viewport.name}: carousel does not reach left screen edge`);
+      await assert(layout.carousel.right >= layout.viewportWidth - 1, `${viewport.name}: carousel does not reach right screen edge`);
       await assert(layout.walletPay.bottom <= layout.viewportHeight + 1, `${viewport.name}: wallet pay button is clipped`);
       await assert(layout.tabbar.bottom <= layout.viewportHeight + 1, `${viewport.name}: tabbar is clipped`);
 
