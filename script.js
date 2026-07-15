@@ -1146,7 +1146,10 @@ function updateCardPosition(offset = 0) {
   const firstCard = $("#cardTrack .payment-card");
   if (!carousel || !firstCard) return;
 
-  const itemWidth = firstCard.getBoundingClientRect().width + 24;
+  const cardStyle = getComputedStyle(firstCard);
+  const itemWidth = firstCard.getBoundingClientRect().width
+    + parseFloat(cardStyle.marginLeft)
+    + parseFloat(cardStyle.marginRight);
   const startOffset = (carousel.getBoundingClientRect().width - itemWidth) / 2;
   $("#cardTrack").style.transform = `translateX(${startOffset - currentCardIndex * itemWidth + offset}px)`;
 }

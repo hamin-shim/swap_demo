@@ -534,6 +534,23 @@ button {
   box-shadow: 0 18px 34px rgba(18, 26, 43, 0.18);
 }
 
+@media (max-width: 519px) {
+  .card-carousel {
+    --card-width: clamp(140px, 39vw, 154px);
+    height: 262px;
+    margin-top: 18px;
+  }
+
+  .card-track {
+    height: 244px;
+  }
+
+  .payment-card {
+    margin: 0 10px;
+    border-radius: 16px;
+  }
+}
+
 .payment-card.has-card-image {
   background: transparent;
   box-shadow: 0 18px 34px rgba(18, 26, 43, 0.2);
@@ -2890,18 +2907,7 @@ button {
   }
 
   .card-carousel {
-    --card-width: clamp(112px, 36vw, 138px);
-    height: 226px;
     margin-top: 14px;
-  }
-
-  .card-track {
-    height: 204px;
-  }
-
-  .payment-card {
-    margin: 0 9px;
-    border-radius: 15px;
   }
 
   .card-dots {
