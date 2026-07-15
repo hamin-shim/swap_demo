@@ -108,13 +108,13 @@ button {
 }
 
 .screen-wallet {
-  padding: max(14px, env(safe-area-inset-top)) 18px calc(118px + env(safe-area-inset-bottom));
+  padding: max(18px, env(safe-area-inset-top)) 18px calc(118px + env(safe-area-inset-bottom));
   background: linear-gradient(#fafafa 0%, #f5f5f6 68%, #f0f0f2 100%);
 }
 
 .status-bar {
-  height: 26px;
-  display: flex;
+  display: none;
+  height: 0;
   align-items: center;
   justify-content: space-between;
   padding: 0 2px;
@@ -229,7 +229,7 @@ button {
 }
 
 .wallet-header {
-  margin-top: 26px;
+  margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2810,15 +2810,15 @@ button {
 
 @media (max-height: 760px) and (max-width: 519px) {
   .screen-wallet {
-    padding: max(10px, env(safe-area-inset-top)) 14px calc(88px + env(safe-area-inset-bottom));
+    padding: max(14px, env(safe-area-inset-top)) 14px calc(88px + env(safe-area-inset-bottom));
   }
 
   .status-bar {
-    height: 24px;
+    height: 0;
   }
 
   .wallet-header {
-    margin-top: 12px;
+    margin-top: 0;
   }
 
   .wallet-header h1 {
