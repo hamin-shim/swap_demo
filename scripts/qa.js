@@ -48,9 +48,14 @@ async function main() {
       recommendedCardIndex: Array.from(document.querySelectorAll("#cardTrack .payment-card"))
         .findIndex((item) => item.querySelector(".card-badge")),
       bodyOverflowY: getComputedStyle(document.body).overflowY,
-      bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY
+      bodyOverscrollY: getComputedStyle(document.body).overscrollBehaviorY,
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth,
+      bodyWidth: document.body.scrollWidth
     }));
     await assert(initial.appHeight >= initial.viewport, "app shell should cover at least the viewport height");
+    await assert(initial.documentWidth <= initial.viewportWidth + 1, "document should not allow horizontal scrolling");
+    await assert(initial.bodyWidth <= initial.viewportWidth + 1, "body should not allow horizontal scrolling");
     await assert(initial.primary === "SK에너지 10% 할인 가능", "SK primary recommendation CTA mismatch");
     await assert(initial.secondary === "다른 매장이에요", "location CTA mismatch");
     await assert(initial.merchant.includes("SK엔크린 중앙에너비스 수서지점"), "default merchant should be Suseo SK station");
