@@ -258,6 +258,17 @@ let sheetDrag = null;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
+function syncVisualViewportVars() {
+  const viewport = window.visualViewport;
+  const visibleHeight = viewport?.height || window.innerHeight || document.documentElement.clientHeight;
+  const phoneBottom = $(".phone")?.getBoundingClientRect().bottom || visibleHeight;
+  const viewportTop = viewport?.offsetTop || 0;
+  const rawBottomGap = Math.max(0, phoneBottom - viewportTop - visibleHeight);
+  const bottomGap = rawBottomGap > 0 ? rawBottomGap + 4 : 0;
+  document.documentElement.style.setProperty("--visual-vh", `${Math.round(visibleHeight)}px`);
+  document.documentElement.style.setProperty("--viewport-bottom-gap", `${Math.round(bottomGap)}px`);
+}
+
 const fields = {
   merchantName: $("#merchantName"),
   swapAssist: $("#swapAssist"),
@@ -425,6 +436,15 @@ function escapeHtml(value) {
 function syncSwapAssistState() {
   const icon = fields.swapToggleButton.querySelector(".material-symbols-rounded");
   fields.swapAssist.classList.toggle("is-minimized", isSwapMinimized);
+  if (isSwapMinimized) {
+    fields.swapAssist.style.height = "56px";
+    fields.swapAssist.style.minHeight = "56px";
+    fields.swapAssist.style.maxHeight = "56px";
+  } else {
+    fields.swapAssist.style.removeProperty("height");
+    fields.swapAssist.style.removeProperty("min-height");
+    fields.swapAssist.style.removeProperty("max-height");
+  }
   fields.swapToggleButton.setAttribute("aria-expanded", String(!isSwapMinimized));
   fields.swapToggleButton.setAttribute("aria-label", isSwapMinimized ? "SWAP 추천 펼치기" : "SWAP 추천 접기");
   icon.textContent = isSwapMinimized ? "keyboard_arrow_down" : "keyboard_arrow_up";
@@ -1273,6 +1293,7 @@ function updateLocationApplyState() {
 }
 
 function setScreen(name) {
+  window.scrollTo(0, 0);
   $(".phone").scrollTop = 0;
   if (name !== "pay") stopNfcTimer();
   $$(".screen").forEach((screen) => {
@@ -1283,7 +1304,9 @@ function setScreen(name) {
   closeSettings();
   closeLocationSheet();
   window.requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
     $(".phone").scrollTop = 0;
+    syncVisualViewportVars();
   });
 }
 
@@ -1398,6 +1421,7 @@ function closeSheet() {
 }
 
 function openSheet() {
+  syncVisualViewportVars();
   closeSettings();
   closeLocationSheet();
   closeReason();
@@ -1410,6 +1434,7 @@ function openSheet() {
   sheet.classList.add("is-open");
   sheet.setAttribute("aria-hidden", "false");
   updateScrim();
+  window.requestAnimationFrame(syncVisualViewportVars);
 }
 
 function expandDetailSheet() {
@@ -1425,6 +1450,7 @@ function closeSettings() {
 }
 
 function openSettings() {
+  syncVisualViewportVars();
   closeSheet();
   closeLocationSheet();
   closeReason();
@@ -1436,6 +1462,7 @@ function openSettings() {
   sheet.classList.add("is-open");
   sheet.setAttribute("aria-hidden", "false");
   updateScrim();
+  window.requestAnimationFrame(syncVisualViewportVars);
 }
 
 function closeLocationSheet() {
@@ -1447,6 +1474,7 @@ function closeLocationSheet() {
 }
 
 function openLocationSheet() {
+  syncVisualViewportVars();
   closeSheet();
   closeSettings();
   closeReason();
@@ -1458,6 +1486,7 @@ function openLocationSheet() {
   sheet.classList.add("is-open");
   sheet.setAttribute("aria-hidden", "false");
   updateScrim();
+  window.requestAnimationFrame(syncVisualViewportVars);
 }
 
 function closeReason() {
@@ -1671,8 +1700,14 @@ $("#resultStatusList").addEventListener("click", (event) => {
   helpButton.classList.toggle("is-open", shouldOpen);
 });
 document.addEventListener("click", () => closeResultHelp());
-window.addEventListener("resize", () => updateCardPosition());
+window.addEventListener("resize", () => {
+  syncVisualViewportVars();
+  updateCardPosition();
+});
+window.visualViewport?.addEventListener("resize", syncVisualViewportVars);
+window.visualViewport?.addEventListener("scroll", syncVisualViewportVars);
 
+syncVisualViewportVars();
 attachSwipe();
 attachSheetDrag();
 render();
